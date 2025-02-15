@@ -1,43 +1,70 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
+import { Tabs } from "expo-router";
+import { useTranslation } from "react-i18next";
+import { Icon, useTheme } from "react-native-paper";
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: colors.tertiary,
+        tabBarStyle: {
+          height: 64,
+        },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          color: colors.tertiary,
+        },
+        tabBarIconStyle: {
+          height: 36,
+          width: 36,
+          color: colors.tertiary,
+        },
+        tabBarActiveBackgroundColor: colors.onTertiaryContainer,
+        tabBarInactiveBackgroundColor: colors.background,
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTitleStyle: {
+          color: colors.tertiary,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: t("Home"),
+          tabBarIcon: ({ color }) => (
+            <Icon source="home" size={36} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="claims"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: t("Claims"),
+          tabBarIcon: ({ color }) => (
+            <Icon source="file-document-outline" size={36} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="appointments"
+        options={{
+          title: t("Appointments"),
+          tabBarIcon: ({ color }) => (
+            <Icon source="calendar" size={36} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: t("Settings"),
+          tabBarIcon: ({ color }) => (
+            <Icon source="cog" size={36} color={color} />
+          ),
         }}
       />
     </Tabs>

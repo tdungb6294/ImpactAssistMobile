@@ -1,39 +1,79 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import * as SplashScreen from "expo-splash-screen";
+import { PaperProvider } from "react-native-paper";
+import { darkTheme, lightTheme } from "../theme/theme";
+import { Stack } from "expo-router";
+import { createContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
+import "../lang/i18n";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+interface ThemeContextType {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+}
+
+export const ThemeContext = createContext<ThemeContextType>({
+  isDarkMode: false,
+  toggleTheme: () => {},
+});
+
+interface LanguageContextType {
+  language: string;
+  changeLanguage: (language: string) => void;
+}
+
+export const LanguageContext = createContext<LanguageContextType>({
+  language: "en",
+  changeLanguage: () => {},
+});
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [language, setLanguage] = useState<string>("en");
+  const { i18n } = useTranslation();
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const loadTheme = async () => {
+      const savedTheme = await AsyncStorage.getItem("theme");
+      if (savedTheme !== null) {
+        setIsDarkMode(savedTheme === "dark");
+      }
+    };
+    const loadLanguage = async () => {
+      const savedLanguage = await AsyncStorage.getItem("lang");
+      if (savedLanguage !== null) {
+        setLanguage(savedLanguage);
+        i18n.changeLanguage(savedLanguage);
+      }
+    };
+    loadTheme();
+    loadLanguage();
+  }, []);
 
-  if (!loaded) {
-    return null;
-  }
+  const toggleTheme = async () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    await AsyncStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
+
+  const changeLanguage = async (language: string) => {
+    setLanguage(language);
+    i18n.changeLanguage(language);
+    await AsyncStorage.setItem("lang", language);
+  };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <LanguageContext.Provider value={{ language, changeLanguage }}>
+      <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+        <PaperProvider theme={isDarkMode ? lightTheme : darkTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </PaperProvider>
+      </ThemeContext.Provider>
+    </LanguageContext.Provider>
   );
 }

@@ -1,13 +1,10 @@
-import * as SplashScreen from "expo-splash-screen";
-import { PaperProvider } from "react-native-paper";
-import { darkTheme, lightTheme } from "../theme/theme";
 import { Stack } from "expo-router";
 import { createContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import storage from "../lib/storage";
 import { useTranslation } from "react-i18next";
-import "../lang/i18n";
-
-SplashScreen.preventAutoHideAsync();
+import "../lib/i18n";
+import { PaperProvider } from "react-native-paper";
+import { darkTheme, lightTheme } from "../theme/theme";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -36,13 +33,13 @@ export default function RootLayout() {
 
   useEffect(() => {
     const loadTheme = async () => {
-      const savedTheme = await AsyncStorage.getItem("theme");
+      const savedTheme = await storage.load({ key: "lang" });
       if (savedTheme !== null) {
         setIsDarkMode(savedTheme === "dark");
       }
     };
     const loadLanguage = async () => {
-      const savedLanguage = await AsyncStorage.getItem("lang");
+      const savedLanguage = await storage.load({ key: "theme" });
       if (savedLanguage !== null) {
         setLanguage(savedLanguage);
         i18n.changeLanguage(savedLanguage);
@@ -55,19 +52,19 @@ export default function RootLayout() {
   const toggleTheme = async () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
-    await AsyncStorage.setItem("theme", newTheme ? "dark" : "light");
+    await storage.save({ key: "theme", data: newTheme ? "dark" : "light" });
   };
 
   const changeLanguage = async (language: string) => {
     setLanguage(language);
     i18n.changeLanguage(language);
-    await AsyncStorage.setItem("lang", language);
+    await storage.save({ key: "lang", data: language });
   };
 
   return (
     <LanguageContext.Provider value={{ language, changeLanguage }}>
       <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-        <PaperProvider theme={isDarkMode ? lightTheme : darkTheme}>
+        <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />

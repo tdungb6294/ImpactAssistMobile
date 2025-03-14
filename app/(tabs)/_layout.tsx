@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Icon, useTheme } from "react-native-paper";
+
 export default function TabLayout() {
   const { colors } = useTheme();
   const { t } = useTranslation();

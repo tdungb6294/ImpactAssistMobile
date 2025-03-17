@@ -1,10 +1,10 @@
-import { View } from "react-native";
+import { SafeAreaView } from "react-native";
 import { Text } from "react-native-paper";
 
 export default function ClaimsPage() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>Claims</Text>
-    </View>
+    </SafeAreaView>
   );
 }

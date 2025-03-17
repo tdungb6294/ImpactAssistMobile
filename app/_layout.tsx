@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import "../lib/i18n";
 import { PaperProvider } from "react-native-paper";
 import { darkTheme, lightTheme } from "../theme/theme";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -62,15 +63,17 @@ export default function RootLayout() {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, changeLanguage }}>
-      <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-        <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </PaperProvider>
-      </ThemeContext.Provider>
-    </LanguageContext.Provider>
+    <GestureHandlerRootView>
+      <LanguageContext.Provider value={{ language, changeLanguage }}>
+        <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+          <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </PaperProvider>
+        </ThemeContext.Provider>
+      </LanguageContext.Provider>
+    </GestureHandlerRootView>
   );
 }

@@ -1,9 +1,11 @@
+import __ from "lodash";
 import { useEffect, useState } from "react";
+import { View } from "react-native";
+import { ActivityIndicator, Text, TextInput } from "react-native-paper";
+import storage from "../lib/storage";
 import { Declaration as DeclarationModel } from "../model/declaration";
 import { initialDeclaration } from "./initial-declaration";
-import { View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
-import __ from "lodash";
+import Tab from "./tabs/tab";
 
 interface DeclarationProps {
   carCountryPlate: string;
@@ -14,6 +16,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     useState<DeclarationModel>(initialDeclaration);
   const [error, setError] = useState<string | undefined>(undefined);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [loading, setLoading] = useState(true);
   const socket = new WebSocket("ws://10.0.2.2:9000");
 
   const updateFirstCarCarDetails = (
@@ -35,19 +38,21 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     }
     setTimeoutId(
       setTimeout(() => {
-        socket.send(
-          JSON.stringify({
-            messageType: "exchangeData",
-            data: {
-              firstCar: {
-                car: {
-                  [key]: value,
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(
+            JSON.stringify({
+              messageType: "exchangeData",
+              data: {
+                firstCar: {
+                  car: {
+                    [key]: value,
+                  },
                 },
               },
-            },
-            roomName: carCountryPlate,
-          })
-        );
+              roomName: carCountryPlate,
+            })
+          );
+        }
       }, 3000)
     );
   };
@@ -57,6 +62,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     newDeclaration.firstCar.car.carCountryPlate = carCountryPlate;
     setDeclaration(declaration);
     socket.onopen = () => {
+      setLoading(false);
       socket.send(
         JSON.stringify({
           messageType: "joinRoom",
@@ -75,12 +81,14 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       const data = JSON.parse(event.data);
       if (data.messageType === "exchangeData") {
         const updatedDeclaration = __.merge({}, declaration, data.data);
+        storage.save({ key: "declaration", data: declaration });
         setDeclaration(updatedDeclaration);
       }
     };
 
     socket.onerror = (error) => {
-      setError(JSON.stringify(error));
+      setLoading(false);
+      setError("Server unavailable");
     };
 
     socket.onclose = () => {
@@ -93,16 +101,25 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   }, []);
 
   return (
-    <View>
-      {error && <Text>{error}</Text>}
-      <Text>{JSON.stringify(declaration.firstCar.car.carCountryPlate)}</Text>
-      <TextInput
-        label="Car country plate"
-        value={declaration.firstCar.car.carCountryPlate}
-        onChangeText={(text) =>
-          updateFirstCarCarDetails("carCountryPlate", text)
-        }
-      />
-    </View>
+    <>
+      <View>
+        {loading ? (
+          <View>
+            <Text>Connecting to the server</Text>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          error && <Text>{error}</Text>
+        )}
+        <TextInput
+          label="Car country plate"
+          value={declaration.firstCar.car.carCountryPlate}
+          onChangeText={(text) =>
+            updateFirstCarCarDetails("carCountryPlate", text)
+          }
+        />
+      </View>
+      <Tab />
+    </>
   );
 }

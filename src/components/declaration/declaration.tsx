@@ -2,12 +2,13 @@ import __ from "lodash";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
-import { ActivityIndicator, Portal, Text, TextInput } from "react-native-paper";
-import storage from "../lib/storage";
-import { Declaration as DeclarationModel } from "../model/declaration";
-import { initialDeclaration } from "./initial-declaration";
-import DeclarationTab from "./tabs/declaration-tab";
-import MapContent from "./util-components/map-content";
+import { ActivityIndicator, Portal, Text } from "react-native-paper";
+import storage from "../../lib/storage";
+import { Declaration as DeclarationModel } from "../../model/declaration";
+import { initialDeclaration } from "./_temp-data/initial-declaration";
+import { updateDeclarationDetails } from "./_utils/declaration-details/update-declaration-details";
+import MapContent from "./_utils/map-content";
+import DeclarationTab from "./declaration-tab";
 
 interface DeclarationProps {
   carCountryPlate: string;
@@ -27,44 +28,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   };
   const hideModal = () => {
     setVisibile(false);
-  };
-
-  const updateFirstCarCarDetails = (
-    key: keyof typeof declaration.firstCar.car,
-    value: string
-  ) => {
-    setDeclaration((prevState) => ({
-      ...prevState,
-      firstCar: {
-        ...prevState.firstCar,
-        car: {
-          ...prevState.firstCar.car,
-          [key]: value,
-        },
-      },
-    }));
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    setTimeoutId(
-      setTimeout(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(
-            JSON.stringify({
-              messageType: "exchangeData",
-              data: {
-                firstCar: {
-                  car: {
-                    [key]: value,
-                  },
-                },
-              },
-              roomName: carCountryPlate,
-            })
-          );
-        }
-      }, 3000)
-    );
   };
 
   useEffect(() => {
@@ -90,9 +53,14 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
       if (data.messageType === "exchangeData") {
-        const updatedDeclaration = __.merge({}, declaration, data.data);
-        storage.save({ key: "declaration", data: declaration });
+        const updatedDeclaration: DeclarationModel = __.merge(
+          {},
+          declaration,
+          data.data
+        );
+        storage.save({ key: "declaration", data: updatedDeclaration });
         setDeclaration(updatedDeclaration);
+        console.log(JSON.stringify(declaration.firstCar.car));
       }
     };
 
@@ -111,26 +79,17 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   }, []);
 
   const setLocationSelected = (latLng: LatLng) => {
-    setDeclaration((prevState) => ({
-      ...prevState,
-      accidentLatLng: latLng,
-    }));
-    hideModal();
-    setTimeoutId(
-      setTimeout(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.send(
-            JSON.stringify({
-              messageType: "exchangeData",
-              data: {
-                accidentLatLng: latLng,
-              },
-              roomName: carCountryPlate,
-            })
-          );
-        }
-      }, 3000)
+    updateDeclarationDetails(
+      declaration,
+      "accidentLatLng",
+      latLng,
+      setDeclaration,
+      timeoutId,
+      carCountryPlate,
+      setTimeoutId,
+      socket
     );
+    hideModal();
   };
 
   return (
@@ -153,15 +112,14 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         ) : (
           error && <Text>{error}</Text>
         )}
-        <TextInput
-          label="Car country plate"
-          value={declaration.firstCar.car.carCountryPlate}
-          onChangeText={(text) =>
-            updateFirstCarCarDetails("carCountryPlate", text)
-          }
-        />
       </View>
-      <DeclarationTab declaration={declaration} showModal={showModal} />
+      <DeclarationTab
+        declaration={declaration}
+        showModal={showModal}
+        setDeclaration={setDeclaration}
+        carCountryPlate={carCountryPlate}
+        socket={socket}
+      />
     </>
   );
 }

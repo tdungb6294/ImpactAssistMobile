@@ -7,12 +7,12 @@ socket.onopen = () => {
   socket.send(
     JSON.stringify({
       messageType: "joinRoom",
-      data: { firstCar: { car: { carCountryPlate: "mdu" } } },
+      data: { firstCar: { car: { carCountryPlate: "MDU" } } },
     })
   );
 };
 
 socket.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log("Received:", data.message);
+  console.log("Received:", JSON.stringify(data));
 };

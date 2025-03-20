@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { Declaration } from "../model/declaration";
+import { Declaration } from "../../model/declaration";
 
-interface DeclarationFirstCarProps {
+interface DeclarationReviewProps {
   declaration: Declaration;
 }
 
 const { width } = Dimensions.get("window");
 
-export default function DeclarationFirstCar({
+export default function DeclarationReview({
   declaration,
-}: DeclarationFirstCarProps) {
+}: DeclarationReviewProps) {
   useEffect(() => {
-    console.log("declaration first is here");
+    console.log("declaration details is here");
   }, []);
 
   return (
@@ -26,6 +26,6 @@ const styles = StyleSheet.create({
   container: {
     width,
     height: 500,
-    backgroundColor: "rgb(102, 175, 151)",
+    backgroundColor: "rgb(250, 243, 255)",
   },
 });

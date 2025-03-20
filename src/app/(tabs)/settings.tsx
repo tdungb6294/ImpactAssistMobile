@@ -1,17 +1,9 @@
-import { Pressable, View } from "react-native";
-import {
-  Button,
-  Divider,
-  Menu,
-  Switch,
-  Text,
-  useTheme,
-} from "react-native-paper";
-import { LanguageContext, ThemeContext } from "../_layout";
 import { useContext, useState } from "react";
-import { StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, StyleSheet, View } from "react-native";
 import Flag from "react-native-country-flag";
+import { Divider, Menu, Switch, Text, useTheme } from "react-native-paper";
+import { LanguageContext, ThemeContext } from "../_layout";
 
 type Language = {
   label: string;

@@ -1,4 +1,4 @@
-import { Declaration } from "../model/declaration";
+import { Declaration } from "../../../model/declaration";
 
 export const initialDeclaration: Declaration = {
   accidentLatLng: { latitude: 0, longitude: 0 },

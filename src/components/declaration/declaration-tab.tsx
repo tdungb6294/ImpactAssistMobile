@@ -1,3 +1,4 @@
+import { SetStateAction } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   Gesture,
@@ -8,10 +9,10 @@ import { Text } from "react-native-paper";
 import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import { PanGestureHandlerEventPayload } from "react-native-screens";
 import { Declaration } from "../../model/declaration";
-import DeclarationDetails from "../declaration-details";
-import DeclarationFirstCar from "../declaration-first-car";
-import DeclarationReview from "../declaration-review";
-import DeclarationSecondCar from "../declaration-second-car";
+import DeclarationDetails from "./declaration-details";
+import DeclarationFirstCar from "./declaration-first-car";
+import DeclarationReview from "./declaration-review";
+import DeclarationSecondCar from "./declaration-second-car";
 
 const { width } = Dimensions.get("window");
 const TABS = [
@@ -24,11 +25,17 @@ const TABS = [
 interface DeclarationTabProps {
   declaration: Declaration;
   showModal: () => void;
+  setDeclaration: (value: SetStateAction<Declaration>) => void;
+  carCountryPlate: string;
+  socket: WebSocket;
 }
 
 export default function DeclarationTab({
   declaration,
+  setDeclaration,
   showModal,
+  carCountryPlate,
+  socket,
 }: DeclarationTabProps) {
   const translateX = useSharedValue(0);
   const translateHighlightX = useSharedValue(0);
@@ -102,7 +109,13 @@ export default function DeclarationTab({
             declaration={declaration}
             showModal={showModal}
           />
-          <DeclarationFirstCar key={1} declaration={declaration} />
+          <DeclarationFirstCar
+            key={1}
+            declaration={declaration}
+            setDeclaration={setDeclaration}
+            carCountryPlate={carCountryPlate}
+            socket={socket}
+          />
           <DeclarationSecondCar key={2} declaration={declaration} />
           <DeclarationReview key={3} declaration={declaration} />
         </Animated.View>

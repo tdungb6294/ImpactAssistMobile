@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
-import { Declaration } from "../model/declaration";
+import { Declaration } from "../../model/declaration";
 
 interface DeclarationDetailsProps {
   declaration: Declaration;
@@ -14,10 +13,6 @@ export default function DeclarationDetails({
   declaration,
   showModal,
 }: DeclarationDetailsProps) {
-  useEffect(() => {
-    console.log("declaration details is here");
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>

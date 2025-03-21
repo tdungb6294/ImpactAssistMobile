@@ -1,20 +1,26 @@
-import { SetStateAction } from "react";
+import { Dispatch } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
   GestureUpdateEvent,
 } from "react-native-gesture-handler";
+import { LatLng } from "react-native-maps";
 import { Text } from "react-native-paper";
-import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { PanGestureHandlerEventPayload } from "react-native-screens";
 import { Declaration } from "../../model/declaration";
+import { DeclarationAction } from "../../reducer/declaration-reducer";
 import DeclarationDetails from "./declaration-details";
 import DeclarationFirstCar from "./declaration-first-car";
 import DeclarationReview from "./declaration-review";
 import DeclarationSecondCar from "./declaration-second-car";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 const TABS = [
   "Vehicle Accident Details",
   "First Vehicle",
@@ -25,59 +31,71 @@ const TABS = [
 interface DeclarationTabProps {
   declaration: Declaration;
   showModal: () => void;
-  setDeclaration: (value: SetStateAction<Declaration>) => void;
   carCountryPlate: string;
   socket: WebSocket;
+  dispatch: Dispatch<DeclarationAction>;
+  webSocketId: number;
+  setLocationSelected: (latLng: LatLng) => void;
 }
 
 export default function DeclarationTab({
   declaration,
-  setDeclaration,
   showModal,
   carCountryPlate,
   socket,
+  dispatch,
+  webSocketId,
+  setLocationSelected,
 }: DeclarationTabProps) {
   const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
   const translateHighlightX = useSharedValue(0);
+  const panGestureX = Gesture.Pan();
+  const panGestureY = Gesture.Pan();
 
-  const panGesture = Gesture.Pan()
+  const handleXMove = (
+    _event: GestureUpdateEvent<PanGestureHandlerEventPayload>
+  ) => {
+    translateHighlightX.value = translateX.value / -TABS.length;
+  };
+
+  const handleYMove = (
+    event: GestureUpdateEvent<PanGestureHandlerEventPayload>
+  ) => {
+    const newTranslationY = translateY.value + event.translationY * 0.3;
+    translateY.value = Math.max(-400, Math.min(0, newTranslationY));
+  };
+
+  panGestureX
     .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
-      const newTranslation = translateX.value + event.translationX * 0.3; // Reduce sensitivity
-      translateX.value = Math.max(
-        -width * (TABS.length - 1),
-        Math.min(0, newTranslation)
-      );
-      translateHighlightX.value = translateX.value / -TABS.length;
+      runOnJS(handleXMove)(event);
     })
-    .onEnd(() => {
-      const currentIndex = Math.round(translateX.value / -width);
-      translateX.value = withSpring(-currentIndex * width, {
+    .requireExternalGestureToFail(panGestureY)
+    .runOnJS(true);
+
+  panGestureY
+    .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
+      runOnJS(handleYMove)(event);
+    })
+    .simultaneousWithExternalGesture(panGestureX)
+    .runOnJS(true);
+
+  const tapGesture = Gesture.Tap()
+    .onEnd(({ absoluteX }) => {
+      const targetIndex = Math.floor(absoluteX / (width / TABS.length));
+      translateX.value = withSpring(-targetIndex * width, {
         damping: 40,
         stiffness: 400,
       });
       translateHighlightX.value = withSpring(
-        (currentIndex * width) / TABS.length,
+        (targetIndex * width) / TABS.length,
         {
           damping: 40,
           stiffness: 400,
         }
       );
-    });
-
-  const tapGesture = Gesture.Tap().onEnd(({ absoluteX }) => {
-    const targetIndex = Math.floor(absoluteX / (width / TABS.length));
-    translateX.value = withSpring(-targetIndex * width, {
-      damping: 40,
-      stiffness: 400,
-    });
-    translateHighlightX.value = withSpring(
-      (targetIndex * width) / TABS.length,
-      {
-        damping: 40,
-        stiffness: 400,
-      }
-    );
-  });
+    })
+    .runOnJS(true);
 
   return (
     <View style={styles.container}>
@@ -90,7 +108,7 @@ export default function DeclarationTab({
               <View style={styles.dividerBar} />
             </TouchableOpacity>
           ))}
-          <GestureDetector gesture={panGesture}>
+          <GestureDetector gesture={panGestureX}>
             <Animated.View
               style={[
                 styles.highlight,
@@ -100,21 +118,26 @@ export default function DeclarationTab({
           </GestureDetector>
         </View>
       </GestureDetector>
-      <GestureDetector gesture={panGesture}>
+      <GestureDetector gesture={Gesture.Simultaneous(panGestureX, panGestureY)}>
         <Animated.View
-          style={[styles.contentContainer, { transform: [{ translateX }] }]}
+          style={[
+            styles.contentContainer,
+            { transform: [{ translateX }, { translateY }] },
+          ]}
         >
           <DeclarationDetails
             key={0}
             declaration={declaration}
             showModal={showModal}
+            setLocationSelected={setLocationSelected}
           />
           <DeclarationFirstCar
             key={1}
             declaration={declaration}
-            setDeclaration={setDeclaration}
             carCountryPlate={carCountryPlate}
             socket={socket}
+            dispatch={dispatch}
+            webSocketId={webSocketId}
           />
           <DeclarationSecondCar key={2} declaration={declaration} />
           <DeclarationReview key={3} declaration={declaration} />
@@ -140,7 +163,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  contentContainer: { flexDirection: "row", width: width * TABS.length },
+  contentContainer: {
+    flexDirection: "row",
+    width: width * TABS.length,
+    zIndex: -1,
+    height,
+  },
   screenText: { fontSize: 24, fontWeight: "bold" },
   highlight: {
     bottom: 0,

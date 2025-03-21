@@ -11,8 +11,9 @@ wss.on("connection", (ws) => {
     if (data.messageType === "joinRoom") {
       const roomName = data.data.firstCar.car.carCountryPlate;
       if (!rooms.has(roomName)) {
-        rooms.set(roomName, { connections: [ws] });
+        ws.id = 1;
         ws.roomName = roomName;
+        rooms.set(roomName, { connections: [ws] });
 
         ///log
         const room = rooms.get(roomName);
@@ -21,14 +22,16 @@ wss.on("connection", (ws) => {
           roomName,
           room.connections.length
         );
+        ws.send(JSON.stringify({ messageType: "exchangeId", id: 1 }));
       } else if (
         rooms.has(roomName) &&
         rooms.get(roomName).connections.length === 1
       ) {
         const room = rooms.get(roomName);
 
-        room.connections.push(ws);
+        ws.id = 2;
         ws.roomName = roomName;
+        room.connections.push(ws);
 
         ///log
         console.log(
@@ -36,12 +39,13 @@ wss.on("connection", (ws) => {
           roomName,
           room.connections.length
         );
+        ws.send(JSON.stringify({ messageType: "exchangeId", id: 2 }));
       }
     } else if (data.messageType === "exchangeData") {
       const roomName = data.roomName;
       const room = rooms.get(roomName);
       room.connections.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN && data.id !== client.id) {
           client.send(JSON.stringify(data));
         }
       });

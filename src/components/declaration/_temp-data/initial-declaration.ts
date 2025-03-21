@@ -1,7 +1,7 @@
 import { Declaration } from "../../../model/declaration";
 
 export const initialDeclaration: Declaration = {
-  accidentLatLng: { latitude: 0, longitude: 0 },
+  accidentLatLng: { latitude: -48.33056, longitude: -69.39817 },
   datetime: new Date(Date.now()),
   accidentCountryLocation: "Lithuania",
   peopleInjuries: "No",

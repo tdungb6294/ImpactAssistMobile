@@ -1,46 +1,41 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch } from "react";
 import { Declaration } from "../../../../model/declaration";
+import { DeclarationAction } from "../../../../reducer/declaration-reducer";
 
 export function updateFirstCarDriverDetails(
   declaration: Declaration,
   key: keyof typeof declaration.firstCar.driver,
-  value: string,
-  setDeclaration: (value: SetStateAction<Declaration>) => void,
-  timeoutId: NodeJS.Timeout | null,
+  value: string | Date,
   carCountryPlate: string,
-  setTimeoutId: Dispatch<SetStateAction<NodeJS.Timeout | null>>,
-  socket: WebSocket
+  socket: WebSocket,
+  dispatch: Dispatch<DeclarationAction>,
+  webSocketId: number
 ) {
-  setDeclaration((prevState: Declaration) => ({
-    ...prevState,
-    firstCar: {
-      ...prevState.firstCar,
-      driver: {
-        ...prevState.firstCar.driver,
-        [key]: value,
+  console.log(value);
+  dispatch({
+    type: "SET_FIELD",
+    fieldUpdate: {
+      firstCar: {
+        driver: {
+          [key]: value,
+        },
       },
     },
-  }));
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
-  setTimeoutId(
-    setTimeout(() => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(
-          JSON.stringify({
-            messageType: "exchangeData",
-            data: {
-              firstCar: {
-                driver: {
-                  [key]: value,
-                },
-              },
+  });
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(
+      JSON.stringify({
+        messageType: "exchangeData",
+        data: {
+          firstCar: {
+            driver: {
+              [key]: value,
             },
-            roomName: carCountryPlate,
-          })
-        );
-      }
-    }, 3000)
-  );
+          },
+        },
+        roomName: carCountryPlate,
+        id: webSocketId,
+      })
+    );
+  }
 }

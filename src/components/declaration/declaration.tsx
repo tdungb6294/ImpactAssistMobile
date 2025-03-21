@@ -1,10 +1,9 @@
-import __ from "lodash";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { ActivityIndicator, Portal, Text } from "react-native-paper";
 import storage from "../../lib/storage";
-import { Declaration as DeclarationModel } from "../../model/declaration";
+import { declarationReducer } from "../../reducer/declaration-reducer";
 import { initialDeclaration } from "./_temp-data/initial-declaration";
 import { updateDeclarationDetails } from "./_utils/declaration-details/update-declaration-details";
 import MapContent from "./_utils/map-content";
@@ -15,10 +14,9 @@ interface DeclarationProps {
 }
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
-  const [declaration, setDeclaration] =
-    useState<DeclarationModel>(initialDeclaration);
+  const [webSocketId, setWebSocketId] = useState(1);
+  const [state, dispatch] = useReducer(declarationReducer, initialDeclaration);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [loading, setLoading] = useState(true);
   const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
@@ -31,9 +29,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   };
 
   useEffect(() => {
-    const newDeclaration = declaration;
-    newDeclaration.firstCar.car.carCountryPlate = carCountryPlate;
-    setDeclaration(declaration);
+    dispatch({
+      type: "SET_FIELD",
+      fieldUpdate: { firstCar: { car: { carCountryPlate } } },
+    });
     socket.onopen = () => {
       setLoading(false);
       socket.send(
@@ -53,14 +52,13 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
       if (data.messageType === "exchangeData") {
-        const updatedDeclaration: DeclarationModel = __.merge(
-          {},
-          declaration,
-          data.data
-        );
-        storage.save({ key: "declaration", data: updatedDeclaration });
-        setDeclaration(updatedDeclaration);
-        console.log(JSON.stringify(declaration.firstCar.car));
+        dispatch({
+          type: "SET_FIELD",
+          fieldUpdate: data.data,
+        });
+        storage.save({ key: "declaration", data: state });
+      } else if (data.messageType === "exchangeId") {
+        setWebSocketId(data.id);
       }
     };
 
@@ -80,14 +78,13 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
 
   const setLocationSelected = (latLng: LatLng) => {
     updateDeclarationDetails(
-      declaration,
+      state,
       "accidentLatLng",
       latLng,
-      setDeclaration,
-      timeoutId,
       carCountryPlate,
-      setTimeoutId,
-      socket
+      socket,
+      dispatch,
+      webSocketId
     );
     hideModal();
   };
@@ -100,7 +97,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
           visible={visible}
           onRequestClose={hideModal}
         >
-          <MapContent setLocationSelected={setLocationSelected} />
+          <MapContent
+            locationSelected={state.accidentLatLng}
+            setLocationSelected={setLocationSelected}
+          />
         </Modal>
       </Portal>
       <View>
@@ -114,10 +114,12 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         )}
       </View>
       <DeclarationTab
-        declaration={declaration}
+        setLocationSelected={setLocationSelected}
+        declaration={state}
         showModal={showModal}
-        setDeclaration={setDeclaration}
+        dispatch={dispatch}
         carCountryPlate={carCountryPlate}
+        webSocketId={webSocketId}
         socket={socket}
       />
     </>

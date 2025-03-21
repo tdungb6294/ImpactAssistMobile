@@ -25,7 +25,7 @@ export default function DeclarationReview({
 const styles = StyleSheet.create({
   container: {
     width,
-    height: 500,
+    height: 1000,
     backgroundColor: "rgb(250, 243, 255)",
   },
 });

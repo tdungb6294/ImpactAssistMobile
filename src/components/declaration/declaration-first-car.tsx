@@ -1,28 +1,66 @@
-import { SetStateAction, useState } from "react";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { Dispatch, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { Button, Text, TextInput } from "react-native-paper";
 import { Declaration } from "../../model/declaration";
+import { DeclarationAction } from "../../reducer/declaration-reducer";
 import { updateFirstCarCarDetails } from "./_utils/first-car-details/update-first-car-car-details";
+import { updateFirstCarDriverDetails } from "./_utils/first-car-details/update-first-car-driver-details";
 
 interface DeclarationFirstCarProps {
   declaration: Declaration;
-  setDeclaration: (value: SetStateAction<Declaration>) => void;
   carCountryPlate: string;
   socket: WebSocket;
+  dispatch: Dispatch<DeclarationAction>;
+  webSocketId: number;
 }
 
 const { width } = Dimensions.get("window");
 
 export default function DeclarationFirstCar({
   declaration,
-  setDeclaration,
   carCountryPlate,
   socket,
+  dispatch,
+  webSocketId,
 }: DeclarationFirstCarProps) {
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [mode, setMode] = useState<"date" | "time">("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (
+    _event: DateTimePickerEvent,
+    selectedDate: Date | undefined
+  ) => {
+    setShow(false);
+    updateFirstCarDriverDetails(
+      declaration,
+      "drivingLicenceExpirationDate",
+      selectedDate as Date,
+      carCountryPlate,
+      socket,
+      dispatch,
+      webSocketId
+    );
+  };
+
+  const showMode = (currentMode: "date" | "time") => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
 
   return (
     <View style={styles.container}>
+      <Text>First vehicle details</Text>
       <TextInput
         label="Car country plate"
         value={declaration.firstCar.car.carCountryPlate}
@@ -31,11 +69,10 @@ export default function DeclarationFirstCar({
             declaration,
             "carCountryPlate",
             text,
-            setDeclaration,
-            timeoutId,
             carCountryPlate,
-            setTimeoutId,
-            socket
+            socket,
+            dispatch,
+            webSocketId
           )
         }
       />
@@ -47,11 +84,10 @@ export default function DeclarationFirstCar({
             declaration,
             "carCountryRegistration",
             text,
-            setDeclaration,
-            timeoutId,
             carCountryPlate,
-            setTimeoutId,
-            socket
+            socket,
+            dispatch,
+            webSocketId
           )
         }
       />
@@ -63,14 +99,155 @@ export default function DeclarationFirstCar({
             declaration,
             "carModel",
             text,
-            setDeclaration,
-            timeoutId,
             carCountryPlate,
-            setTimeoutId,
-            socket
+            socket,
+            dispatch,
+            webSocketId
           )
         }
       />
+      <Text>First vehicle driver details</Text>
+      <TextInput
+        label="First Name"
+        value={declaration.firstCar.driver.name}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "name",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Second Name"
+        value={declaration.firstCar.driver.familyName}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "familyName",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Address"
+        value={declaration.firstCar.driver.address}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "address",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Postal code"
+        value={declaration.firstCar.driver.postalCode}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "postalCode",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Country"
+        value={declaration.firstCar.driver.country}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "country",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Contacts"
+        value={declaration.firstCar.driver.contacts}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "contacts",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Driving Licence Number"
+        value={declaration.firstCar.driver.drivingLicenceNumber}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "drivingLicenceNumber",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <TextInput
+        label="Driving Licence Category"
+        value={declaration.firstCar.driver.drivingLicenceCategory}
+        onChangeText={(text) =>
+          updateFirstCarDriverDetails(
+            declaration,
+            "drivingLicenceCategory",
+            text,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          )
+        }
+      />
+      <Button onPress={showDatepicker}>Pick date</Button>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={
+            new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
+          }
+          mode={mode}
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
+      <Text>
+        Driver license expiration date:{" "}
+        {new Date(
+          declaration.firstCar.driver.drivingLicenceExpirationDate
+        ).toLocaleDateString()}
+      </Text>
+      <Text>First vehicle insurer details</Text>
+
+      <Text>First vehicle insurance details</Text>
     </View>
   );
 }
@@ -78,7 +255,11 @@ export default function DeclarationFirstCar({
 const styles = StyleSheet.create({
   container: {
     width,
-    height: 500,
+    height: 1000,
     backgroundColor: "rgb(102, 175, 151)",
+    flex: 1,
+    padding: 8,
+    flexDirection: "column",
+    gap: 8,
   },
 });

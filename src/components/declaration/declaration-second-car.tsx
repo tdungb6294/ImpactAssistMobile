@@ -20,7 +20,7 @@ export default function DeclarationSecondCar({
 const styles = StyleSheet.create({
   container: {
     width,
-    height: 500,
+    height: 1000,
     backgroundColor: "rgb(223, 152, 173)",
   },
 });

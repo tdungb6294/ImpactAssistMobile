@@ -1,41 +1,36 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch } from "react";
 import { Declaration } from "../../../../model/declaration";
+import { DeclarationAction } from "../../../../reducer/declaration-reducer";
 
 export function updateSecondCarDetails(
   declaration: Declaration,
   key: keyof typeof declaration.secondCar,
   value: string,
-  setDeclaration: (value: SetStateAction<Declaration>) => void,
-  timeoutId: NodeJS.Timeout | null,
   carCountryPlate: string,
-  setTimeoutId: Dispatch<SetStateAction<NodeJS.Timeout | null>>,
-  socket: WebSocket
+  socket: WebSocket,
+  dispatch: Dispatch<DeclarationAction>,
+  webSocketId: number
 ) {
-  setDeclaration((prevState: Declaration) => ({
-    ...prevState,
-    secondCar: {
-      ...prevState.secondCar,
-      [key]: value,
+  dispatch({
+    type: "SET_FIELD",
+    fieldUpdate: {
+      secondCar: {
+        [key]: value,
+      },
     },
-  }));
-  if (timeoutId) {
-    clearTimeout(timeoutId);
+  });
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(
+      JSON.stringify({
+        messageType: "exchangeData",
+        data: {
+          secondCar: {
+            [key]: value,
+          },
+        },
+        roomName: carCountryPlate,
+        id: webSocketId,
+      })
+    );
   }
-  setTimeoutId(
-    setTimeout(() => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(
-          JSON.stringify({
-            messageType: "exchangeData",
-            data: {
-              secondCar: {
-                [key]: value,
-              },
-            },
-            roomName: carCountryPlate,
-          })
-        );
-      }
-    }, 3000)
-  );
 }

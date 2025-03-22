@@ -8,6 +8,8 @@ interface DeclarationReviewProps {
 
 const { width } = Dimensions.get("window");
 
+// TODO: Add text inputs here and validations
+
 export default function DeclarationReview({
   declaration,
 }: DeclarationReviewProps) {

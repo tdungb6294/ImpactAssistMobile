@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 interface DeclarationPopupConnectionProps {
@@ -26,7 +26,7 @@ export default function DeclarationPopupConnection({
               hideModal();
             }}
           >
-            Create room
+            Join room
           </Button>
         </Link>
       )}

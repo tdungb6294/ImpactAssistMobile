@@ -12,6 +12,8 @@ interface DeclarationDetailsProps {
 
 const { width } = Dimensions.get("window");
 
+//FIXME: fix the style
+
 export default function DeclarationDetails({
   declaration,
   showModal,

@@ -19,6 +19,8 @@ interface DeclarationFirstCarProps {
 
 const { width } = Dimensions.get("window");
 
+//TODO: add validations and checkboxes
+
 export default function DeclarationFirstCar({
   declaration,
   carCountryPlate,

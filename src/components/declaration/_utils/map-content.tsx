@@ -13,6 +13,8 @@ interface MapContentProps {
   setLocationSelected: (latLng: LatLng) => void;
 }
 
+// FIXME: fix style
+
 export default function MapContent({
   setLocationSelected,
   locationSelected,

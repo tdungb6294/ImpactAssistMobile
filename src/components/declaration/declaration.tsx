@@ -126,6 +126,8 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   );
 }
 
+// FIXME: fix declaration container style
+
 const styles = StyleSheet.create({
   modal: {
     width: "100%",

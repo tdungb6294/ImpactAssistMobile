@@ -1,32 +1,23 @@
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  GestureUpdateEvent,
-} from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
 import { Text } from "react-native-paper";
 import Animated, {
-  runOnJS,
-  useSharedValue,
+  useAnimatedKeyboard,
+  useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { PanGestureHandlerEventPayload } from "react-native-screens";
 import { Declaration } from "../../model/declaration";
 import { DeclarationAction } from "../../reducer/declaration-reducer";
+import { TABS } from "./_temp-data/tabs";
+import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
 import DeclarationDetails from "./declaration-details";
 import DeclarationFirstCar from "./declaration-first-car";
 import DeclarationReview from "./declaration-review";
 import DeclarationSecondCar from "./declaration-second-car";
 
 const { width, height } = Dimensions.get("window");
-const TABS = [
-  "Vehicle Accident Details",
-  "First Vehicle",
-  "Second Vehicle",
-  "Review",
-];
 
 interface DeclarationTabProps {
   declaration: Declaration;
@@ -47,38 +38,23 @@ export default function DeclarationTab({
   webSocketId,
   setLocationSelected,
 }: DeclarationTabProps) {
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const translateHighlightX = useSharedValue(0);
-  const panGestureX = Gesture.Pan();
-  const panGestureY = Gesture.Pan();
+  const {
+    panGestureX,
+    panGestureY,
+    translateX,
+    translateY,
+    translateHighlightX,
+  } = useDeclarationTabGestures();
+  const keyboard = useAnimatedKeyboard();
+  const tapGestureY = Gesture.Tap();
+  const [isInputNearBottom, setIsInputNearBottom] = useState(false);
 
-  const handleXMove = (
-    _event: GestureUpdateEvent<PanGestureHandlerEventPayload>
-  ) => {
-    translateHighlightX.value = translateX.value / -TABS.length;
-  };
-
-  const handleYMove = (
-    event: GestureUpdateEvent<PanGestureHandlerEventPayload>
-  ) => {
-    const newTranslationY = translateY.value + event.translationY * 0.3;
-    translateY.value = Math.max(-400, Math.min(0, newTranslationY));
-  };
-
-  panGestureX
-    .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
-      runOnJS(handleXMove)(event);
-    })
-    .requireExternalGestureToFail(panGestureY)
-    .runOnJS(true);
-
-  panGestureY
-    .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
-      runOnJS(handleYMove)(event);
-    })
-    .simultaneousWithExternalGesture(panGestureX)
-    .runOnJS(true);
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: isInputNearBottom ? -keyboard.height.value : 0 },
+    ],
+  }));
 
   const tapGesture = Gesture.Tap()
     .onEnd(({ absoluteX }) => {
@@ -97,6 +73,17 @@ export default function DeclarationTab({
     })
     .runOnJS(true);
 
+  tapGestureY
+    .onEnd((event) => {
+      if (event.absoluteY > height / 2) {
+        setIsInputNearBottom(true);
+      } else {
+        setIsInputNearBottom(false);
+      }
+    })
+    .requireExternalGestureToFail(panGestureX, panGestureY)
+    .runOnJS(true);
+
   return (
     <View style={styles.container}>
       <GestureDetector gesture={tapGesture}>
@@ -111,18 +98,24 @@ export default function DeclarationTab({
           <GestureDetector gesture={panGestureX}>
             <Animated.View
               style={[
-                styles.highlight,
-                { transform: [{ translateX: translateHighlightX }] },
+                {
+                  transform: [{ translateX: translateHighlightX }],
+                },
               ]}
             />
           </GestureDetector>
         </View>
       </GestureDetector>
-      <GestureDetector gesture={Gesture.Simultaneous(panGestureX, panGestureY)}>
+      <GestureDetector
+        gesture={Gesture.Simultaneous(panGestureX, panGestureY, tapGestureY)}
+      >
         <Animated.View
           style={[
             styles.contentContainer,
-            { transform: [{ translateX }, { translateY }] },
+            {
+              transform: [{ translateX }, { translateY }],
+            },
+            animatedStyles,
           ]}
         >
           <DeclarationDetails
@@ -146,6 +139,8 @@ export default function DeclarationTab({
     </View>
   );
 }
+
+// FIXME: style declaration tab style
 
 const styles = StyleSheet.create({
   container: { flex: 1 },

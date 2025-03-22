@@ -8,7 +8,6 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { Declaration } from "../../model/declaration";
 import { DeclarationAction } from "../../reducer/declaration-reducer";
 import { TABS } from "./_temp-data/tabs";
 import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
@@ -20,23 +19,17 @@ import DeclarationSecondCar from "./declaration-second-car";
 const { width, height } = Dimensions.get("window");
 
 interface DeclarationTabProps {
-  declaration: Declaration;
   showModal: () => void;
-  carCountryPlate: string;
-  socket: WebSocket;
   dispatch: Dispatch<DeclarationAction>;
-  webSocketId: number;
   setLocationSelected: (latLng: LatLng) => void;
+  showSignatureModal: () => void;
 }
 
 export default function DeclarationTab({
-  declaration,
   showModal,
-  carCountryPlate,
-  socket,
   dispatch,
-  webSocketId,
   setLocationSelected,
+  showSignatureModal,
 }: DeclarationTabProps) {
   const {
     panGestureX,
@@ -120,20 +113,12 @@ export default function DeclarationTab({
         >
           <DeclarationDetails
             key={0}
-            declaration={declaration}
             showModal={showModal}
             setLocationSelected={setLocationSelected}
           />
-          <DeclarationFirstCar
-            key={1}
-            declaration={declaration}
-            carCountryPlate={carCountryPlate}
-            socket={socket}
-            dispatch={dispatch}
-            webSocketId={webSocketId}
-          />
-          <DeclarationSecondCar key={2} declaration={declaration} />
-          <DeclarationReview key={3} declaration={declaration} />
+          <DeclarationFirstCar key={1} dispatch={dispatch} />
+          <DeclarationSecondCar key={2} />
+          <DeclarationReview key={3} showSignatureModal={showSignatureModal} />
         </Animated.View>
       </GestureDetector>
     </View>

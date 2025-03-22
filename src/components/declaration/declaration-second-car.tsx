@@ -1,17 +1,10 @@
 import { Dimensions, StyleSheet, View } from "react-native";
-import { Declaration } from "../../model/declaration";
-
-interface DeclarationSecondCarProps {
-  declaration: Declaration;
-}
 
 const { width } = Dimensions.get("window");
 
 // TODO: Add text inputs here and validations
 
-export default function DeclarationSecondCar({
-  declaration,
-}: DeclarationSecondCarProps) {
+export default function DeclarationSecondCar() {
   return (
     <View style={styles.container}>
       <></>

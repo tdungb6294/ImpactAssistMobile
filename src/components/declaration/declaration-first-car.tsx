@@ -1,20 +1,16 @@
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { Dispatch, useState } from "react";
+import { Dispatch, useContext, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
-import { Declaration } from "../../model/declaration";
 import { DeclarationAction } from "../../reducer/declaration-reducer";
+import { DeclarationContext } from "./_context/declaration-context";
 import { updateFirstCarCarDetails } from "./_utils/first-car-details/update-first-car-car-details";
 import { updateFirstCarDriverDetails } from "./_utils/first-car-details/update-first-car-driver-details";
 
 interface DeclarationFirstCarProps {
-  declaration: Declaration;
-  carCountryPlate: string;
-  socket: WebSocket;
   dispatch: Dispatch<DeclarationAction>;
-  webSocketId: number;
 }
 
 const { width } = Dimensions.get("window");
@@ -22,12 +18,10 @@ const { width } = Dimensions.get("window");
 //TODO: add validations and checkboxes
 
 export default function DeclarationFirstCar({
-  declaration,
-  carCountryPlate,
-  socket,
   dispatch,
-  webSocketId,
 }: DeclarationFirstCarProps) {
+  const { declaration, carCountryPlate, webSocketId, socket } =
+    useContext(DeclarationContext);
   const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
 

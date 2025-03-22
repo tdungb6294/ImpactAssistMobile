@@ -49,6 +49,14 @@ wss.on("connection", (ws) => {
           client.send(JSON.stringify(data));
         }
       });
+    } else if (data.messageType === "exchangeImage") {
+      const roomName = data.roomName;
+      const room = rooms.get(roomName);
+      room.connections.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN && data.id !== client.id) {
+          client.send(JSON.stringify(data));
+        }
+      });
     }
   });
 

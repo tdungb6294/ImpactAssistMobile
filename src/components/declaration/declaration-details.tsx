@@ -1,11 +1,11 @@
 import * as Location from "expo-location";
+import { useContext } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Button, Text } from "react-native-paper";
-import { Declaration } from "../../model/declaration";
+import { DeclarationContext } from "./_context/declaration-context";
 
 interface DeclarationDetailsProps {
-  declaration: Declaration;
   showModal: () => void;
   setLocationSelected: (latLng: LatLng) => void;
 }
@@ -15,10 +15,10 @@ const { width } = Dimensions.get("window");
 //FIXME: fix the style
 
 export default function DeclarationDetails({
-  declaration,
   showModal,
   setLocationSelected,
 }: DeclarationDetailsProps) {
+  const { declaration } = useContext(DeclarationContext);
   async function getCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {

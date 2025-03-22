@@ -4,7 +4,6 @@ import { LatLng } from "react-native-maps";
 import { ActivityIndicator, Portal, Text } from "react-native-paper";
 import storage from "../../lib/storage";
 import { declarationReducer } from "../../reducer/declaration-reducer";
-import SignatureContainer from "./_components/signature-container";
 import { DeclarationContext } from "./_context/declaration-context";
 import { initialDeclaration } from "./_temp-data/initial-declaration";
 import { updateDeclarationDetails } from "./_utils/declaration-details/update-declaration-details";
@@ -22,17 +21,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   const [loading, setLoading] = useState(true);
   const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
-  const [signatureVisibile, setSignatureVisible] = useState(false);
   const [firstSignature, setFirstSign] = useState<string | null>(null);
   const [secondSignature, setSecondSign] = useState<string | null>(null);
-
-  const showSignatureModal = () => {
-    setSignatureVisible(true);
-  };
-
-  const hideSignatureModal = () => {
-    setSignatureVisible(false);
-  };
+  const [firstSignatureImg, setFirstSignatureImg] = useState<string>("");
+  const [secondSignatureImg, setSecondSignatureImg] = useState<string>("");
 
   const showModal = () => {
     setVisibile(true);
@@ -116,6 +108,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         socket,
         webSocketId,
         carCountryPlate,
+        firstSignatureImg,
+        secondSignatureImg,
+        setFirstSignatureImg,
+        setSecondSignatureImg,
       }}
     >
       <Portal>
@@ -130,17 +126,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
           />
         </Modal>
       </Portal>
-      <SignatureContainer
-        carCountryPlate={carCountryPlate}
-        firstSignature={firstSignature}
-        secondSignature={secondSignature}
-        setFirstSign={setFirstSign}
-        setSecondSign={setSecondSign}
-        webSocketId={webSocketId}
-        signatureVisible={signatureVisibile}
-        setSignatureVisible={setSignatureVisible}
-        socket={socket}
-      />
       <View>
         {loading ? (
           <View>
@@ -154,7 +139,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       <DeclarationTab
         setLocationSelected={setLocationSelected}
         showModal={showModal}
-        showSignatureModal={showSignatureModal}
         dispatch={dispatch}
       />
     </DeclarationContext.Provider>

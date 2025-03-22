@@ -11,6 +11,10 @@ type DeclarationContextType = {
   setFirstSign: Dispatch<SetStateAction<string | null>>;
   setSecondSign: Dispatch<SetStateAction<string | null>>;
   carCountryPlate: string;
+  firstSignatureImg: string;
+  secondSignatureImg: string;
+  setFirstSignatureImg: Dispatch<SetStateAction<string>>;
+  setSecondSignatureImg: Dispatch<SetStateAction<string>>;
 };
 
 export const DeclarationContext = createContext<DeclarationContextType>({
@@ -22,4 +26,8 @@ export const DeclarationContext = createContext<DeclarationContextType>({
   setSecondSign: () => {},
   carCountryPlate: "",
   socket: new WebSocket("ws://10.0.2.2:9000"),
+  firstSignatureImg: "",
+  secondSignatureImg: "",
+  setFirstSignatureImg: () => {},
+  setSecondSignatureImg: () => {},
 });

@@ -22,14 +22,12 @@ interface DeclarationTabProps {
   showModal: () => void;
   dispatch: Dispatch<DeclarationAction>;
   setLocationSelected: (latLng: LatLng) => void;
-  showSignatureModal: () => void;
 }
 
 export default function DeclarationTab({
   showModal,
   dispatch,
   setLocationSelected,
-  showSignatureModal,
 }: DeclarationTabProps) {
   const {
     panGestureX,
@@ -118,7 +116,7 @@ export default function DeclarationTab({
           />
           <DeclarationFirstCar key={1} dispatch={dispatch} />
           <DeclarationSecondCar key={2} />
-          <DeclarationReview key={3} showSignatureModal={showSignatureModal} />
+          <DeclarationReview key={3} />
         </Animated.View>
       </GestureDetector>
     </View>

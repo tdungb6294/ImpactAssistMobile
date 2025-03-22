@@ -1,43 +1,40 @@
 import { useContext } from "react";
 import { Dimensions, Image, StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
+import SignatureContainer from "./_components/signature-container";
 import { DeclarationContext } from "./_context/declaration-context";
 
-interface DeclarationReviewProps {
-  showSignatureModal: () => void;
-}
+interface DeclarationReviewProps {}
 
 const { width } = Dimensions.get("window");
 
 // TODO: Add text inputs here and validations
 
-export default function DeclarationReview({
-  showSignatureModal,
-}: DeclarationReviewProps) {
-  const { firstSignature, secondSignature } = useContext(DeclarationContext);
+export default function DeclarationReview({}: DeclarationReviewProps) {
+  const { firstSignatureImg, secondSignatureImg } =
+    useContext(DeclarationContext);
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={styles.preview}>
-          {firstSignature ? (
+          {firstSignatureImg ? (
             <Image
               resizeMode={"contain"}
               style={{ width: 100, height: 100 }}
-              source={{ uri: firstSignature }}
+              source={{ uri: firstSignatureImg }}
             />
           ) : null}
         </View>
         <View style={styles.preview}>
-          {secondSignature ? (
+          {secondSignatureImg ? (
             <Image
               resizeMode={"contain"}
               style={{ width: 100, height: 100 }}
-              source={{ uri: secondSignature }}
+              source={{ uri: secondSignatureImg }}
             />
           ) : null}
         </View>
+        <SignatureContainer />
       </View>
-      <Button onPress={showSignatureModal}>Show signature</Button>
     </View>
   );
 }

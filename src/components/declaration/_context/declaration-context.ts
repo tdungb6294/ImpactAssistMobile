@@ -1,33 +1,36 @@
+import { SkPath } from "@shopify/react-native-skia";
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Declaration } from "../../../model/declaration";
 import { initialDeclaration } from "../_temp-data/initial-declaration";
+import { DeclarationAction } from "../../../reducer/declaration-reducer";
+import { DeclarationErrorAction } from "../../../reducer/declaration-error-reducer";
+import { DeclarationError } from "../../../model/declaration-error";
+import { initialDeclarationError } from "../_temp-data/initial-declaration-error";
 
 type DeclarationContextType = {
   webSocketId: number;
   declaration: Declaration;
   socket: WebSocket;
-  firstSignature: string | null;
-  secondSignature: string | null;
-  setFirstSign: Dispatch<SetStateAction<string | null>>;
-  setSecondSign: Dispatch<SetStateAction<string | null>>;
+  firstSignature: SkPath[];
+  secondSignature: SkPath[];
+  setFirstSign: Dispatch<SetStateAction<SkPath[]>>;
+  setSecondSign: Dispatch<SetStateAction<SkPath[]>>;
   carCountryPlate: string;
-  firstSignatureImg: string;
-  secondSignatureImg: string;
-  setFirstSignatureImg: Dispatch<SetStateAction<string>>;
-  setSecondSignatureImg: Dispatch<SetStateAction<string>>;
+  dispatch: Dispatch<DeclarationAction>;
+  declarationError: DeclarationError;
+  dispatchError: Dispatch<DeclarationErrorAction>;
 };
 
 export const DeclarationContext = createContext<DeclarationContextType>({
   webSocketId: 1,
   declaration: initialDeclaration,
-  firstSignature: null,
-  secondSignature: null,
+  firstSignature: [],
+  secondSignature: [],
   setFirstSign: () => {},
   setSecondSign: () => {},
   carCountryPlate: "",
   socket: new WebSocket("ws://10.0.2.2:9000"),
-  firstSignatureImg: "",
-  secondSignatureImg: "",
-  setFirstSignatureImg: () => {},
-  setSecondSignatureImg: () => {},
+  dispatch: () => {},
+  declarationError: initialDeclarationError,
+  dispatchError: () => {}
 });

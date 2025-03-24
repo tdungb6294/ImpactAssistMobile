@@ -1,8 +1,9 @@
+import { SkPath } from "@shopify/react-native-skia";
 import { useContext, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { DeclarationContext } from "../_context/declaration-context";
-import SkiaSignature from "./skia-signature";
+import SkiaSignature, { convertPathToJsonData } from "./skia-signature";
 
 interface SignatureContainerProps {}
 
@@ -18,11 +19,9 @@ export default function SignatureContainer({}: SignatureContainerProps) {
     webSocketId,
     carCountryPlate,
     socket,
-    setFirstSignatureImg,
-    setSecondSignatureImg,
   } = useContext(DeclarationContext);
 
-  const handleOK = (signature: string) => {
+  const handleOK = (signature: SkPath[]) => {
     isFirst ? setFirstSign(signature) : setSecondSign(signature);
     if (socket.readyState === WebSocket.OPEN) {
       if (isFirst) {
@@ -30,7 +29,7 @@ export default function SignatureContainer({}: SignatureContainerProps) {
           JSON.stringify({
             messageType: "exchangeImage",
             data: {
-              first: signature,
+              first: convertPathToJsonData(signature),
             },
             roomName: carCountryPlate,
             id: webSocketId,
@@ -41,7 +40,7 @@ export default function SignatureContainer({}: SignatureContainerProps) {
           JSON.stringify({
             messageType: "exchangeImage",
             data: {
-              second: signature,
+              second: convertPathToJsonData(signature),
             },
             roomName: carCountryPlate,
             id: webSocketId,
@@ -54,12 +53,10 @@ export default function SignatureContainer({}: SignatureContainerProps) {
   return (
     <View style={styles.signatureContainer}>
       <SkiaSignature
-        initialPathData={firstSignature || ""}
-        onOk={(pathData, imageData) => {
+        setPaths={isFirst ? setFirstSign : setSecondSign}
+        paths={isFirst ? firstSignature : secondSignature}
+        onOk={(pathData) => {
           isFirst ? setFirstSign(pathData) : setSecondSign(pathData);
-          isFirst
-            ? setFirstSignatureImg(imageData)
-            : setSecondSignatureImg(imageData);
           handleOK(pathData);
         }}
       />

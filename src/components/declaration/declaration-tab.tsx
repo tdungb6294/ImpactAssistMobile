@@ -1,4 +1,4 @@
-import { Dispatch, useState } from "react";
+import { useState } from "react";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
@@ -8,7 +8,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { DeclarationAction } from "../../reducer/declaration-reducer";
+import { DeclarationTabContext } from "./_context/declaration-tab-context";
 import { TABS } from "./_temp-data/tabs";
 import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
 import DeclarationDetails from "./declaration-details";
@@ -16,28 +16,20 @@ import DeclarationFirstCar from "./declaration-first-car";
 import DeclarationReview from "./declaration-review";
 import DeclarationSecondCar from "./declaration-second-car";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 interface DeclarationTabProps {
   showModal: () => void;
-  dispatch: Dispatch<DeclarationAction>;
   setLocationSelected: (latLng: LatLng) => void;
 }
 
 export default function DeclarationTab({
   showModal,
-  dispatch,
   setLocationSelected,
 }: DeclarationTabProps) {
-  const {
-    panGestureX,
-    panGestureY,
-    translateX,
-    translateY,
-    translateHighlightX,
-  } = useDeclarationTabGestures();
+  const { panGestureX, translateX, translateHighlightX } =
+    useDeclarationTabGestures();
   const keyboard = useAnimatedKeyboard();
-  const tapGestureY = Gesture.Tap();
   const [isInputNearBottom, setIsInputNearBottom] = useState(false);
 
   const animatedStyles = useAnimatedStyle(() => ({
@@ -64,75 +56,63 @@ export default function DeclarationTab({
     })
     .runOnJS(true);
 
-  tapGestureY
-    .onEnd((event) => {
-      if (event.absoluteY > height / 2) {
-        setIsInputNearBottom(true);
-      } else {
-        setIsInputNearBottom(false);
-      }
-    })
-    .requireExternalGestureToFail(panGestureX, panGestureY)
-    .runOnJS(true);
-
   return (
-    <View style={styles.container}>
-      <GestureDetector gesture={tapGesture}>
-        <View style={styles.header}>
-          {TABS.map((tab, index) => (
-            <TouchableOpacity key={index} style={styles.tab}>
-              <View style={styles.dividerBar} />
-              <Text>{tab}</Text>
-              <View style={styles.dividerBar} />
-            </TouchableOpacity>
-          ))}
-          <GestureDetector gesture={panGestureX}>
-            <Animated.View
-              style={[
-                {
-                  transform: [{ translateX: translateHighlightX }],
-                },
-              ]}
+    <DeclarationTabContext.Provider
+      value={{ isInputNearBottom, setIsInputNearBottom }}
+    >
+      <View style={styles.container}>
+        <GestureDetector gesture={tapGesture}>
+          <View style={styles.header}>
+            {TABS.map((tab, index) => (
+              <TouchableOpacity key={index} style={styles.tab}>
+                <View style={styles.dividerBar} />
+                <Text>{tab}</Text>
+                <View style={styles.dividerBar} />
+              </TouchableOpacity>
+            ))}
+            <GestureDetector gesture={panGestureX}>
+              <Animated.View
+                style={[
+                  {
+                    transform: [{ translateX: translateHighlightX }],
+                  },
+                ]}
+              />
+            </GestureDetector>
+          </View>
+        </GestureDetector>
+        <GestureDetector gesture={panGestureX}>
+          <Animated.View style={[styles.contentContainer, animatedStyles]}>
+            <DeclarationDetails
+              key={0}
+              showModal={showModal}
+              setLocationSelected={setLocationSelected}
             />
-          </GestureDetector>
-        </View>
-      </GestureDetector>
-      <GestureDetector
-        gesture={Gesture.Simultaneous(panGestureX, panGestureY, tapGestureY)}
-      >
-        <Animated.View
-          style={[
-            styles.contentContainer,
-            {
-              transform: [{ translateX }, { translateY }],
-            },
-            animatedStyles,
-          ]}
-        >
-          <DeclarationDetails
-            key={0}
-            showModal={showModal}
-            setLocationSelected={setLocationSelected}
-          />
-          <DeclarationFirstCar key={1} dispatch={dispatch} />
-          <DeclarationSecondCar key={2} />
-          <DeclarationReview key={3} />
-        </Animated.View>
-      </GestureDetector>
-    </View>
+            <DeclarationFirstCar key={1} />
+            <DeclarationSecondCar key={2} />
+            <DeclarationReview key={3} />
+          </Animated.View>
+        </GestureDetector>
+      </View>
+    </DeclarationTabContext.Provider>
   );
 }
 
 // FIXME: style declaration tab style
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    backgroundColor: "black",
+    height: "100%",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-around",
     width: width,
     backgroundColor: "lightgray",
     height: 40,
+    position: "static",
+    zIndex: 1,
   },
   tab: {
     backgroundColor: "white",
@@ -142,12 +122,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
+    top: 40,
+    position: "absolute",
     flexDirection: "row",
     width: width * TABS.length,
-    zIndex: -1,
-    height,
+    height: "100%",
   },
-  screenText: { fontSize: 24, fontWeight: "bold" },
+  childContainer: {
+    width: width,
+    flexGrow: 1,
+  },
   highlight: {
     bottom: 0,
     position: "absolute",

@@ -42,7 +42,13 @@ export default function DeclarationDetails({
           Car accident location: {declaration.accidentLatLng.latitude}{" "}
           {declaration.accidentLatLng.longitude}
         </Text>
-        <Button onPress={() => getCurrentLocation()}>Current location</Button>
+        <Button
+          onPress={() => {
+            getCurrentLocation();
+          }}
+        >
+          Current location
+        </Button>
       </View>
     </View>
   );
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width,
-    height: 1000,
+    height: "100%",
     backgroundColor: "rgb(163, 221, 221)",
   },
   mapContainer: {

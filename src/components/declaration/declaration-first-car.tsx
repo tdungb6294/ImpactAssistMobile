@@ -1,26 +1,22 @@
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { Dispatch, useContext, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
-import { DeclarationAction } from "../../reducer/declaration-reducer";
+import { useContext, useState } from "react";
+import { Dimensions, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Button, Text } from "react-native-paper";
+import DeclarationTextInput from "./_components/declaration-text-input";
 import { DeclarationContext } from "./_context/declaration-context";
-import { updateFirstCarCarDetails } from "./_utils/first-car-details/update-first-car-car-details";
 import { updateFirstCarDriverDetails } from "./_utils/first-car-details/update-first-car-driver-details";
 
-interface DeclarationFirstCarProps {
-  dispatch: Dispatch<DeclarationAction>;
-}
+interface DeclarationFirstCarProps {}
 
 const { width } = Dimensions.get("window");
 
 //TODO: add validations and checkboxes
 
-export default function DeclarationFirstCar({
-  dispatch,
-}: DeclarationFirstCarProps) {
-  const { declaration, carCountryPlate, webSocketId, socket } =
+export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
+  const { declaration, carCountryPlate, webSocketId, socket, dispatch } =
     useContext(DeclarationContext);
   const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
@@ -55,173 +51,52 @@ export default function DeclarationFirstCar({
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
       <Text>First vehicle details</Text>
-      <TextInput
+      <DeclarationTextInput
         label="Car country plate"
-        value={declaration.firstCar.car.carCountryPlate}
-        onChangeText={(text) =>
-          updateFirstCarCarDetails(
-            declaration,
-            "carCountryPlate",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "car", "carCountryPlate"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Car country registration"
-        value={declaration.firstCar.car.carCountryRegistration}
-        onChangeText={(text) =>
-          updateFirstCarCarDetails(
-            declaration,
-            "carCountryRegistration",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "car", "carCountryRegistration"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Car model"
-        value={declaration.firstCar.car.carModel}
-        onChangeText={(text) =>
-          updateFirstCarCarDetails(
-            declaration,
-            "carModel",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "car", "carModel"]}
       />
       <Text>First vehicle driver details</Text>
-      <TextInput
+      <DeclarationTextInput
         label="First Name"
-        value={declaration.firstCar.driver.name}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "name",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "name"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Second Name"
-        value={declaration.firstCar.driver.familyName}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "familyName",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "familyName"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Address"
-        value={declaration.firstCar.driver.address}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "address",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "address"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Postal code"
-        value={declaration.firstCar.driver.postalCode}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "postalCode",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "postalCode"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Country"
-        value={declaration.firstCar.driver.country}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "country",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "country"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Contacts"
-        value={declaration.firstCar.driver.contacts}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "contacts",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "contacts"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Driving Licence Number"
-        value={declaration.firstCar.driver.drivingLicenceNumber}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "drivingLicenceNumber",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "drivingLicenceNumber"]}
       />
-      <TextInput
+      <DeclarationTextInput
         label="Driving Licence Category"
-        value={declaration.firstCar.driver.drivingLicenceCategory}
-        onChangeText={(text) =>
-          updateFirstCarDriverDetails(
-            declaration,
-            "drivingLicenceCategory",
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          )
-        }
+        declarationPath={["firstCar", "driver", "drivingLicenceCategory"]}
       />
       <Button onPress={showDatepicker}>Pick date</Button>
       {show && (
@@ -244,16 +119,17 @@ export default function DeclarationFirstCar({
       <Text>First vehicle insurer details</Text>
 
       <Text>First vehicle insurance details</Text>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
     width,
-    height: 1000,
+    height: "100%",
+    left: width,
     backgroundColor: "rgb(102, 175, 151)",
-    flex: 1,
     padding: 8,
     flexDirection: "column",
     gap: 8,

@@ -5,27 +5,25 @@ import {
   SkPath,
   useCanvasRef,
 } from "@shopify/react-native-skia";
-import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Dispatch, SetStateAction, useState } from "react";
+import { View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
+import { signatureStyles as styles } from "../_styles/signature/skia-signature.style";
 
 interface SkiaSignatureProps {
-  initialPathData: string;
-  onOk: (pathData: string, imageData: string) => void;
+  paths: SkPath[];
+  setPaths: Dispatch<SetStateAction<SkPath[]>>;
+  onOk: (pathData: SkPath[], imageData: string) => void;
 }
 
 export default function SkiaSignature({
-  initialPathData,
+  paths,
+  setPaths,
   onOk,
 }: SkiaSignatureProps) {
-  const [paths, setPaths] = useState<SkPath[]>([]);
   const [currentPath, setCurrentPath] = useState<SkPath | null>(null);
   const canvasRef = useCanvasRef();
-
-  useEffect(() => {
-    if (initialPathData) setPaths(convertJsonDataToPath(initialPathData));
-  }, []);
 
   const smoothPath = (path: SkPath, x: number, y: number) => {
     const prevPoint = path.getLastPt();
@@ -92,8 +90,7 @@ export default function SkiaSignature({
       </GestureDetector>
       <Button
         onPress={() => {
-          const pathData = convertPathToJsonData(paths);
-          onOk(pathData, saveDrawingAsImage());
+          onOk(paths, saveDrawingAsImage());
         }}
       >
         Submit
@@ -102,14 +99,6 @@ export default function SkiaSignature({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  canvas: {
-    width: 300,
-    height: 300,
-    backgroundColor: "blue",
-  },
-});
 
 export const convertPathToJsonData: (paths: SkPath[]) => string = (
   paths: SkPath[]
@@ -123,8 +112,8 @@ export const convertJsonDataToPath: (jsonString: string) => SkPath[] = (
   jsonString: string
 ) => {
   const data = JSON.parse(jsonString);
-  if (data.paths) {
-    const loadedPaths = data.paths.map(
+  if (data.pathData) {
+    const loadedPaths = data.pathData.map(
       (svg: string) => Skia.Path.MakeFromSVGString(svg)!
     );
     return loadedPaths as SkPath[];

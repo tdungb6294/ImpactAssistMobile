@@ -1,13 +1,17 @@
+import { SkPath } from "@shopify/react-native-skia";
 import { useEffect, useReducer, useState } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { ActivityIndicator, Portal, Text } from "react-native-paper";
 import storage from "../../lib/storage";
+import { declarationErrorReducer } from "../../reducer/declaration-error-reducer";
 import { declarationReducer } from "../../reducer/declaration-reducer";
+import { convertJsonDataToPath } from "./_components/skia-signature";
 import { DeclarationContext } from "./_context/declaration-context";
 import { initialDeclaration } from "./_temp-data/initial-declaration";
-import { updateDeclarationDetails } from "./_utils/declaration-details/update-declaration-details";
-import MapContent from "./_utils/map-content";
+import { initialDeclarationError } from "./_temp-data/initial-declaration-error";
+import MapContent from "./_components/map-content";
+import { updateDeclarationField } from "./_utils/update-declaration-details/update-declaration-details";
 import DeclarationTab from "./declaration-tab";
 
 interface DeclarationProps {
@@ -15,16 +19,18 @@ interface DeclarationProps {
 }
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
+  const [errorState, dispatchError] = useReducer(
+    declarationErrorReducer,
+    initialDeclarationError
+  );
   const [webSocketId, setWebSocketId] = useState<number>(1);
   const [state, dispatch] = useReducer(declarationReducer, initialDeclaration);
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
-  const [firstSignature, setFirstSign] = useState<string | null>(null);
-  const [secondSignature, setSecondSign] = useState<string | null>(null);
-  const [firstSignatureImg, setFirstSignatureImg] = useState<string>("");
-  const [secondSignatureImg, setSecondSignatureImg] = useState<string>("");
+  const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
+  const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
 
   const showModal = () => {
     setVisibile(true);
@@ -63,8 +69,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         });
         storage.save({ key: "declaration", data: state });
       } else if (data.messageType === "exchangeImage") {
-        if (data.data.first) setFirstSign(data.data.first);
-        if (data.data.second) setSecondSign(data.data.second);
+        if (data.data.first)
+          setFirstSign(convertJsonDataToPath(data.data.first));
+        if (data.data.second)
+          setSecondSign(convertJsonDataToPath(data.data.second));
       } else if (data.messageType === "exchangeId") {
         setWebSocketId(data.id);
       }
@@ -85,9 +93,8 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   }, []);
 
   const setLocationSelected = (latLng: LatLng) => {
-    updateDeclarationDetails(
-      state,
-      "accidentLatLng",
+    updateDeclarationField(
+      ["accidentLatLng"],
       latLng,
       carCountryPlate,
       socket,
@@ -108,10 +115,9 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         socket,
         webSocketId,
         carCountryPlate,
-        firstSignatureImg,
-        secondSignatureImg,
-        setFirstSignatureImg,
-        setSecondSignatureImg,
+        declarationError: errorState,
+        dispatch,
+        dispatchError,
       }}
     >
       <Portal>
@@ -126,9 +132,23 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
           />
         </Modal>
       </Portal>
-      <View>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          height: 20,
+          position: "absolute",
+          backgroundColor: "red",
+        }}
+      >
         {loading ? (
-          <View>
+          <View
+            style={{
+              flexDirection: "row",
+              height: 20,
+              position: "absolute",
+            }}
+          >
             <Text>Connecting to the server</Text>
             <ActivityIndicator />
           </View>
@@ -139,7 +159,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       <DeclarationTab
         setLocationSelected={setLocationSelected}
         showModal={showModal}
-        dispatch={dispatch}
       />
     </DeclarationContext.Provider>
   );

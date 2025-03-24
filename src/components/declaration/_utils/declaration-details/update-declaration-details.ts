@@ -15,9 +15,7 @@ export function updateDeclarationDetails(
   dispatch({
     type: "SET_FIELD",
     fieldUpdate: {
-      data: {
-        [key]: value,
-      },
+      [key]: value,
     },
   });
   if (socket.readyState === WebSocket.OPEN) {

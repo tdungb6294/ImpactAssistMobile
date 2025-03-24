@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import MapView, {
   LatLng,
   MapPressEvent,
@@ -7,6 +7,7 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from "react-native-maps";
 import { Button } from "react-native-paper";
+import { mapContentStyles as styles } from "../_styles/map-content/map-content.style";
 
 interface MapContentProps {
   locationSelected: LatLng;
@@ -65,14 +66,3 @@ export default function MapContent({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: 400,
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});

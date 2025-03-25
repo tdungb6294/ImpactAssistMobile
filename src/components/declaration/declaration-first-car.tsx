@@ -4,7 +4,8 @@ import DateTimePicker, {
 import { useContext, useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Button, Text } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
+import { CustomTheme } from "../../theme/theme";
 import DeclarationTextInput from "./_components/declaration-text-input";
 import { DeclarationContext } from "./_context/declaration-context";
 import { updateFirstCarDriverDetails } from "./_utils/first-car-details/update-first-car-driver-details";
@@ -20,6 +21,7 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
     useContext(DeclarationContext);
   const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
+  const theme: CustomTheme = useTheme();
 
   const onChange = (
     _event: DateTimePickerEvent,
@@ -51,7 +53,10 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <Text>First vehicle details</Text>
       <DeclarationTextInput
         label="Car country plate"
@@ -129,7 +134,6 @@ const styles = StyleSheet.create({
     width,
     height: "100%",
     left: width,
-    backgroundColor: "rgb(102, 175, 151)",
     padding: 8,
     flexDirection: "column",
     gap: 8,

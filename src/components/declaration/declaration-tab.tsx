@@ -4,6 +4,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
 import { Text } from "react-native-paper";
 import Animated, {
+  KeyboardState,
   useAnimatedKeyboard,
   useAnimatedStyle,
   withSpring,
@@ -35,7 +36,14 @@ export default function DeclarationTab({
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
-      { translateY: isInputNearBottom ? -keyboard.height.value : 0 },
+      {
+        translateY:
+          keyboard.state.value === KeyboardState.OPEN
+            ? isInputNearBottom
+              ? -keyboard.height.value
+              : 0
+            : 0,
+      },
     ],
   }));
 
@@ -74,6 +82,7 @@ export default function DeclarationTab({
               <Animated.View
                 style={[
                   {
+                    ...styles.highlight,
                     transform: [{ translateX: translateHighlightX }],
                   },
                 ]}

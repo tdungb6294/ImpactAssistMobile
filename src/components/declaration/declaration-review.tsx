@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
+import { CustomTheme } from "../../theme/theme";
 import SignatureContainer from "./_components/signature-container";
 import SkiaImageContainer from "./_components/skia-image-container";
 import { DeclarationContext } from "./_context/declaration-context";
@@ -12,9 +14,12 @@ const { width } = Dimensions.get("window");
 
 export default function DeclarationReview({}: DeclarationReviewProps) {
   const { firstSignature, secondSignature } = useContext(DeclarationContext);
+  const theme: CustomTheme = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={{ flex: 1, flexDirection: "column" }}>
         <SkiaImageContainer paths={firstSignature} />
         <SkiaImageContainer paths={secondSignature} />

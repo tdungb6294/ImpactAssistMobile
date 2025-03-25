@@ -4,7 +4,8 @@ import {
   NativeSyntheticEvent,
   NativeTouchEvent,
 } from "react-native";
-import { HelperText, TextInput } from "react-native-paper";
+import { HelperText } from "react-native-paper";
+import ImpactAssistTextInput from "../../custom/text-input";
 import { DeclarationContext } from "../_context/declaration-context";
 import { DeclarationTabContext } from "../_context/declaration-tab-context";
 import { getValueAtPath } from "../_utils/update-declaration-details/get-value-at-path";
@@ -33,11 +34,13 @@ export default function DeclarationTextInput({
   } = useContext(DeclarationContext);
   const value = getValueAtPath(declaration, declarationPath) as string;
   const error = getValueAtPath(declarationError, declarationPath) as string;
-  const { setIsInputNearBottom } = useContext(DeclarationTabContext);
+  const { isInputNearBottom, setIsInputNearBottom } = useContext(
+    DeclarationTabContext
+  );
 
   return (
     <>
-      <TextInput
+      <ImpactAssistTextInput
         label={label}
         value={value}
         onChangeText={(text) => {

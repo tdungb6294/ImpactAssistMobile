@@ -1,95 +1,58 @@
 import { MD3DarkTheme, MD3LightTheme, MD3Theme } from "react-native-paper";
 
-export const lightTheme: MD3Theme = {
+export interface CustomTheme extends MD3Theme {
+  colors: MD3Theme["colors"] & {
+    text: string; // high-contrast text
+    textSecondary: string; // low-contrast text
+    backgroundSolid: string; // solid background
+    backgroundSolidSecondary: string; // hovered solid background
+    borderSeparator: string; // ui element border
+    borderSeparatorSecondary: string; // hovered ui element border
+    borderSeparatorTertiary: string; // sub ui element border
+    interactiveComponents: string; // ui element background
+    interactiveComponentsSecondary: string; // hovered ui element background
+    interactiveComponentsTertiary: string; // active ui element background
+    background: string; // app background
+    backgroundSecondary: string; // subtle background
+  };
+}
+
+export const darkTheme: CustomTheme = {
   ...MD3LightTheme,
   colors: {
-    ...MD3LightTheme,
-    primary: "rgb(34, 139, 34)",
-    onPrimary: "rgb(255, 255, 255)",
-    primaryContainer: "rgb(204, 255, 204)",
-    onPrimaryContainer: "rgb(0, 82, 0)",
-    secondary: "rgb(72, 128, 65)",
-    onSecondary: "rgb(255, 255, 255)",
-    secondaryContainer: "rgb(216, 238, 211)",
-    onSecondaryContainer: "rgb(26, 57, 23)",
-    tertiary: "rgb(60, 144, 128)",
-    onTertiary: "rgb(255, 255, 255)",
-    tertiaryContainer: "rgb(199, 248, 241)",
-    onTertiaryContainer: "rgb(2, 58, 49)",
-    error: "rgb(186, 26, 26)",
-    onError: "rgb(255, 255, 255)",
-    errorContainer: "rgb(255, 218, 214)",
-    onErrorContainer: "rgb(65, 0, 2)",
-    background: "rgb(255, 255, 255)",
-    onBackground: "rgb(29, 27, 30)",
-    surface: "rgb(255, 255, 255)",
-    onSurface: "rgb(29, 27, 30)",
-    surfaceVariant: "rgb(233, 223, 235)",
-    onSurfaceVariant: "rgb(74, 69, 78)",
-    outline: "rgb(124, 117, 126)",
-    outlineVariant: "rgb(204, 196, 206)",
-    shadow: "rgb(0, 0, 0)",
-    scrim: "rgb(0, 0, 0)",
-    inverseSurface: "rgb(50, 47, 51)",
-    inverseOnSurface: "rgb(245, 239, 244)",
-    inversePrimary: "rgb(144, 255, 144)",
-    elevation: {
-      level0: "transparent",
-      level1: "rgb(248, 242, 251)",
-      level2: "rgb(244, 236, 248)",
-      level3: "rgb(240, 231, 246)",
-      level4: "rgb(239, 229, 245)",
-      level5: "rgb(236, 226, 243)",
-    },
-    surfaceDisabled: "rgba(29, 27, 30, 0.12)",
-    onSurfaceDisabled: "rgba(29, 27, 30, 0.38)",
-    backdrop: "rgba(51, 47, 55, 0.4)",
+    ...MD3LightTheme.colors,
+    textSecondary: "#ADF0D4",
+    text: "#1FD8A4",
+    backgroundSolidSecondary: "#27B08B",
+    backgroundSolid: "#29A383",
+    borderSeparatorTertiary: "#2A7E68",
+    borderSeparatorSecondary: "#246854",
+    borderSeparator: "#1B5745",
+    interactiveComponentsTertiary: "#114837",
+    interactiveComponentsSecondary: "#0B3B2C",
+    interactiveComponents: "#0F2E22",
+    backgroundSecondary: "#0F2E22",
+    background: "#0D1512",
+    onSurface: "#1FD8A4",
   },
 };
 
-export const darkTheme: MD3Theme = {
+export const lightTheme: CustomTheme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: "rgb(34, 139, 34)",
-    onPrimary: "rgb(0, 0, 0)",
-    primaryContainer: "rgb(0, 102, 0)",
-    onPrimaryContainer: "rgb(204, 255, 204)",
-    secondary: "rgb(72, 128, 65)",
-    onSecondary: "rgb(255, 255, 255)",
-    secondaryContainer: "rgb(0, 72, 0)",
-    onSecondaryContainer: "rgb(216, 238, 211)",
-    tertiary: "rgb(60, 144, 128)",
-    onTertiary: "rgb(255, 255, 255)",
-    tertiaryContainer: "rgb(0, 92, 81)",
-    onTertiaryContainer: "rgb(199, 248, 241)",
-    error: "rgb(186, 26, 26)",
-    onError: "rgb(255, 255, 255)",
-    errorContainer: "rgb(255, 218, 214)",
-    onErrorContainer: "rgb(65, 0, 2)",
-    background: "rgb(18, 18, 18)",
-    onBackground: "rgb(245, 239, 244)",
-    surface: "rgb(18, 18, 18)",
-    onSurface: "rgb(245, 239, 244)",
-    surfaceVariant: "rgb(74, 69, 78)",
-    onSurfaceVariant: "rgb(233, 223, 235)",
-    outline: "rgb(124, 117, 126)",
-    outlineVariant: "rgb(204, 196, 206)",
-    shadow: "rgb(0, 0, 0)",
-    scrim: "rgb(0, 0, 0)",
-    inverseSurface: "rgb(245, 239, 244)",
-    inverseOnSurface: "rgb(50, 47, 51)",
-    inversePrimary: "rgb(144, 255, 144)",
-    elevation: {
-      level0: "transparent",
-      level1: "rgb(48, 47, 51)",
-      level2: "rgb(60, 59, 63)",
-      level3: "rgb(72, 71, 75)",
-      level4: "rgb(84, 83, 87)",
-      level5: "rgb(96, 95, 99)",
-    },
-    surfaceDisabled: "rgba(29, 27, 30, 0.12)",
-    onSurfaceDisabled: "rgba(29, 27, 30, 0.38)",
-    backdrop: "rgba(51, 47, 55, 0.4)",
+    textSecondary: "#1D3B31",
+    text: "#208368",
+    backgroundSolidSecondary: "#26997B",
+    backgroundSolid: "#29A383",
+    borderSeparatorTertiary: "#56BA9F",
+    borderSeparatorSecondary: "#8BCEB6",
+    borderSeparator: "#ACDEC8",
+    interactiveComponentsTertiary: "#C3E9D7",
+    interactiveComponentsSecondary: "#D6F1E3",
+    interactiveComponents: "#E6F7ED",
+    backgroundSecondary: "#F4FBF7",
+    background: "#FBFEFD",
+    onSurface: "#208368",
   },
 };

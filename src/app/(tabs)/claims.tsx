@@ -1,10 +1,12 @@
-import { SafeAreaView } from "react-native";
-import { Text } from "react-native-paper";
+import { View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 
 export default function ClaimsPage() {
+  const theme = useTheme();
+
   return (
-    <SafeAreaView>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Text>Claims</Text>
-    </SafeAreaView>
+    </View>
   );
 }

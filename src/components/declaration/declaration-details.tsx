@@ -2,7 +2,9 @@ import * as Location from "expo-location";
 import { useContext } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
-import { Button, Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+import { CustomTheme } from "../../theme/theme";
+import ImpactAssistButton from "../custom/button";
 import { DeclarationContext } from "./_context/declaration-context";
 
 interface DeclarationDetailsProps {
@@ -19,6 +21,8 @@ export default function DeclarationDetails({
   setLocationSelected,
 }: DeclarationDetailsProps) {
   const { declaration } = useContext(DeclarationContext);
+  const theme: CustomTheme = useTheme();
+
   async function getCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -35,20 +39,21 @@ export default function DeclarationDetails({
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.mapContainer}>
-        <Button onPress={showModal}>Set location</Button>
+        <ImpactAssistButton label="Set location" onPress={showModal} />
         <Text>
           Car accident location: {declaration.accidentLatLng.latitude}{" "}
           {declaration.accidentLatLng.longitude}
         </Text>
-        <Button
+        <ImpactAssistButton
+          label="Current location"
           onPress={() => {
             getCurrentLocation();
           }}
-        >
-          Current location
-        </Button>
+        />
       </View>
     </View>
   );

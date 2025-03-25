@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, View } from "react-native";
 import Flag from "react-native-country-flag";
 import { Divider, Menu, Switch, Text, useTheme } from "react-native-paper";
+import { CustomTheme } from "../../theme/theme";
 import { LanguageContext, ThemeContext } from "../_layout";
 
 type Language = {
@@ -20,7 +21,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const { language, changeLanguage } = useContext(LanguageContext);
-  const { colors } = useTheme();
+  const theme: CustomTheme = useTheme();
   const [selectedValue, setSelectedValue] = useState<Language | undefined>(
     languages.find((v) => language === v.value) || undefined
   );
@@ -36,16 +37,22 @@ export default function SettingsPage() {
   };
 
   return (
-    <View style={{ flex: 1, flexDirection: "column" }}>
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: theme.colors.background,
+      }}
+    >
       <View style={styles.container}>
-        <Text style={{ color: colors.tertiary, fontSize: 16 }}>
+        <Text style={{ color: theme.colors.text, fontSize: 16 }}>
           {t("Toggle (Dark/Light) theme")}
         </Text>
         <Switch value={isDarkMode ? true : false} onValueChange={toggleTheme} />
       </View>
       <Divider />
       <View style={styles.container}>
-        <Text style={{ color: colors.tertiary, fontSize: 16 }}>
+        <Text style={{ color: theme.colors.text, fontSize: 16 }}>
           {t("Change language")}
         </Text>
         <Menu
@@ -62,7 +69,7 @@ export default function SettingsPage() {
               }}
               onPress={toggleDropdown}
             >
-              <Text style={{ color: colors.tertiary, fontSize: 16 }}>
+              <Text style={{ color: theme.colors.text, fontSize: 16 }}>
                 {selectedValue?.label}
               </Text>
               <Flag
@@ -84,11 +91,11 @@ export default function SettingsPage() {
                 width: 120,
                 justifyContent: "space-between",
                 padding: 4,
-                backgroundColor: colors.background,
+                backgroundColor: theme.colors.background,
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: colors.tertiary }}>{language.label}</Text>
+              <Text style={{ color: theme.colors.text }}>{language.label}</Text>
               <Flag
                 style={{ backgroundColor: "transparent" }}
                 isoCode={language.isoCode}

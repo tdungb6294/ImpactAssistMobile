@@ -1,34 +1,39 @@
 import { Tabs } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Icon, useTheme } from "react-native-paper";
+import { View } from "react-native";
+import { Icon, Text, useTheme } from "react-native-paper";
+import { CustomTheme } from "../../theme/theme";
 
 export default function TabLayout() {
-  const { colors } = useTheme();
+  const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.tertiary,
+        tabBarLabel: "",
         tabBarStyle: {
-          height: 64,
-        },
-        tabBarLabelStyle: {
-          fontSize: 14,
-          color: colors.tertiary,
+          height: 80,
+          position: "absolute",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          overflow: "hidden",
+          backgroundColor: theme.colors.interactiveComponentsTertiary,
+          borderColor: theme.colors.interactiveComponentsTertiary,
         },
         tabBarIconStyle: {
-          height: 36,
-          width: 36,
-          color: colors.tertiary,
+          position: "absolute",
+          height: 80,
+          width: "110%",
+          color: theme.colors.text,
         },
-        tabBarActiveBackgroundColor: colors.onTertiaryContainer,
-        tabBarInactiveBackgroundColor: colors.background,
         headerStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: theme.colors.interactiveComponentsTertiary,
+          borderBottomColor: theme.colors.interactiveComponentsTertiary,
+          borderBottomWidth: 2,
         },
         headerTitleStyle: {
-          color: colors.tertiary,
+          color: theme.colors.text,
         },
       }}
     >
@@ -36,8 +41,40 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t("Home"),
-          tabBarIcon: ({ color }) => (
-            <Icon source="home" size={36} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                backgroundColor: focused
+                  ? theme.colors.backgroundSolidSecondary
+                  : theme.colors.interactiveComponentsTertiary,
+
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                source="home"
+                size={36}
+                color={
+                  focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid
+                }
+              />
+              <Text
+                style={{
+                  color: focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid,
+                  fontSize: 12,
+                }}
+              >
+                {t("Home")}
+              </Text>
+            </View>
           ),
         }}
       />
@@ -45,8 +82,39 @@ export default function TabLayout() {
         name="claims"
         options={{
           title: t("Claims"),
-          tabBarIcon: ({ color }) => (
-            <Icon source="file-document-outline" size={36} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                backgroundColor: focused
+                  ? theme.colors.backgroundSolidSecondary
+                  : theme.colors.interactiveComponentsTertiary,
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                source="file-document-outline"
+                size={36}
+                color={
+                  focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid
+                }
+              />
+              <Text
+                style={{
+                  color: focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid,
+                  fontSize: 12,
+                }}
+              >
+                {t("Claims")}
+              </Text>
+            </View>
           ),
         }}
       />
@@ -54,8 +122,39 @@ export default function TabLayout() {
         name="appointments"
         options={{
           title: t("Appointments"),
-          tabBarIcon: ({ color }) => (
-            <Icon source="calendar" size={36} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                backgroundColor: focused
+                  ? theme.colors.backgroundSolidSecondary
+                  : theme.colors.interactiveComponentsTertiary,
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                source="calendar"
+                size={36}
+                color={
+                  focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid
+                }
+              />
+              <Text
+                style={{
+                  color: focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid,
+                  fontSize: 12,
+                }}
+              >
+                {t("Appointments")}
+              </Text>
+            </View>
           ),
         }}
       />
@@ -63,8 +162,39 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: t("Settings"),
-          tabBarIcon: ({ color }) => (
-            <Icon source="cog" size={36} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                backgroundColor: focused
+                  ? theme.colors.backgroundSolidSecondary
+                  : theme.colors.interactiveComponentsTertiary,
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                source="cog"
+                size={36}
+                color={
+                  focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid
+                }
+              />
+              <Text
+                style={{
+                  color: focused
+                    ? theme.colors.textSecondary
+                    : theme.colors.backgroundSolid,
+                  fontSize: 12,
+                }}
+              >
+                {t("Settings")}
+              </Text>
+            </View>
           ),
         }}
       />

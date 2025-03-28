@@ -11,7 +11,6 @@ export function updateFirstCarDriverDetails(
   dispatch: Dispatch<DeclarationAction>,
   webSocketId: number
 ) {
-  console.log(value);
   dispatch({
     type: "SET_FIELD",
     fieldUpdate: {

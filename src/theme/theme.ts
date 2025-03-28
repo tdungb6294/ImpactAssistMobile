@@ -34,6 +34,7 @@ export const darkTheme: CustomTheme = {
     backgroundSecondary: "#0F2E22",
     background: "#0D1512",
     onSurface: "#1FD8A4",
+    outlineVariant: "#1FD8A4",
   },
 };
 
@@ -54,5 +55,6 @@ export const lightTheme: CustomTheme = {
     backgroundSecondary: "#F4FBF7",
     background: "#FBFEFD",
     onSurface: "#208368",
+    outlineVariant: "#208368",
   },
 };

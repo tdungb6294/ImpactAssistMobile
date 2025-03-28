@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
 import { Text } from "react-native-paper";
@@ -17,7 +24,7 @@ import DeclarationFirstCar from "./declaration-first-car";
 import DeclarationReview from "./declaration-review";
 import DeclarationSecondCar from "./declaration-second-car";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 interface DeclarationTabProps {
   showModal: () => void;
@@ -37,12 +44,7 @@ export default function DeclarationTab({
     transform: [
       { translateX: translateX.value },
       {
-        translateY:
-          keyboard.state.value === KeyboardState.OPEN
-            ? isInputNearBottom
-              ? -keyboard.height.value
-              : 0
-            : 0,
+        translateY: isInputNearBottom ? -keyboard.height.value : 0,
       },
     ],
   }));
@@ -64,9 +66,14 @@ export default function DeclarationTab({
     })
     .runOnJS(true);
 
+  const handleTapOnInput = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
+    if (keyboard.state.value !== KeyboardState.OPEN)
+      setIsInputNearBottom(e.nativeEvent.pageY > height / 2);
+  };
+
   return (
     <DeclarationTabContext.Provider
-      value={{ isInputNearBottom, setIsInputNearBottom }}
+      value={{ isInputNearBottom, setIsInputNearBottom, handleTapOnInput }}
     >
       <View style={styles.container}>
         <GestureDetector gesture={tapGesture}>

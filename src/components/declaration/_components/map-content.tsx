@@ -6,7 +6,7 @@ import MapView, {
   Marker,
   PROVIDER_GOOGLE,
 } from "react-native-maps";
-import { Button } from "react-native-paper";
+import ImpactAssistButton from "../../custom/button";
 import { mapContentStyles as styles } from "../_styles/map-content/map-content.style";
 
 interface MapContentProps {
@@ -56,13 +56,12 @@ export default function MapContent({
           description={"car accident happened here"}
         />
       </MapView>
-      <Button
+      <ImpactAssistButton
         onPress={() =>
           markerCoordinates && setLocationSelected(markerCoordinates)
         }
-      >
-        Return
-      </Button>
+        label="Set location"
+      />
     </View>
   );
 }

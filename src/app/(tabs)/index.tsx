@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { Modal, Portal, useTheme } from "react-native-paper";
+import { Modal, Portal, Text, useTheme } from "react-native-paper";
 import ImpactAssistButton from "../../components/custom/button";
 import DeclarationPopupConnection from "../../components/declaration/declaration-popup-connection";
 
 export default function HomePage() {
   const [visible, setVisibile] = useState(false);
-  const [value, setValue] = useState("");
   const { colors } = useTheme();
 
   const showModal = () => setVisibile(true);
@@ -26,6 +25,17 @@ export default function HomePage() {
           <DeclarationPopupConnection hideModal={hideModal} />
         </Modal>
       </Portal>
+      <Text
+        variant="headlineSmall"
+        style={{
+          textAlign: "center",
+          textAlignVertical: "center",
+          marginBottom: 20,
+        }}
+      >
+        Experienced a <Text style={{ fontWeight: "bold" }}>Car Accident?</Text>{" "}
+        Then fill up the declaration form!
+      </Text>
       <ImpactAssistButton onPress={showModal} label="Create New Declaration" />
     </View>
   );

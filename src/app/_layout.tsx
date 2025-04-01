@@ -3,9 +3,42 @@ import { createContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
+import { registerTranslation } from "react-native-paper-dates";
 import "../lib/i18n";
 import storage from "../lib/storage";
 import { darkTheme, lightTheme } from "../theme/theme";
+
+const formatDate = (date: Date | string) => {
+  // Ensure the date is a Date object
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+
+  return new Intl.DateTimeFormat("lt-LT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(dateObj);
+};
+
+registerTranslation("lt", {
+  save: "Išsaugoti",
+  selectSingle: "Pasirinkite datą",
+  selectMultiple: "Pasirinkite datas",
+  selectRange: "Pasirinkite laikotarpį",
+  notAccordingToDateFormat: (inputFormat) =>
+    `Datos formatas turi būti ${inputFormat}`,
+  mustBeHigherThan: (date) => `Turi būti vėliau nei ${formatDate(date)}`,
+  mustBeLowerThan: (date) => `Turi būti anksčiau nei ${formatDate(date)}`,
+  mustBeBetween: (startDate, endDate) =>
+    `Turi būti tarp ${formatDate(startDate)} - ${formatDate(endDate)}`,
+  dateIsDisabled: "Ši diena negalima",
+  previous: "Ankstesnis",
+  next: "Kitas",
+  typeInDate: "Įveskite datą",
+  pickDateFromCalendar: "Pasirinkite datą iš kalendoriaus",
+  close: "Uždaryti",
+  hour: "",
+  minute: "",
+});
 
 interface ThemeContextType {
   isDarkMode: boolean;

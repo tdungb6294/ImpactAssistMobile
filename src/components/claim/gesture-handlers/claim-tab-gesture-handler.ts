@@ -4,9 +4,9 @@ import {
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
-import { TABS } from "../../_data/tabs";
+import { TABS } from "../../declaration/_data/tabs";
 
-export const useDeclarationTabGestures = () => {
+export const useClaimTabGestures = () => {
   const translateX = useSharedValue(0);
   const translateHighlightX = useSharedValue(0);
   const panGestureX = Gesture.Pan();

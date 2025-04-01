@@ -16,27 +16,23 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { DeclarationTabContext } from "./_context/declaration-tab-context";
-import { TABS } from "./_data/tabs";
-import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
-import DeclarationDetails from "./declaration-details";
-import DeclarationFirstCar from "./declaration-first-car";
-import DeclarationReview from "./declaration-review";
-import DeclarationSecondCar from "./declaration-second-car";
+import { ClaimTabContext } from "./_context/claim-tab-context";
+import { CLAIM_TABS } from "./_data/tabs";
+import { useClaimTabGestures } from "./gesture-handlers/claim-tab-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
-interface DeclarationTabProps {
+interface ClaimTabProps {
   showModal: () => void;
   setLocationSelected: (latLng: LatLng) => void;
 }
 
-export default function DeclarationTab({
+export default function ClaimTab({
   showModal,
   setLocationSelected,
-}: DeclarationTabProps) {
+}: ClaimTabProps) {
   const { panGestureX, translateX, translateHighlightX } =
-    useDeclarationTabGestures();
+    useClaimTabGestures();
   const keyboard = useAnimatedKeyboard();
   const [isInputNearBottom, setIsInputNearBottom] = useState(false);
 
@@ -51,13 +47,13 @@ export default function DeclarationTab({
 
   const tapGesture = Gesture.Tap()
     .onEnd(({ absoluteX }) => {
-      const targetIndex = Math.floor(absoluteX / (width / TABS.length));
+      const targetIndex = Math.floor(absoluteX / (width / CLAIM_TABS.length));
       translateX.value = withSpring(-targetIndex * width, {
         damping: 40,
         stiffness: 400,
       });
       translateHighlightX.value = withSpring(
-        (targetIndex * width) / TABS.length,
+        (targetIndex * width) / CLAIM_TABS.length,
         {
           damping: 40,
           stiffness: 400,
@@ -72,13 +68,13 @@ export default function DeclarationTab({
   };
 
   return (
-    <DeclarationTabContext.Provider
+    <ClaimTabContext.Provider
       value={{ isInputNearBottom, setIsInputNearBottom, handleTapOnInput }}
     >
       <View style={styles.container}>
         <GestureDetector gesture={tapGesture}>
           <View style={styles.header}>
-            {TABS.map((tab, index) => (
+            {CLAIM_TABS.map((tab, index) => (
               <TouchableOpacity key={index} style={styles.tab}>
                 <View style={styles.dividerBar} />
                 <Text>{tab}</Text>
@@ -98,19 +94,12 @@ export default function DeclarationTab({
           </View>
         </GestureDetector>
         <GestureDetector gesture={panGestureX}>
-          <Animated.View style={[styles.contentContainer, animatedStyles]}>
-            <DeclarationDetails
-              key={0}
-              showModal={showModal}
-              setLocationSelected={setLocationSelected}
-            />
-            <DeclarationFirstCar key={1} />
-            <DeclarationSecondCar key={2} />
-            <DeclarationReview key={3} />
-          </Animated.View>
+          <Animated.View
+            style={[styles.contentContainer, animatedStyles]}
+          ></Animated.View>
         </GestureDetector>
       </View>
-    </DeclarationTabContext.Provider>
+    </ClaimTabContext.Provider>
   );
 }
 
@@ -132,7 +121,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: "white",
-    width: width / TABS.length,
+    width: width / CLAIM_TABS.length,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -141,7 +130,7 @@ const styles = StyleSheet.create({
     top: 40,
     position: "absolute",
     flexDirection: "row",
-    width: width * TABS.length,
+    width: width * CLAIM_TABS.length,
     height: "100%",
   },
   childContainer: {
@@ -152,7 +141,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: "absolute",
     backgroundColor: "blue",
-    width: width / TABS.length,
+    width: width / CLAIM_TABS.length,
     height: 2,
   },
   dividerBar: {

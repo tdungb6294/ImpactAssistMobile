@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Button, useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
 
@@ -6,10 +7,10 @@ interface ImpactAssistButtonProps {
   onPress: () => void;
 }
 
-export default function ImpactAssistButton({
-  label,
-  onPress,
-}: ImpactAssistButtonProps) {
+const ImpactAssistButton = forwardRef(function ImpactAssistButton(
+  { label, onPress }: ImpactAssistButtonProps,
+  ref
+) {
   const theme: CustomTheme = useTheme();
 
   return (
@@ -29,4 +30,6 @@ export default function ImpactAssistButton({
       {label}
     </Button>
   );
-}
+});
+
+export default ImpactAssistButton;

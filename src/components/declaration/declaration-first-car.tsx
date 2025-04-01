@@ -1,13 +1,13 @@
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { Checkbox, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
+import { Circumstance } from "../../model/enum/circumstance";
 import { CustomTheme } from "../../theme/theme";
 import { camelToTitleCase } from "../../utils/camel-to-title-case";
 import ImpactAssistButton from "../custom/button";
+import ImpactAssistEnumSelector from "../custom/enum-selector";
 import DeclarationTextInput from "./_components/declaration-text-input";
 import { DeclarationContext } from "./_context/declaration-context";
 import { updateDeclarationField } from "./_utils/update-declaration-details/update-declaration-details";
@@ -21,63 +21,15 @@ const { width } = Dimensions.get("window");
 export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
   const { declaration, carCountryPlate, webSocketId, socket, dispatch } =
     useContext(DeclarationContext);
-  const [mode, setMode] = useState<"date" | "time">("date");
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
-  const [show3, setShow3] = useState(false);
+  const [showEnumSelector, setShowEnumSelector] = useState(false);
   const theme: CustomTheme = useTheme();
-  const [selectedBoolean, setSelectedBoolean] = useState(1);
-  const keysArray = useMemo(
-    () => Object.keys(declaration.firstCar.circumstances),
-    []
-  );
-
-  const onChange = (
-    _event: DateTimePickerEvent,
-    path: string[],
-    selectedDate: Date | undefined,
-    index: number
-  ) => {
-    switch (index) {
-      case 1:
-        setShow(false);
-        break;
-      case 2:
-        setShow2(false);
-        break;
-      case 3:
-        setShow3(false);
-        break;
-    }
-    console.log(path, selectedDate, index);
-    updateDeclarationField(
-      path,
-      selectedDate,
-      carCountryPlate,
-      socket,
-      dispatch,
-      webSocketId
-    );
-  };
-
-  const showMode = (currentMode: "date" | "time", index: number) => {
-    switch (index) {
-      case 1:
-        setShow(true);
-        break;
-      case 2:
-        setShow2(true);
-        break;
-      case 3:
-        setShow3(true);
-        break;
-    }
-    setMode(currentMode);
-  };
-
-  const showDatepicker = (index: number) => {
-    showMode("date", index);
-  };
+  const dateFormatter = new Intl.DateTimeFormat("lt-LT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   return (
     <ScrollView
@@ -133,33 +85,36 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         declarationPath={["firstCar", "driver", "drivingLicenceCategory"]}
       />
       <ImpactAssistButton
-        onPress={() => showDatepicker(1)}
+        onPress={() => setShow(true)}
         label="Pick Driver Licence Expiration Date"
       />
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={
-            new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
-          }
-          mode={mode}
-          is24Hour={true}
-          onChange={(e, selectedDate) =>
-            onChange(
-              e,
-              ["firstCar", "driver", "drivingLicenceExpirationDate"],
-              selectedDate,
-              1
-            )
-          }
-        />
-      )}
+      <DatePickerModal
+        locale="lt"
+        mode="single"
+        visible={show}
+        onDismiss={() => setShow(false)}
+        date={
+          new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
+        }
+        startWeekOnMonday={true}
+        onConfirm={(params) => {
+          setShow(false);
+          updateDeclarationField(
+            ["firstCar", "driver", "drivingLicenceExpirationDate"],
+            params.date,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          );
+        }}
+      />
       <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
         Driver license expiration date:{" "}
-        {new Date(
-          declaration.firstCar.driver.drivingLicenceExpirationDate
-        ).toLocaleDateString()}
+        {dateFormatter.format(
+          new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
+        )}
       </Text>
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton label="INSURER DETAILS" onPress={() => {}} />
@@ -202,92 +157,84 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         label="Insurance Green Card Number"
         declarationPath={["firstCar", "insurance", "insuranceGreenCardNumber"]}
       />
-      <View
-        style={{
-          flexDirection: "row",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        <ImpactAssistButton
-          onPress={() => showDatepicker(2)}
-          label="Valid From Date"
-        />
-        <ImpactAssistButton
-          onPress={() => showDatepicker(3)}
-          label="Valid To Date"
-        />
-      </View>
-      {show2 && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date(declaration.firstCar.insurance.insuranceValidFrom)}
-          mode={mode}
-          is24Hour={true}
-          onChange={(e, selectedDate) =>
-            onChange(
-              e,
-              ["firstCar", "insurance", "insuranceValidFrom"],
-              selectedDate,
-              2
-            )
-          }
-        />
-      )}
-      <View style={{ marginVertical: 8 }} />
-      {show3 && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date(declaration.firstCar.insurance.insuranceValidTo)}
-          mode={mode}
-          is24Hour={true}
-          onChange={(e, selectedDate) =>
-            onChange(
-              e,
-              ["firstCar", "insurance", "insuranceValidTo"],
-              selectedDate,
-              3
-            )
-          }
-        />
-      )}
-      <View style={{ marginVertical: 8 }} />
-      <Text variant="titleMedium">
-        Insurance valid:{" "}
-        {new Date(
-          declaration.firstCar.insurance.insuranceValidFrom
-        ).toLocaleDateString()}
-        {" – "}
-        {new Date(
-          declaration.firstCar.insurance.insuranceValidTo
-        ).toLocaleDateString()}
-      </Text>
-      <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
-        label="DAMAGE CIRCUMSTANCES (pick one)"
-        onPress={() => {}}
+        onPress={() => setShow2(true)}
+        label="Pick Insurance Validity Dates"
       />
       <View style={{ marginVertical: 8 }} />
-      {keysArray.map((key, index) => (
-        <View
-          key={key}
-          style={{
-            flexDirection: "row",
-            gap: 8,
-            justifyContent: "space-between",
+      <DatePickerModal
+        locale="lt"
+        mode="range"
+        visible={show2}
+        withDateFormatInLabel={true}
+        onDismiss={() => setShow2(false)}
+        startDate={new Date(declaration.firstCar.insurance.insuranceValidFrom)}
+        endDate={new Date(declaration.firstCar.insurance.insuranceValidTo)}
+        startWeekOnMonday={true}
+        onConfirm={({ startDate, endDate }) => {
+          setShow2(false);
+          updateDeclarationField(
+            ["firstCar", "insurance", "insuranceValidFrom"],
+            startDate,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          );
+          updateDeclarationField(
+            ["firstCar", "insurance", "insuranceValidTo"],
+            endDate,
+            carCountryPlate,
+            socket,
+            dispatch,
+            webSocketId
+          );
+        }}
+      />
+      <Text variant="titleMedium">
+        Insurance valid:{" "}
+        {dateFormatter.format(
+          new Date(declaration.firstCar.insurance.insuranceValidFrom)
+        )}
+        {" – "}
+        {dateFormatter.format(
+          new Date(declaration.firstCar.insurance.insuranceValidTo)
+        )}
+      </Text>
+      <View style={{ marginVertical: 8 }} />
+      <ImpactAssistButton label="DAMAGE CIRCUMSTANCES" onPress={() => {}} />
+      <View style={{ marginVertical: 8 }} />
+      <ImpactAssistButton
+        label="Pick Damage Circumstance"
+        onPress={() => {
+          setShowEnumSelector(true);
+        }}
+      />
+      <View style={{ marginVertical: 8 }} />
+      <Text variant="titleMedium">
+        Damage Circumstance:{" "}
+        {camelToTitleCase(declaration.firstCar.circumstance)}
+      </Text>
+      <View style={{ marginVertical: 8 }} />
+      {showEnumSelector && (
+        <ImpactAssistEnumSelector
+          enumType={Circumstance}
+          visible={showEnumSelector}
+          onDismiss={() => setShowEnumSelector(false)}
+          setSelectedValue={(value) => {
+            updateDeclarationField(
+              ["firstCar", "circumstance"],
+              value,
+              carCountryPlate,
+              socket,
+              dispatch,
+              webSocketId
+            );
           }}
-        >
-          <Text variant="titleMedium">{camelToTitleCase(key)}</Text>
-          <Checkbox
-            status={index === selectedBoolean ? "checked" : "unchecked"}
-            color={theme.colors.text}
-            uncheckedColor={theme.colors.text}
-            onPress={() => {
-              setSelectedBoolean(index);
-            }}
-          />
-        </View>
-      ))}
+        />
+      )}
+      <View style={{ marginVertical: 8 }} />
+
       <View style={{ marginBottom: 60 }} />
     </ScrollView>
   );

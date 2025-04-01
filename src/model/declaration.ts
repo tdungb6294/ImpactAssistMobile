@@ -1,4 +1,5 @@
 import { LatLng } from "react-native-maps";
+import { Circumstance } from "./enum/circumstance";
 
 export interface Declaration {
   datetime: Date;
@@ -43,30 +44,7 @@ export interface Declaration {
     };
     damageImpactLocation: "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
     damageDescription: string;
-    circumstances: {
-      standing: boolean;
-      stopping: boolean;
-      openingTheDoor: boolean;
-      braking: boolean;
-      leavingParkingSpace: boolean;
-      leavingPrivatePlot: boolean;
-      leavingRoadside: boolean;
-      enteringParkingSpace: boolean;
-      enteringPrivatePlot: boolean;
-      enteringRoadside: boolean;
-      enteringRoundabout: boolean;
-      drivingRoundabout: boolean;
-      hittingRearWhenDrivingInSameDirection: boolean;
-      drivingInTheSameDirectionButDifferentLane: boolean;
-      changingLanes: boolean;
-      overtaking: boolean;
-      turningRight: boolean;
-      turningLeft: boolean;
-      reversing: boolean;
-      enteringOncomingLane: boolean;
-      hittingAtAnIntersectionFromTheRight: boolean;
-      notGivingWayWhenRedTrafficLight: boolean;
-    };
+    circumstance: Circumstance;
   };
   secondCar: {
     insurer: {
@@ -103,30 +81,7 @@ export interface Declaration {
     };
     damageImpactLocation: "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
     damageDescription: string;
-    circumstances: {
-      standing: boolean;
-      stopping: boolean;
-      openingTheDoor: boolean;
-      braking: boolean;
-      leavingParkingSpace: boolean;
-      leavingPrivatePlot: boolean;
-      leavingRoadside: boolean;
-      enteringParkingSpace: boolean;
-      enteringPrivatePlot: boolean;
-      enteringRoadside: boolean;
-      enteringRoundabout: boolean;
-      drivingRoundabout: boolean;
-      hittingRearWhenDrivingInSameDirection: boolean;
-      drivingInTheSameDirectionButDifferentLane: boolean;
-      changingLanes: boolean;
-      overtaking: boolean;
-      turningRight: boolean;
-      turningLeft: boolean;
-      reversing: boolean;
-      enteringOncomingLane: boolean;
-      hittingAtAnIntersectionFromTheRight: boolean;
-      notGivingWayWhenRedTrafficLight: boolean;
-    };
+    circumstance: Circumstance;
   };
   culprit: {
     fullName: string;

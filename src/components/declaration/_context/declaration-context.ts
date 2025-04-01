@@ -1,11 +1,11 @@
 import { SkPath } from "@shopify/react-native-skia";
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Declaration } from "../../../model/declaration";
-import { initialDeclaration } from "../_temp-data/initial-declaration";
-import { DeclarationAction } from "../../../reducer/declaration-reducer";
-import { DeclarationErrorAction } from "../../../reducer/declaration-error-reducer";
 import { DeclarationError } from "../../../model/declaration-error";
-import { initialDeclarationError } from "../_temp-data/initial-declaration-error";
+import { DeclarationErrorAction } from "../../../reducer/declaration-error-reducer";
+import { DeclarationAction } from "../../../reducer/declaration-reducer";
+import { initialDeclaration } from "../_data/initial-declaration";
+import { initialDeclarationError } from "../_data/initial-declaration-error";
 
 type DeclarationContextType = {
   webSocketId: number;
@@ -32,5 +32,5 @@ export const DeclarationContext = createContext<DeclarationContextType>({
   socket: new WebSocket("ws://10.0.2.2:9000"),
   dispatch: () => {},
   declarationError: initialDeclarationError,
-  dispatchError: () => {}
+  dispatchError: () => {},
 });

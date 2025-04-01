@@ -18,9 +18,9 @@ export interface CustomTheme extends MD3Theme {
 }
 
 export const darkTheme: CustomTheme = {
-  ...MD3LightTheme,
+  ...MD3DarkTheme,
   colors: {
-    ...MD3LightTheme.colors,
+    ...MD3DarkTheme.colors,
     textSecondary: "#ADF0D4",
     text: "#1FD8A4",
     backgroundSolidSecondary: "#27B08B",
@@ -35,13 +35,15 @@ export const darkTheme: CustomTheme = {
     background: "#0D1512",
     onSurface: "#1FD8A4",
     outlineVariant: "#1FD8A4",
+    primary: "#1FD8A4",
+    primaryContainer: "#0D1512",
   },
 };
 
 export const lightTheme: CustomTheme = {
-  ...MD3DarkTheme,
+  ...MD3LightTheme,
   colors: {
-    ...MD3DarkTheme.colors,
+    ...MD3LightTheme.colors,
     textSecondary: "#1D3B31",
     text: "#208368",
     backgroundSolidSecondary: "#26997B",
@@ -56,5 +58,8 @@ export const lightTheme: CustomTheme = {
     background: "#FBFEFD",
     onSurface: "#208368",
     outlineVariant: "#208368",
+    primary: "#208368",
+    onPrimary: "#FBFEFD",
+    primaryContainer: "#FBFEFD",
   },
 };

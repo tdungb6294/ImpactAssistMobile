@@ -6,11 +6,11 @@ import { ActivityIndicator, Portal, Text } from "react-native-paper";
 import storage from "../../lib/storage";
 import { declarationErrorReducer } from "../../reducer/declaration-error-reducer";
 import { declarationReducer } from "../../reducer/declaration-reducer";
+import MapContent from "./_components/map-content";
 import { convertJsonDataToPath } from "./_components/skia-signature";
 import { DeclarationContext } from "./_context/declaration-context";
-import { initialDeclaration } from "./_temp-data/initial-declaration";
-import { initialDeclarationError } from "./_temp-data/initial-declaration-error";
-import MapContent from "./_components/map-content";
+import { initialDeclaration } from "./_data/initial-declaration";
+import { initialDeclarationError } from "./_data/initial-declaration-error";
 import { updateDeclarationField } from "./_utils/update-declaration-details/update-declaration-details";
 import DeclarationTab from "./declaration-tab";
 

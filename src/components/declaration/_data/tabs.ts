@@ -1,5 +1,5 @@
 export const TABS = [
-  "Vehicle Accident Details",
+  "Accident Details",
   "First Vehicle",
   "Second Vehicle",
   "Review",

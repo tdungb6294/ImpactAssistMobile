@@ -95,6 +95,7 @@ export default function DeclarationTab({
                 ]}
               />
             </GestureDetector>
+            <View style={styles.headerDivider} />
           </View>
         </GestureDetector>
         <GestureDetector gesture={panGestureX}>
@@ -154,6 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     width: width / TABS.length,
     height: 2,
+    zIndex: 1,
   },
   dividerBar: {
     backgroundColor: "gray",
@@ -161,5 +163,13 @@ const styles = StyleSheet.create({
     width: 1,
     height: 40,
     right: 0,
+  },
+  headerDivider: {
+    backgroundColor: "gray",
+    position: "absolute",
+    width: width,
+    height: 1,
+    bottom: 0,
+    zIndex: 0,
   },
 });

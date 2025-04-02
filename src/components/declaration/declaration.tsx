@@ -1,8 +1,8 @@
 import { SkPath } from "@shopify/react-native-skia";
 import { useEffect, useReducer, useState } from "react";
-import { Modal, StyleSheet, View } from "react-native";
+import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
-import { ActivityIndicator, Portal, Text } from "react-native-paper";
+import { Portal, Snackbar } from "react-native-paper";
 import storage from "../../lib/storage";
 import { declarationErrorReducer } from "../../reducer/declaration-error-reducer";
 import { declarationReducer } from "../../reducer/declaration-reducer";
@@ -25,8 +25,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   );
   const [webSocketId, setWebSocketId] = useState<number>(1);
   const [state, dispatch] = useReducer(declarationReducer, initialDeclaration);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<boolean>(false);
   const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
@@ -45,7 +44,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       fieldUpdate: { firstCar: { car: { carCountryPlate } } },
     });
     socket.onopen = () => {
-      setLoading(false);
       socket.send(
         JSON.stringify({
           messageType: "joinRoom",
@@ -79,11 +77,11 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     };
 
     socket.onerror = () => {
-      setLoading(false);
-      setError("Server unavailable");
+      setError(true);
     };
 
     socket.onclose = () => {
+      setError(true);
       console.log("WebSocket disconnected");
     };
 
@@ -132,34 +130,22 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
           />
         </Modal>
       </Portal>
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          height: 20,
-          position: "absolute",
-          backgroundColor: "red",
-        }}
-      >
-        {loading ? (
-          <View
-            style={{
-              flexDirection: "row",
-              height: 20,
-              position: "absolute",
-            }}
-          >
-            <Text>Connecting to the server</Text>
-            <ActivityIndicator />
-          </View>
-        ) : (
-          error && <Text>{error}</Text>
-        )}
-      </View>
       <DeclarationTab
         setLocationSelected={setLocationSelected}
         showModal={showModal}
       />
+      <Snackbar
+        visible={error}
+        onDismiss={() => setError(false)}
+        action={{
+          label: "Understood",
+          onPress: () => {
+            setError(false);
+          },
+        }}
+      >
+        Error connecting to the Server
+      </Snackbar>
     </DeclarationContext.Provider>
   );
 }

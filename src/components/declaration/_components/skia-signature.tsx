@@ -8,8 +8,7 @@ import {
 import { Dispatch, SetStateAction, useState } from "react";
 import { View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { Button } from "react-native-paper";
-import { signatureStyles as styles } from "../_styles/signature/skia-signature.style";
+import ImpactAssistButton from "../../custom/button";
 
 interface SkiaSignatureProps {
   paths: SkPath[];
@@ -64,9 +63,16 @@ export default function SkiaSignature({
   };
 
   return (
-    <View>
+    <View style={{ gap: 8, flex: 1 }}>
       <GestureDetector gesture={pan}>
-        <Canvas ref={canvasRef} style={styles.canvas}>
+        <Canvas
+          ref={canvasRef}
+          style={{
+            width: 300,
+            height: 300,
+            backgroundColor: "gray",
+          }}
+        >
           {paths.map((path, index) => (
             <Path
               key={index}
@@ -88,14 +94,16 @@ export default function SkiaSignature({
           )}
         </Canvas>
       </GestureDetector>
-      <Button
+      <ImpactAssistButton
         onPress={() => {
           onOk(paths, saveDrawingAsImage());
         }}
-      >
-        Submit
-      </Button>
-      <Button onPress={() => setPaths([])}>Clear</Button>
+        label="Submit Signature"
+      />
+      <ImpactAssistButton
+        label="Clear Signature"
+        onPress={() => setPaths([])}
+      />
     </View>
   );
 }

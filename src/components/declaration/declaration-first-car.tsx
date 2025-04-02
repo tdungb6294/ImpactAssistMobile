@@ -233,8 +233,10 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           }}
         />
       )}
-      <View style={{ marginVertical: 8 }} />
-
+      <DeclarationTextInput
+        label="Damage Description"
+        declarationPath={["firstCar", "damageDescription"]}
+      />
       <View style={{ marginBottom: 60 }} />
     </ScrollView>
   );

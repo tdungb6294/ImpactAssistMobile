@@ -42,7 +42,6 @@ export interface Declaration {
       drivingLicenceCategory: string;
       drivingLicenceExpirationDate: Date;
     };
-    damageImpactLocation: "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
     damageDescription: string;
     circumstance: Circumstance;
   };
@@ -79,7 +78,6 @@ export interface Declaration {
       drivingLicenceCategory: string;
       drivingLicenceExpirationDate: Date;
     };
-    damageImpactLocation: "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
     damageDescription: string;
     circumstance: Circumstance;
   };

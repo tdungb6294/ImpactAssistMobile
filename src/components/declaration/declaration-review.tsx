@@ -34,7 +34,7 @@ export default function DeclarationReview({}: DeclarationReviewProps) {
       >
         <DeclarationTextInput
           label={"Culprit"}
-          declarationPath={["culprit", "fullName"]}
+          declarationPath={"culprit.fullName"}
         />
         <View
           style={{

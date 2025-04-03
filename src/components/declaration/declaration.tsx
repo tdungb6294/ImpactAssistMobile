@@ -1,16 +1,15 @@
 import { SkPath } from "@shopify/react-native-skia";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Portal, Snackbar } from "react-native-paper";
 import storage from "../../lib/storage";
-import { declarationErrorReducer } from "../../reducer/declaration-error-reducer";
-import { declarationReducer } from "../../reducer/declaration-reducer";
+import { Declaration as DeclarationModel } from "../../model/declaration";
 import MapContent from "./_components/map-content";
 import { convertJsonDataToPath } from "./_components/skia-signature";
 import { DeclarationContext } from "./_context/declaration-context";
 import { initialDeclaration } from "./_data/initial-declaration";
-import { initialDeclarationError } from "./_data/initial-declaration-error";
 import { updateDeclarationField } from "./_utils/update-declaration-details/update-declaration-details";
 import DeclarationTab from "./declaration-tab";
 
@@ -19,17 +18,14 @@ interface DeclarationProps {
 }
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
-  const [errorState, dispatchError] = useReducer(
-    declarationErrorReducer,
-    initialDeclarationError
-  );
   const [webSocketId, setWebSocketId] = useState<number>(1);
-  const [state, dispatch] = useReducer(declarationReducer, initialDeclaration);
   const [error, setError] = useState<boolean>(false);
   const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
   const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
+  const { control, handleSubmit, setValue, getValues, formState, watch } =
+    useForm<DeclarationModel>({ defaultValues: initialDeclaration });
 
   const showModal = () => {
     setVisibile(true);
@@ -39,10 +35,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   };
 
   useEffect(() => {
-    dispatch({
-      type: "SET_FIELD",
-      fieldUpdate: { firstCar: { car: { carCountryPlate } } },
-    });
+    setValue("firstCar.car.carCountryPlate", carCountryPlate);
     socket.onopen = () => {
       socket.send(
         JSON.stringify({
@@ -61,11 +54,8 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     socket.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
       if (data.messageType === "exchangeData") {
-        dispatch({
-          type: "SET_FIELD",
-          fieldUpdate: data.data,
-        });
-        storage.save({ key: "declaration", data: state });
+        setValue(data.data.path, data.data.value);
+        storage.save({ key: "declaration", data: getValues() });
       } else if (data.messageType === "exchangeImage") {
         if (data.data.first)
           setFirstSign(convertJsonDataToPath(data.data.first));
@@ -92,20 +82,20 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
 
   const setLocationSelected = (latLng: LatLng) => {
     updateDeclarationField(
-      ["accidentLatLng"],
+      "accidentLatLng",
       latLng,
       carCountryPlate,
       socket,
-      dispatch,
+      setValue,
       webSocketId
     );
+    setValue("accidentLatLng", latLng);
     hideModal();
   };
 
   return (
     <DeclarationContext.Provider
       value={{
-        declaration: state,
         firstSignature,
         secondSignature,
         setFirstSign,
@@ -113,9 +103,11 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         socket,
         webSocketId,
         carCountryPlate,
-        declarationError: errorState,
-        dispatch,
-        dispatchError,
+        setValue,
+        handleSubmit,
+        control,
+        formState,
+        watch,
       }}
     >
       <Portal>
@@ -125,7 +117,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
           onRequestClose={hideModal}
         >
           <MapContent
-            locationSelected={state.accidentLatLng}
+            locationSelected={watch("accidentLatLng")}
             setLocationSelected={setLocationSelected}
           />
         </Modal>

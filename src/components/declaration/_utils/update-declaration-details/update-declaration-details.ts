@@ -1,32 +1,27 @@
-import { Dispatch } from "react";
-import { DeclarationAction } from "../../../../reducer/declaration-reducer";
+import { UseFormSetValue } from "react-hook-form";
+import { Declaration } from "../../../../model/declaration";
 
-export function updateDeclarationField<T>(
-  path: string[],
+export function updateDeclarationField<
+  T extends Declaration[keyof Declaration]
+>(
+  path: keyof Declaration,
   value: T,
   roomName: string,
   socket: WebSocket,
-  dispatch: Dispatch<DeclarationAction>,
+  setValue: UseFormSetValue<Declaration>,
   webSocketId: number
 ) {
-  // Build the nested object dynamically
-  const fieldUpdate = path.reduceRight<{ [key: string]: any }>(
-    (acc, key) => ({ [key]: acc }),
-    value as { [key: string]: any }
-  );
-
-  // Dispatch the update
-  dispatch({
-    type: "SET_FIELD",
-    fieldUpdate,
-  });
+  setValue(path, value);
 
   // Send the update via WebSocket if the connection is open
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(
       JSON.stringify({
         messageType: "exchangeData",
-        data: fieldUpdate,
+        data: {
+          path: path,
+          value: value,
+        },
         roomName,
         id: webSocketId,
       })

@@ -1,15 +1,16 @@
+import { get } from "lodash";
 import { useContext } from "react";
+import { Controller } from "react-hook-form";
 import { HelperText } from "react-native-paper";
+import { Declaration } from "../../../model/declaration";
 import ImpactAssistTextInput from "../../custom/text-input";
 import { DeclarationContext } from "../_context/declaration-context";
 import { DeclarationTabContext } from "../_context/declaration-tab-context";
-import { getValueAtPath } from "../_utils/update-declaration-details/get-value-at-path";
 import { updateDeclarationField } from "../_utils/update-declaration-details/update-declaration-details";
-import { updateDeclarationErrorField } from "../_utils/update-declaration-details/update-declaration-details-error";
 
 interface DeclarationTextInputProps {
   label: string;
-  declarationPath: string[];
+  declarationPath: string;
 }
 
 export default function DeclarationTextInput({
@@ -17,45 +18,49 @@ export default function DeclarationTextInput({
   declarationPath,
 }: DeclarationTextInputProps) {
   const {
-    declaration,
+    control,
     carCountryPlate,
     webSocketId,
     socket,
-    dispatch,
-    dispatchError,
-    declarationError,
+    setValue,
+    formState: { errors },
   } = useContext(DeclarationContext);
-  const value = getValueAtPath(declaration, declarationPath) as string;
-  const error = getValueAtPath(declarationError, declarationPath) as string;
   const { handleTapOnInput } = useContext(DeclarationTabContext);
+
+  const getError = (path: keyof Declaration) => get(errors, path)?.message;
 
   return (
     <>
-      <ImpactAssistTextInput
-        label={label}
-        value={value}
-        onChangeText={(text) => {
-          updateDeclarationField(
-            declarationPath,
-            text,
-            carCountryPlate,
-            socket,
-            dispatch,
-            webSocketId
-          );
-          if (text.length > 20)
-            updateDeclarationErrorField(
-              declarationPath,
-              "Error: max character allowed is 20",
-              dispatchError
-            );
-          else updateDeclarationErrorField(declarationPath, "", dispatchError);
-        }}
-        onPress={handleTapOnInput}
+      <Controller
+        control={control}
+        name={declarationPath as keyof Declaration}
+        render={({ field: { value } }) => (
+          <>
+            <ImpactAssistTextInput
+              label={label}
+              value={String(value)}
+              onChangeText={(text) => {
+                updateDeclarationField(
+                  declarationPath as keyof Declaration,
+                  text,
+                  carCountryPlate,
+                  socket,
+                  setValue,
+                  webSocketId
+                );
+              }}
+              onPress={handleTapOnInput}
+            />
+            <HelperText
+              type="error"
+              visible={!!getError(declarationPath as keyof Declaration)}
+            >
+              {getError(declarationPath as keyof Declaration)}
+            </HelperText>
+          </>
+        )}
+        rules={{ required: "This field is required" }}
       />
-      <HelperText type="error" visible={error.length > 0}>
-        {error}
-      </HelperText>
     </>
   );
 }

@@ -23,7 +23,7 @@ export default function DeclarationDetails({
   showModal,
   setLocationSelected,
 }: DeclarationDetailsProps) {
-  const { declaration, carCountryPlate, webSocketId, socket, dispatch } =
+  const { carCountryPlate, webSocketId, socket, watch, setValue } =
     useContext(DeclarationContext);
   const theme: CustomTheme = useTheme();
   const [show, setShow] = useState(false);
@@ -59,15 +59,15 @@ export default function DeclarationDetails({
         <View>
           <DeclarationTextInput
             label="People injuries"
-            declarationPath={["peopleInjuries"]}
+            declarationPath={"peopleInjuries"}
           />
           <DeclarationTextInput
             label="Accident Country Location"
-            declarationPath={["accidentCountryLocation"]}
+            declarationPath={"accidentCountryLocation"}
           />
           <DeclarationTextInput
             label="Witnesses"
-            declarationPath={["witnesses"]}
+            declarationPath={"witnesses"}
           />
         </View>
         <ImpactAssistButton label="Set location" onPress={showModal} />
@@ -78,8 +78,8 @@ export default function DeclarationDetails({
           }}
         />
         <Text variant="titleMedium">
-          Car accident location: {declaration.accidentLatLng.latitude}{" "}
-          {declaration.accidentLatLng.longitude}
+          Car accident location: {watch("accidentLatLng.latitude")}{" "}
+          {watch("accidentLatLng.longitude")}
         </Text>
         <ImpactAssistButton
           onPress={() => setShow(true)}
@@ -90,7 +90,7 @@ export default function DeclarationDetails({
           mode="single"
           visible={show}
           onDismiss={() => setShow(false)}
-          date={new Date(declaration.datetime)}
+          date={new Date(watch("datetime"))}
           startWeekOnMonday={true}
           validRange={{
             endDate: new Date(Date.now()),
@@ -98,15 +98,15 @@ export default function DeclarationDetails({
           onConfirm={(params) => {
             setShow(false);
             const newDate = params.date as Date;
-            newDate.setHours(new Date(declaration.datetime).getHours());
-            newDate.setMinutes(new Date(declaration.datetime).getMinutes());
+            newDate.setHours(new Date(watch("datetime")).getHours());
+            newDate.setMinutes(new Date(watch("datetime")).getMinutes());
 
             updateDeclarationField(
-              ["datetime"],
+              "datetime",
               newDate,
               carCountryPlate,
               socket,
-              dispatch,
+              setValue,
               webSocketId
             );
           }}
@@ -122,20 +122,20 @@ export default function DeclarationDetails({
           onConfirm={({ hours, minutes }) => {
             setShowTimepicker(false);
             updateDeclarationField(
-              ["datetime"],
-              new Date(declaration.datetime).setHours(hours, minutes),
+              "datetime",
+              new Date(new Date(watch("datetime")).setHours(hours, minutes)),
               carCountryPlate,
               socket,
-              dispatch,
+              setValue,
               webSocketId
             );
           }}
-          hours={new Date(declaration.datetime).getHours()}
-          minutes={new Date(declaration.datetime).getMinutes()}
+          hours={new Date(watch("datetime")).getHours()}
+          minutes={new Date(watch("datetime")).getMinutes()}
         />
         <Text variant="titleMedium">
           Car accident date time:{" "}
-          {dateFormatter.format(new Date(declaration.datetime))}
+          {dateFormatter.format(new Date(watch("datetime")))}
         </Text>
         <View>
           <View
@@ -152,14 +152,14 @@ export default function DeclarationDetails({
               Damage to Cars:
             </Text>
             <Checkbox
-              status={declaration.damageToCars ? "checked" : "unchecked"}
+              status={watch("damageToCars") ? "checked" : "unchecked"}
               onPress={() => {
                 updateDeclarationField(
-                  ["damageToCars"],
-                  !declaration.damageToCars,
+                  "damageToCars",
+                  !watch("damageToCars"),
                   carCountryPlate,
                   socket,
-                  dispatch,
+                  setValue,
                   webSocketId
                 );
               }}
@@ -179,14 +179,14 @@ export default function DeclarationDetails({
               Damage to Objects:
             </Text>
             <Checkbox
-              status={declaration.damageToObjects ? "checked" : "unchecked"}
+              status={watch("damageToObjects") ? "checked" : "unchecked"}
               onPress={() => {
                 updateDeclarationField(
-                  ["damageToObjects"],
-                  !declaration.damageToObjects,
+                  "damageToObjects",
+                  !watch("damageToObjects"),
                   carCountryPlate,
                   socket,
-                  dispatch,
+                  setValue,
                   webSocketId
                 );
               }}

@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
+import { Declaration } from "../../model/declaration";
 import { Circumstance } from "../../model/enum/circumstance";
 import { CustomTheme } from "../../theme/theme";
 import { camelToTitleCase } from "../../utils/camel-to-title-case";
@@ -19,7 +20,7 @@ const { width } = Dimensions.get("window");
 //TODO: add validations and checkboxes
 
 export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
-  const { declaration, carCountryPlate, webSocketId, socket, dispatch } =
+  const { carCountryPlate, webSocketId, socket, setValue, watch } =
     useContext(DeclarationContext);
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
@@ -40,49 +41,49 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Vehicle country plate"
-        declarationPath={["firstCar", "car", "carCountryPlate"]}
+        declarationPath={"firstCar.car.carCountryPlate"}
       />
       <DeclarationTextInput
         label="Vehicle country registration"
-        declarationPath={["firstCar", "car", "carCountryRegistration"]}
+        declarationPath={"firstCar.car.carCountryRegistration"}
       />
       <DeclarationTextInput
         label="Vehicle model"
-        declarationPath={["firstCar", "car", "carModel"]}
+        declarationPath={"firstCar.car.carModel"}
       />
       <ImpactAssistButton label="DRIVER DETAILS" onPress={() => {}} />
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="First Name"
-        declarationPath={["firstCar", "driver", "name"]}
+        declarationPath={"firstCar.driver.name"}
       />
       <DeclarationTextInput
         label="Second Name"
-        declarationPath={["firstCar", "driver", "familyName"]}
+        declarationPath={"firstCar.driver.familyName"}
       />
       <DeclarationTextInput
         label="Address"
-        declarationPath={["firstCar", "driver", "address"]}
+        declarationPath={"firstCar.driver.address"}
       />
       <DeclarationTextInput
         label="Postal code"
-        declarationPath={["firstCar", "driver", "postalCode"]}
+        declarationPath={"firstCar.driver.postalCode"}
       />
       <DeclarationTextInput
         label="Country"
-        declarationPath={["firstCar", "driver", "country"]}
+        declarationPath={"firstCar.driver.country"}
       />
       <DeclarationTextInput
         label="Contacts"
-        declarationPath={["firstCar", "driver", "contacts"]}
+        declarationPath={"firstCar.driver.contacts"}
       />
       <DeclarationTextInput
         label="Driving Licence Number"
-        declarationPath={["firstCar", "driver", "drivingLicenceNumber"]}
+        declarationPath={"firstCar.driver.drivingLicenceNumber"}
       />
       <DeclarationTextInput
         label="Driving Licence Category"
-        declarationPath={["firstCar", "driver", "drivingLicenceCategory"]}
+        declarationPath={"firstCar.driver.drivingLicenceCategory"}
       />
       <ImpactAssistButton
         onPress={() => setShow(true)}
@@ -93,18 +94,16 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         mode="single"
         visible={show}
         onDismiss={() => setShow(false)}
-        date={
-          new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
-        }
+        date={new Date(watch("firstCar.driver.drivingLicenceExpirationDate"))}
         startWeekOnMonday={true}
         onConfirm={(params) => {
           setShow(false);
           updateDeclarationField(
-            ["firstCar", "driver", "drivingLicenceExpirationDate"],
-            params.date,
+            "firstCar.driver.drivingLicenceExpirationDate" as keyof Declaration,
+            params.date as Date,
             carCountryPlate,
             socket,
-            dispatch,
+            setValue,
             webSocketId
           );
         }}
@@ -113,7 +112,7 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       <Text variant="titleMedium">
         Driver license expiration date:{" "}
         {dateFormatter.format(
-          new Date(declaration.firstCar.driver.drivingLicenceExpirationDate)
+          new Date(watch("firstCar.driver.drivingLicenceExpirationDate"))
         )}
       </Text>
       <View style={{ marginVertical: 8 }} />
@@ -121,41 +120,41 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Family Name"
-        declarationPath={["firstCar", "insurer", "familyName"]}
+        declarationPath={"firstCar.insurer.familyName"}
       />
       <DeclarationTextInput
         label="Name"
-        declarationPath={["firstCar", "insurer", "name"]}
+        declarationPath={"firstCar.insurer.name"}
       />
       <DeclarationTextInput
         label="Address"
-        declarationPath={["firstCar", "insurer", "address"]}
+        declarationPath={"firstCar.insurer.address"}
       />
       <DeclarationTextInput
         label="Postal Code"
-        declarationPath={["firstCar", "insurer", "postalCode"]}
+        declarationPath={"firstCar.insurer.postalCode"}
       />
       <DeclarationTextInput
         label="Country"
-        declarationPath={["firstCar", "insurer", "country"]}
+        declarationPath={"firstCar.insurer.country"}
       />
       <DeclarationTextInput
         label="Contacts"
-        declarationPath={["firstCar", "insurer", "contacts"]}
+        declarationPath={"firstCar.insurer.contacts"}
       />
       <ImpactAssistButton label="INSURANCE DETAILS" onPress={() => {}} />
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Insurance Company Name"
-        declarationPath={["firstCar", "insurance", "insuranceCompanyName"]}
+        declarationPath={"firstCar.insurance.insuranceCompanyName"}
       />
       <DeclarationTextInput
         label="Insurance Policy Number"
-        declarationPath={["firstCar", "insurance", "insurancePolicyNumber"]}
+        declarationPath={"firstCar.insurance.insurancePolicyNumber"}
       />
       <DeclarationTextInput
         label="Insurance Green Card Number"
-        declarationPath={["firstCar", "insurance", "insuranceGreenCardNumber"]}
+        declarationPath={"firstCar.insurance.insuranceGreenCardNumber"}
       />
       <ImpactAssistButton
         onPress={() => setShow2(true)}
@@ -168,25 +167,25 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         visible={show2}
         withDateFormatInLabel={true}
         onDismiss={() => setShow2(false)}
-        startDate={new Date(declaration.firstCar.insurance.insuranceValidFrom)}
-        endDate={new Date(declaration.firstCar.insurance.insuranceValidTo)}
+        startDate={new Date(watch("firstCar.insurance.insuranceValidFrom"))}
+        endDate={new Date(watch("firstCar.insurance.insuranceValidTo"))}
         startWeekOnMonday={true}
         onConfirm={({ startDate, endDate }) => {
           setShow2(false);
           updateDeclarationField(
-            ["firstCar", "insurance", "insuranceValidFrom"],
-            startDate,
+            "firstCar.insurance.insuranceValidFrom" as keyof Declaration,
+            startDate as Date,
             carCountryPlate,
             socket,
-            dispatch,
+            setValue,
             webSocketId
           );
           updateDeclarationField(
-            ["firstCar", "insurance", "insuranceValidTo"],
-            endDate,
+            "firstCar.insurance.insuranceValidTo" as keyof Declaration,
+            endDate as Date,
             carCountryPlate,
             socket,
-            dispatch,
+            setValue,
             webSocketId
           );
         }}
@@ -194,11 +193,11 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       <Text variant="titleMedium">
         Insurance valid:{" "}
         {dateFormatter.format(
-          new Date(declaration.firstCar.insurance.insuranceValidFrom)
+          new Date(watch("firstCar.insurance.insuranceValidFrom"))
         )}
         {" – "}
         {dateFormatter.format(
-          new Date(declaration.firstCar.insurance.insuranceValidTo)
+          new Date(watch("firstCar.insurance.insuranceValidTo"))
         )}
       </Text>
       <View style={{ marginVertical: 8 }} />
@@ -213,7 +212,7 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
         Damage Circumstance:{" "}
-        {camelToTitleCase(declaration.firstCar.circumstance)}
+        {camelToTitleCase(watch("firstCar.circumstance") as Circumstance)}
       </Text>
       <View style={{ marginVertical: 8 }} />
       {showEnumSelector && (
@@ -223,11 +222,11 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           onDismiss={() => setShowEnumSelector(false)}
           setSelectedValue={(value) => {
             updateDeclarationField(
-              ["firstCar", "circumstance"],
+              "firstCar.circumstance" as keyof Declaration,
               value,
               carCountryPlate,
               socket,
-              dispatch,
+              setValue,
               webSocketId
             );
           }}
@@ -235,7 +234,7 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       )}
       <DeclarationTextInput
         label="Damage Description"
-        declarationPath={["firstCar", "damageDescription"]}
+        declarationPath={"firstCar.damageDescription"}
       />
       <View style={{ marginBottom: 60 }} />
     </ScrollView>

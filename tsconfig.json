@@ -5,5 +5,14 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true
-  }
+  },
+  "include": [
+    "env.d.ts",
+    "metro.config.js",
+    "babel.config.js",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx"
+  ]
 }

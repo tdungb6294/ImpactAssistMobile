@@ -101,13 +101,12 @@ export default function DeclarationTab({
         <GestureDetector gesture={panGestureX}>
           <Animated.View style={[styles.contentContainer, animatedStyles]}>
             <DeclarationDetails
-              key={0}
               showModal={showModal}
               setLocationSelected={setLocationSelected}
             />
-            <DeclarationFirstCar key={1} />
-            <DeclarationSecondCar key={2} />
-            <DeclarationReview key={3} />
+            <DeclarationFirstCar />
+            <DeclarationSecondCar />
+            <DeclarationReview />
           </Animated.View>
         </GestureDetector>
       </View>

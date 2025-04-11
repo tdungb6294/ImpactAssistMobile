@@ -8,7 +8,9 @@ export default function ClaimsPage() {
   const [visible, setVisibile] = useState(false);
   const theme = useTheme();
 
-  const showModal = () => setVisibile(true);
+  const showModal = async () => {
+    setVisibile(true);
+  };
   const hideModal = () => setVisibile(false);
 
   return (

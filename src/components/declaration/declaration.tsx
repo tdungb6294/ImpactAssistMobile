@@ -1,11 +1,11 @@
 import { SkPath } from "@shopify/react-native-skia";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Portal, Snackbar } from "react-native-paper";
-import storage from "../../lib/storage";
 import { Declaration as DeclarationModel } from "../../model/declaration";
+import ConnectionStatus from "../custom/connection-status";
 import MapContent from "./_components/map-content";
 import { convertJsonDataToPath } from "./_components/skia-signature";
 import { DeclarationContext } from "./_context/declaration-context";
@@ -18,14 +18,16 @@ interface DeclarationProps {
 }
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
+  const socketRef = useRef<WebSocket | null>(null);
   const [webSocketId, setWebSocketId] = useState<number>(1);
   const [error, setError] = useState<boolean>(false);
-  const socket = new WebSocket("ws://10.0.2.2:9000");
   const [visible, setVisibile] = useState(false);
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
   const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
-  const { control, handleSubmit, setValue, getValues, formState, watch } =
+  const socket = new WebSocket("ws://10.0.2.2:9000");
+  const { control, handleSubmit, setValue, formState, watch } =
     useForm<DeclarationModel>({ defaultValues: initialDeclaration });
+  const [status, setStatus] = useState("connecting");
 
   const showModal = () => {
     setVisibile(true);
@@ -34,9 +36,9 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     setVisibile(false);
   };
 
-  useEffect(() => {
-    setValue("firstCar.car.carCountryPlate", carCountryPlate);
+  const setupWebSocket = () => {
     socket.onopen = () => {
+      setStatus("connected");
       socket.send(
         JSON.stringify({
           messageType: "joinRoom",
@@ -55,7 +57,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       const data = JSON.parse(event.data);
       if (data.messageType === "exchangeData") {
         setValue(data.data.path, data.data.value);
-        storage.save({ key: "declaration", data: getValues() });
       } else if (data.messageType === "exchangeImage") {
         if (data.data.first)
           setFirstSign(convertJsonDataToPath(data.data.first));
@@ -71,9 +72,15 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     };
 
     socket.onclose = () => {
-      setError(true);
+      setStatus("disconnected");
       console.log("WebSocket disconnected");
     };
+  };
+
+  useEffect(() => {
+    setValue("firstCar.car.carCountryPlate", carCountryPlate);
+
+    setupWebSocket();
 
     return () => {
       socket.close();
@@ -85,7 +92,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       "accidentLatLng",
       latLng,
       carCountryPlate,
-      socket,
+      socketRef.current!,
       setValue,
       webSocketId
     );
@@ -100,7 +107,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         secondSignature,
         setFirstSign,
         setSecondSign,
-        socket,
+        socket: socket,
         webSocketId,
         carCountryPlate,
         setValue,
@@ -126,6 +133,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         setLocationSelected={setLocationSelected}
         showModal={showModal}
       />
+      <ConnectionStatus status={status} />
       <Snackbar
         visible={error}
         onDismiss={() => setError(false)}

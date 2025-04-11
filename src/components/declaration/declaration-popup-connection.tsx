@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { Portal, Snackbar, useTheme } from "react-native-paper";
@@ -18,6 +18,7 @@ export default function DeclarationPopupConnection({
   const [visible, setVisible] = useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
+  const router = useRouter();
 
   return (
     <View
@@ -41,23 +42,19 @@ export default function DeclarationPopupConnection({
         onChangeText={(text) => setCarCountryPlate(text.toUpperCase())}
         onPress={() => {}}
       />
-      {!carCountryPlate ? (
-        <ImpactAssistButton
-          label="Join room"
-          onPress={() => {
+      <ImpactAssistButton
+        label="Join room"
+        onPress={() => {
+          if (!carCountryPlate) {
             onToggleSnackBar();
-          }}
-        />
-      ) : (
-        <Link href={`/declaration/${carCountryPlate}`} asChild>
-          <ImpactAssistButton
-            label="Join room"
-            onPress={() => {
-              hideModal();
-            }}
-          />
-        </Link>
-      )}
+            return;
+          }
+          hideModal();
+          setTimeout(() => {
+            router.navigate(`/declaration/${carCountryPlate}`);
+          }, 300);
+        }}
+      />
       <Portal>
         <Snackbar
           visible={visible}

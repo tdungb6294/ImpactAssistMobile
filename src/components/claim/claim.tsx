@@ -1,22 +1,21 @@
-import { useReducer, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Portal } from "react-native-paper";
 import { Claim as ClaimModel } from "../../model/claim";
-import { ClaimError } from "../../model/claim-error";
-import { claimErrorReducer } from "../../reducer/claim-error-reducer";
-import { claimReducer } from "../../reducer/claim-reducer";
 import MapContent from "../declaration/_components/map-content";
 import { ClaimContext } from "./_context/claim-context";
 import ClaimTab from "./claim-tab";
 
 export default function Claim() {
-  const [errorState, dispatchError] = useReducer(
-    claimErrorReducer,
-    {} as ClaimError
-  );
-  const [state, dispatch] = useReducer(claimReducer, {} as ClaimModel);
   const [visible, setVisibile] = useState(false);
+  const { control, handleSubmit, setValue, formState, watch } =
+    useForm<ClaimModel>({
+      defaultValues: {
+        accidentDatetime: new Date(),
+      } as ClaimModel,
+    });
 
   const showModal = () => {
     setVisibile(true);
@@ -30,10 +29,11 @@ export default function Claim() {
   return (
     <ClaimContext.Provider
       value={{
-        claim: state,
-        claimError: errorState,
-        dispatch: dispatch,
-        dispatchError: dispatchError,
+        setValue,
+        handleSubmit,
+        control,
+        formState,
+        watch,
       }}
     >
       <Portal>

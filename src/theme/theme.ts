@@ -60,6 +60,5 @@ export const lightTheme: CustomTheme = {
     outlineVariant: "#208368",
     primary: "#208368",
     onPrimary: "#FBFEFD",
-    primaryContainer: "#FBFEFD",
   },
 };

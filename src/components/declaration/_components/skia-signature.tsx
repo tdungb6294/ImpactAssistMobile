@@ -24,17 +24,6 @@ export default function SkiaSignature({
   const [currentPath, setCurrentPath] = useState<SkPath | null>(null);
   const canvasRef = useCanvasRef();
 
-  const smoothPath = (path: SkPath, x: number, y: number) => {
-    const prevPoint = path.getLastPt();
-    if (!prevPoint) {
-      path.moveTo(x, y);
-    } else {
-      const midX = (prevPoint.x + x) / 2;
-      const midY = (prevPoint.y + y) / 2;
-      path.quadTo(prevPoint.x, prevPoint.y, midX, midY);
-    }
-  };
-
   const pan = Gesture.Pan()
     .onStart(({ x, y }) => {
       const newPath = Skia.Path.Make();
@@ -43,8 +32,7 @@ export default function SkiaSignature({
     })
     .onUpdate(({ x, y }) => {
       if (currentPath) {
-        smoothPath(currentPath, x, y);
-        // Update state to trigger re-render
+        currentPath.lineTo(x, y);
         setCurrentPath(Skia.Path.MakeFromSVGString(currentPath.toSVGString())!);
       }
     })

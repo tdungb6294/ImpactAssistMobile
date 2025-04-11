@@ -2,7 +2,7 @@ import axiosAPI from "axios";
 import * as SecureStore from "expo-secure-store";
 
 export const axios = axiosAPI.create({
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -10,8 +10,8 @@ export const axios = axiosAPI.create({
 });
 
 axios.defaults.auth = {
-  username: process.env.API_USERNAME || "",
-  password: process.env.API_PASSWORD || "",
+  username: process.env.EXPO_PUBLIC_API_USERNAME || "",
+  password: process.env.EXPO_PUBLIC_API_PASSWORD || "",
 };
 
 axios.interceptors.request.use(
@@ -32,7 +32,7 @@ axios.interceptors.request.use(
 
         // Request new access token
         const { data } = await axios.post(
-          `${process.env.API_BASE_URL}${process.env.REFRESH_ENDPOINT}`,
+          `${process.env.API_BASE_URL}${process.env.EXPO_PUBLIC_REFRESH_ENDPOINT}`,
           {
             refreshToken,
           }

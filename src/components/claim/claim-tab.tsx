@@ -19,6 +19,8 @@ import Animated, {
 import { ClaimTabContext } from "./_context/claim-tab-context";
 import { CLAIM_TABS } from "./_data/tabs";
 import { useClaimTabGestures } from "./gesture-handlers/claim-tab-gesture-handler";
+import ClaimInsuranceAccidentDetails from "./pages/claim-insurance-accident-details";
+import ClaimVehicleDetails from "./pages/claim-vehicle-details";
 
 const { width, height } = Dimensions.get("window");
 
@@ -94,9 +96,10 @@ export default function ClaimTab({
           </View>
         </GestureDetector>
         <GestureDetector gesture={panGestureX}>
-          <Animated.View
-            style={[styles.contentContainer, animatedStyles]}
-          ></Animated.View>
+          <Animated.View style={[styles.contentContainer, animatedStyles]}>
+            <ClaimVehicleDetails key={0} />
+            <ClaimInsuranceAccidentDetails key={1} />
+          </Animated.View>
         </GestureDetector>
       </View>
     </ClaimTabContext.Provider>

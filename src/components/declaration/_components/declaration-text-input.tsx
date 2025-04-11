@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Controller } from "react-hook-form";
 import { HelperText } from "react-native-paper";
 import { Declaration } from "../../../model/declaration";
-import ImpactAssistTextInput from "../../custom/text-input";
+import ImpactAssistTextInput from "../../custom/new-text-input";
 import { DeclarationContext } from "../_context/declaration-context";
 import { DeclarationTabContext } from "../_context/declaration-tab-context";
 import { updateDeclarationField } from "../_utils/update-declaration-details/update-declaration-details";

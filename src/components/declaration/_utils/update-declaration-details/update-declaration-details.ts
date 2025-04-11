@@ -1,5 +1,9 @@
 import { UseFormSetValue } from "react-hook-form";
 import { Declaration } from "../../../../model/declaration";
+import { createDebouncedWebSocketSender } from "../../../../utils/websocket-utils";
+
+// Create the debounced sender once and reuse it
+let debouncedSender: ReturnType<typeof createDebouncedWebSocketSender>;
 
 export function updateDeclarationField<
   T extends Declaration[keyof Declaration]
@@ -13,18 +17,17 @@ export function updateDeclarationField<
 ) {
   setValue(path, value);
 
-  // Send the update via WebSocket if the connection is open
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.send(
-      JSON.stringify({
-        messageType: "exchangeData",
-        data: {
-          path: path,
-          value: value,
-        },
-        roomName,
-        id: webSocketId,
-      })
-    );
+  if (!debouncedSender) {
+    debouncedSender = createDebouncedWebSocketSender(socket);
   }
+
+  debouncedSender({
+    messageType: "exchangeData",
+    data: {
+      path: path,
+      value: value,
+    },
+    roomName,
+    id: webSocketId,
+  });
 }

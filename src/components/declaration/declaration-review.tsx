@@ -15,7 +15,8 @@ const { width } = Dimensions.get("window");
 // TODO: Add text inputs here and validations
 
 export default function DeclarationReview({}: DeclarationReviewProps) {
-  const { firstSignature, secondSignature } = useContext(DeclarationContext);
+  const { firstSignature, secondSignature, handleSubmit } =
+    useContext(DeclarationContext);
   const theme: CustomTheme = useTheme();
 
   return (
@@ -67,7 +68,7 @@ export default function DeclarationReview({}: DeclarationReviewProps) {
       >
         <ImpactAssistButton
           label="Submit Accident Declaration"
-          onPress={() => {}}
+          onPress={handleSubmit(async (data) => {})}
         />
       </View>
     </View>

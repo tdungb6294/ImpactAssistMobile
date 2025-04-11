@@ -45,6 +45,7 @@ export default function MapContent({
         moveOnMarkerPress={true}
         onMapReady={() => console.log("React Native Maps is working!")}
         onPress={handleMapPress}
+        onMapLoaded={() => console.log("Map loaded")}
       >
         <Marker
           coordinate={{

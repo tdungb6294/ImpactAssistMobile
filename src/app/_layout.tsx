@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
 import { registerTranslation } from "react-native-paper-dates";
+import { Easing, useAnimatedKeyboard } from "react-native-reanimated";
+import { JsStack } from "../components/JsStack";
 import "../lib/i18n";
 import storage from "../lib/storage";
 import { darkTheme, lightTheme } from "../theme/theme";
@@ -83,6 +85,11 @@ export default function RootLayout() {
     loadLanguage();
   }, []);
 
+  const keyboard = useAnimatedKeyboard({
+    isStatusBarTranslucentAndroid: true,
+    isNavigationBarTranslucentAndroid: true,
+  });
+
   const toggleTheme = async () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -100,10 +107,89 @@ export default function RootLayout() {
       <LanguageContext.Provider value={{ language, changeLanguage }}>
         <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
           <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
-            <Stack>
+            <JsStack
+              screenOptions={{
+                cardOverlayEnabled: true, // Enable card overlay for transitions
+                gestureEnabled: true, // Enable gesture-based navigation
+                cardStyleInterpolator: ({ current, next, layouts }) => {
+                  const INITIAL_TRANSLATE_X_MULTIPLIER = 1;
+                  const NEXT_TRANSLATE_X_MULTIPLIER = -0.2;
+
+                  // Calculate translateX for the current screen
+                  const translateX = current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [
+                      INITIAL_TRANSLATE_X_MULTIPLIER * layouts.screen.width,
+                      0,
+                    ],
+                    extrapolate: "clamp",
+                  });
+
+                  const INITIAL_SCALE = 1.8;
+                  const FINAL_SCALE = 1;
+
+                  // Calculate scale for zooming effect on the next screen
+                  const scale = next
+                    ? next.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, FINAL_SCALE],
+                        extrapolate: "clamp",
+                      })
+                    : current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [INITIAL_SCALE, 1],
+                        extrapolate: "clamp",
+                      });
+
+                  // Calculate translateX for the next screen (if exists)
+                  const nextTranslateX = next
+                    ? next.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [
+                          0,
+                          NEXT_TRANSLATE_X_MULTIPLIER * layouts.screen.width,
+                        ],
+                        extrapolate: "clamp",
+                      })
+                    : 0;
+
+                  const transform = [
+                    { translateX },
+                    { translateX: nextTranslateX },
+                    { perspective: 1000 },
+                    { scale },
+                  ];
+
+                  return {
+                    cardStyle: { transform },
+                  };
+                },
+                transitionSpec: {
+                  open: {
+                    animation: "timing",
+                    config: {
+                      duration: 400,
+                      easing: Easing.out(Easing.ease),
+                    },
+                  },
+                  close: {
+                    animation: "timing",
+                    config: {
+                      duration: 400,
+                      easing: Easing.in(Easing.ease),
+                    },
+                  },
+                },
+              }}
+            >
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="claim" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="declaration"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="+not-found" />
-            </Stack>
+            </JsStack>
           </PaperProvider>
         </ThemeContext.Provider>
       </LanguageContext.Provider>

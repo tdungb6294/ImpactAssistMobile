@@ -1,22 +1,12 @@
-import { useState } from "react";
-import {
-  Dimensions,
-  NativeSyntheticEvent,
-  NativeTouchEvent,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import Animated, {
-  KeyboardState,
-  useAnimatedKeyboard,
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { DeclarationTabContext } from "./_context/declaration-tab-context";
+import { CustomTheme } from "../../theme/theme";
 import { TABS } from "./_data/tabs";
 import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
 import DeclarationDetails from "./declaration-details";
@@ -24,7 +14,7 @@ import DeclarationFirstCar from "./declaration-first-car";
 import DeclarationReview from "./declaration-review";
 import DeclarationSecondCar from "./declaration-second-car";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 interface DeclarationTabProps {
   showModal: () => void;
@@ -37,16 +27,9 @@ export default function DeclarationTab({
 }: DeclarationTabProps) {
   const { panGestureX, translateX, translateHighlightX } =
     useDeclarationTabGestures();
-  const keyboard = useAnimatedKeyboard();
-  const [isInputNearBottom, setIsInputNearBottom] = useState(false);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      {
-        translateY: isInputNearBottom ? -keyboard.height.value : 0,
-      },
-    ],
+    transform: [{ translateX: translateX.value }],
   }));
 
   const tapGesture = Gesture.Tap()
@@ -66,51 +49,50 @@ export default function DeclarationTab({
     })
     .runOnJS(true);
 
-  const handleTapOnInput = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
-    if (keyboard.state.value !== KeyboardState.OPEN)
-      setIsInputNearBottom(e.nativeEvent.pageY > height / 2);
-  };
+  const theme: CustomTheme = useTheme();
 
   return (
-    <DeclarationTabContext.Provider
-      value={{ isInputNearBottom, setIsInputNearBottom, handleTapOnInput }}
-    >
-      <View style={styles.container}>
-        <GestureDetector gesture={tapGesture}>
-          <View style={styles.header}>
-            {TABS.map((tab, index) => (
-              <TouchableOpacity key={index} style={styles.tab}>
-                <View style={styles.dividerBar} />
-                <Text>{tab}</Text>
-                <View style={styles.dividerBar} />
-              </TouchableOpacity>
-            ))}
-            <GestureDetector gesture={panGestureX}>
-              <Animated.View
-                style={[
-                  {
-                    ...styles.highlight,
-                    transform: [{ translateX: translateHighlightX }],
-                  },
-                ]}
-              />
-            </GestureDetector>
-            <View style={styles.headerDivider} />
-          </View>
-        </GestureDetector>
-        <GestureDetector gesture={panGestureX}>
-          <Animated.View style={[styles.contentContainer, animatedStyles]}>
-            <DeclarationDetails
-              showModal={showModal}
-              setLocationSelected={setLocationSelected}
+    <View style={styles.container}>
+      <GestureDetector gesture={tapGesture}>
+        <View style={styles.header}>
+          {TABS.map((tab, index) => (
+            <TouchableOpacity key={index} style={styles.tab}>
+              <View style={styles.dividerBar} />
+              <Text>{tab}</Text>
+              <View style={styles.dividerBar} />
+            </TouchableOpacity>
+          ))}
+          <GestureDetector gesture={panGestureX}>
+            <Animated.View
+              style={[
+                {
+                  ...styles.highlight,
+                  transform: [{ translateX: translateHighlightX }],
+                },
+              ]}
             />
-            <DeclarationFirstCar />
-            <DeclarationSecondCar />
-            <DeclarationReview />
-          </Animated.View>
-        </GestureDetector>
-      </View>
-    </DeclarationTabContext.Provider>
+          </GestureDetector>
+          <View style={styles.headerDivider} />
+        </View>
+      </GestureDetector>
+      <GestureDetector gesture={panGestureX}>
+        <Animated.View
+          style={[
+            styles.contentContainer,
+            animatedStyles,
+            { backgroundColor: theme.colors.background },
+          ]}
+        >
+          <DeclarationDetails
+            showModal={showModal}
+            setLocationSelected={setLocationSelected}
+          />
+          <DeclarationFirstCar />
+          <DeclarationSecondCar />
+          <DeclarationReview />
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 }
 

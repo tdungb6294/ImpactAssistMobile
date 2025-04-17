@@ -1,9 +1,10 @@
-import { forwardRef } from "react";
-import { Button, useTheme } from "react-native-paper";
+import { forwardRef, ReactNode } from "react";
+import { Text } from "react-native";
+import { TouchableRipple, useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
 
 interface ImpactAssistButtonProps {
-  label: string;
+  label: string | ReactNode;
   onPress: () => void;
 }
 
@@ -14,22 +15,36 @@ const ImpactAssistButton = forwardRef(function ImpactAssistButton(
   const theme: CustomTheme = useTheme();
 
   return (
-    <Button
+    <TouchableRipple
       onPress={onPress}
-      mode="outlined"
-      style={{
-        borderColor: "transparent",
-        borderRadius: 8,
-      }}
-      buttonColor={theme.colors.interactiveComponentsTertiary}
-      textColor={theme.colors.textSecondary}
-      contentStyle={{
-        height: 40,
-      }}
+      style={[
+        styles.button,
+        {
+          backgroundColor: theme.colors.interactiveComponentsTertiary,
+          borderColor: theme.colors.text,
+          height: 40,
+          borderWidth: 1,
+          borderRadius: 6,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+      ]}
     >
-      {label}
-    </Button>
+      {typeof label === "string" ? (
+        <Text
+          style={{ fontSize: 16, fontWeight: "bold", color: theme.colors.text }}
+        >
+          {label}
+        </Text>
+      ) : (
+        label
+      )}
+    </TouchableRipple>
   );
 });
+
+const styles = {
+  button: {},
+};
 
 export default ImpactAssistButton;

@@ -3,9 +3,6 @@ import * as SecureStore from "expo-secure-store";
 
 export const axios = axiosAPI.create({
   baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   timeout: 10000,
 });
 
@@ -13,6 +10,17 @@ axios.defaults.auth = {
   username: process.env.EXPO_PUBLIC_API_USERNAME || "",
   password: process.env.EXPO_PUBLIC_API_PASSWORD || "",
 };
+
+axios.interceptors.request.use(
+  (config) => {
+    console.log("📤 REQUEST:", config);
+    return config;
+  },
+  (error) => {
+    console.log("❌ REQUEST ERROR:", error);
+    return Promise.reject(error);
+  }
+);
 
 axios.interceptors.request.use(
   async (config) => {

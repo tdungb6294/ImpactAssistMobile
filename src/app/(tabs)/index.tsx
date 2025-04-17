@@ -11,8 +11,6 @@ export default function HomePage() {
   const showModal = () => setVisibile(true);
   const hideModal = () => setVisibile(false);
 
-  const [inputText, setInputText] = useState("");
-
   return (
     <View
       style={{

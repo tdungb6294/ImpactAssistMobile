@@ -1,22 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import { RefreshControl, StyleSheet } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { List, useTheme } from "react-native-paper";
-import SkeletonPlaceholder from "../../components/custom/skeleton-placeholder";
 import { CustomTheme } from "../../theme/theme";
-import { fetchAppointments } from "../../utils/fetch-appointments";
+import { fetchLocalExperts } from "../../utils/fetch-local-experts";
+import SkeletonPlaceholder from "../custom/skeleton-placeholder";
 
-export default function AppointmentsPage() {
-  const theme: CustomTheme = useTheme();
+export default function AppointmentPage() {
   const range = Array.from({ length: 4 }, (_, index) => index + 1);
   const query = useQuery({
-    queryKey: ["appointments"],
-    queryFn: async () => fetchAppointments(),
+    queryKey: ["local_experts"],
+    queryFn: async () => fetchLocalExperts(),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: false,
     staleTime: Infinity,
   });
+  const router = useRouter();
+
+  const theme: CustomTheme = useTheme();
 
   return (
     <KeyboardAwareScrollView
@@ -47,18 +50,20 @@ export default function AppointmentsPage() {
         {query.data?.length === 0 && (
           <List.Item
             title="No data"
-            description="No data available for appointments."
+            description="No data available for local experts."
           />
         )}
         {query.isSuccess &&
           !query.isFetching &&
-          query.data.map((appointment) => (
+          query.data.map((localExpert) => (
             <List.Item
-              key={appointment.id}
-              title={appointment.title}
-              description={`Appointment Date: ${appointment.date}`}
+              key={localExpert.id}
+              title={localExpert.fullName}
+              description={`Description: ${localExpert.description}`}
               style={[styles.item, { borderColor: theme.colors.text }]}
-              onPress={() => {}}
+              onPress={() => {
+                router.navigate(`/appointment?id=${localExpert.id}`);
+              }}
             />
           ))}
       </List.Section>

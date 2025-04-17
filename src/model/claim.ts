@@ -1,3 +1,6 @@
+import { CompensationMethod } from "./enum/compensation-method";
+import { WeatherCondition } from "./enum/weather-condition";
+
 export interface Claim {
   carModel: string;
   vehicleRegistrationNumber: string;
@@ -11,8 +14,8 @@ export interface Claim {
   address: string;
   description: string;
   policeInvolved: boolean;
-  weatherCondition: "Sunny" | "Rainy" | "Snowy";
-  compensationMethod: "Bank account" | "Repair at local expert";
+  weatherCondition: WeatherCondition;
+  compensationMethod: CompensationMethod;
   dataManagementConsent: boolean;
   internationalBankAccountNumber: string;
   documentTypes: string[];

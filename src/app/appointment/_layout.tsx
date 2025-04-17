@@ -1,6 +1,6 @@
 import { Slot } from "expo-router";
 
-export default function ClaimLayout() {
+export default function AppointmentLayout() {
   return (
     <>
       <Slot />

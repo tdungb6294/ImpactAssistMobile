@@ -8,43 +8,32 @@ import {
   View,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { LatLng } from "react-native-maps";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import Animated, {
-  KeyboardState,
-  useAnimatedKeyboard,
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { CustomTheme } from "../../theme/theme";
 import { ClaimTabContext } from "./_context/claim-tab-context";
 import { CLAIM_TABS } from "./_data/tabs";
 import { useClaimTabGestures } from "./gesture-handlers/claim-tab-gesture-handler";
+import ClaimDocuments from "./pages/claim-documents";
 import ClaimInsuranceAccidentDetails from "./pages/claim-insurance-accident-details";
+import ClaimReview from "./pages/claim-review";
 import ClaimVehicleDetails from "./pages/claim-vehicle-details";
 
 const { width, height } = Dimensions.get("window");
 
 interface ClaimTabProps {
   showModal: () => void;
-  setLocationSelected: (latLng: LatLng) => void;
 }
 
-export default function ClaimTab({
-  showModal,
-  setLocationSelected,
-}: ClaimTabProps) {
+export default function ClaimTab({ showModal }: ClaimTabProps) {
   const { panGestureX, translateX, translateHighlightX } =
     useClaimTabGestures();
-  const keyboard = useAnimatedKeyboard();
   const [isInputNearBottom, setIsInputNearBottom] = useState(false);
-
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      {
-        translateY: isInputNearBottom ? -keyboard.height.value : 0,
-      },
-    ],
+    transform: [{ translateX: translateX.value }],
   }));
 
   const tapGesture = Gesture.Tap()
@@ -65,9 +54,10 @@ export default function ClaimTab({
     .runOnJS(true);
 
   const handleTapOnInput = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
-    if (keyboard.state.value !== KeyboardState.OPEN)
-      setIsInputNearBottom(e.nativeEvent.pageY > height / 2);
+    if (0) setIsInputNearBottom(e.nativeEvent.pageY > height / 2);
   };
+
+  const theme: CustomTheme = useTheme();
 
   return (
     <ClaimTabContext.Provider
@@ -96,9 +86,17 @@ export default function ClaimTab({
           </View>
         </GestureDetector>
         <GestureDetector gesture={panGestureX}>
-          <Animated.View style={[styles.contentContainer, animatedStyles]}>
+          <Animated.View
+            style={[
+              styles.contentContainer,
+              animatedStyles,
+              { backgroundColor: theme.colors.background },
+            ]}
+          >
             <ClaimVehicleDetails key={0} />
-            <ClaimInsuranceAccidentDetails key={1} />
+            <ClaimInsuranceAccidentDetails key={1} showModal={showModal} />
+            <ClaimDocuments key={2} />
+            <ClaimReview key={3} />
           </Animated.View>
         </GestureDetector>
       </View>

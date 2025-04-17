@@ -14,7 +14,7 @@ interface ImpactAssistTextInputProps {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
-  onPress: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  onPress?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
 }
 
 export default function ImpactAssistTextInput({

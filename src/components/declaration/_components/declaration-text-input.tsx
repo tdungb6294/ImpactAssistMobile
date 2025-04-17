@@ -1,11 +1,11 @@
 import { get } from "lodash";
 import { useContext } from "react";
 import { Controller } from "react-hook-form";
+import { View } from "react-native";
 import { HelperText } from "react-native-paper";
 import { Declaration } from "../../../model/declaration";
 import ImpactAssistTextInput from "../../custom/new-text-input";
 import { DeclarationContext } from "../_context/declaration-context";
-import { DeclarationTabContext } from "../_context/declaration-tab-context";
 import { updateDeclarationField } from "../_utils/update-declaration-details/update-declaration-details";
 
 interface DeclarationTextInputProps {
@@ -25,7 +25,6 @@ export default function DeclarationTextInput({
     setValue,
     formState: { errors },
   } = useContext(DeclarationContext);
-  const { handleTapOnInput } = useContext(DeclarationTabContext);
 
   const getError = (path: keyof Declaration) => get(errors, path)?.message;
 
@@ -35,7 +34,7 @@ export default function DeclarationTextInput({
         control={control}
         name={declarationPath as keyof Declaration}
         render={({ field: { value } }) => (
-          <>
+          <View>
             <ImpactAssistTextInput
               label={label}
               value={String(value)}
@@ -49,7 +48,6 @@ export default function DeclarationTextInput({
                   webSocketId
                 );
               }}
-              onPress={handleTapOnInput}
             />
             <HelperText
               type="error"
@@ -57,7 +55,7 @@ export default function DeclarationTextInput({
             >
               {getError(declarationPath as keyof Declaration)}
             </HelperText>
-          </>
+          </View>
         )}
         rules={{ required: "This field is required" }}
       />

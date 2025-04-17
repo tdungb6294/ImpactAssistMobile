@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Text, useTheme } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
 import { Declaration } from "../../model/declaration";
@@ -33,12 +34,12 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
   });
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
+    <KeyboardAwareScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
+      contentContainerStyle={{ gap: 8 }}
+      ScrollViewComponent={ScrollView}
     >
       <ImpactAssistButton label="VEHICLE DETAILS" onPress={() => {}} />
-      <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Vehicle country plate"
         declarationPath={"firstCar.car.carCountryPlate"}
@@ -108,16 +109,13 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           );
         }}
       />
-      <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
         Driver license expiration date:{" "}
         {dateFormatter.format(
           new Date(watch("firstCar.driver.drivingLicenceExpirationDate"))
         )}
       </Text>
-      <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton label="INSURER DETAILS" onPress={() => {}} />
-      <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Family Name"
         declarationPath={"firstCar.insurer.familyName"}
@@ -200,21 +198,17 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           new Date(watch("firstCar.insurance.insuranceValidTo"))
         )}
       </Text>
-      <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton label="DAMAGE CIRCUMSTANCES" onPress={() => {}} />
-      <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
         label="Pick Damage Circumstance"
         onPress={() => {
           setShowEnumSelector(true);
         }}
       />
-      <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
         Damage Circumstance:{" "}
         {camelToTitleCase(watch("firstCar.circumstance") as Circumstance)}
       </Text>
-      <View style={{ marginVertical: 8 }} />
       {showEnumSelector && (
         <ImpactAssistEnumSelector
           enumType={Circumstance}
@@ -236,8 +230,8 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         label="Damage Description"
         declarationPath={"firstCar.damageDescription"}
       />
-      <View style={{ marginBottom: 60 }} />
-    </ScrollView>
+      <View style={{ marginBottom: 20 }} />
+    </KeyboardAwareScrollView>
   );
 }
 

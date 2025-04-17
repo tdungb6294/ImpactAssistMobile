@@ -1,3 +1,4 @@
+import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Modal, StyleSheet } from "react-native";
@@ -13,9 +14,15 @@ export default function Claim() {
   const { control, handleSubmit, setValue, formState, watch } =
     useForm<ClaimModel>({
       defaultValues: {
+        locationLatitude: 0,
+        locationLongitude: 0,
         accidentDatetime: new Date(),
       } as ClaimModel,
     });
+  const [documents, setDocuments] =
+    useState<DocumentPicker.DocumentPickerResult | null>(null);
+  const [images, setImages] =
+    useState<DocumentPicker.DocumentPickerResult | null>(null);
 
   const showModal = () => {
     setVisibile(true);
@@ -24,7 +31,11 @@ export default function Claim() {
     setVisibile(false);
   };
 
-  const setLocationSelected = (location: LatLng) => {};
+  const setLocationSelected = (location: LatLng) => {
+    setValue("locationLatitude", location.latitude);
+    setValue("locationLongitude", location.longitude);
+    hideModal();
+  };
 
   return (
     <ClaimContext.Provider
@@ -34,6 +45,10 @@ export default function Claim() {
         control,
         formState,
         watch,
+        setDocuments,
+        setImages,
+        documents,
+        images,
       }}
     >
       <Portal>
@@ -43,15 +58,15 @@ export default function Claim() {
           onRequestClose={hideModal}
         >
           <MapContent
-            locationSelected={{ latitude: 0, longitude: 0 }}
+            locationSelected={{
+              latitude: watch("locationLatitude"),
+              longitude: watch("locationLongitude"),
+            }}
             setLocationSelected={setLocationSelected}
           />
         </Modal>
       </Portal>
-      <ClaimTab
-        setLocationSelected={setLocationSelected}
-        showModal={showModal}
-      />
+      <ClaimTab showModal={showModal} />
     </ClaimContext.Provider>
   );
 }

@@ -10,7 +10,7 @@ import { DeclarationContext } from "./_context/declaration-context";
 
 interface DeclarationReviewProps {}
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 // TODO: Add text inputs here and validations
 

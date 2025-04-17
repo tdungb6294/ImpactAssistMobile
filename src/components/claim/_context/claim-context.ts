@@ -1,4 +1,5 @@
-import { createContext } from "react";
+import * as DocumentPicker from "expo-document-picker";
+import { createContext, Dispatch, SetStateAction } from "react";
 import {
   Control,
   FormState,
@@ -14,6 +15,14 @@ type ClaimContextType = {
   control: Control<Claim, any, Claim>;
   formState: FormState<Claim>;
   watch: UseFormWatch<Claim>;
+  setDocuments: Dispatch<
+    SetStateAction<DocumentPicker.DocumentPickerResult | null>
+  >;
+  setImages: Dispatch<
+    SetStateAction<DocumentPicker.DocumentPickerResult | null>
+  >;
+  documents: DocumentPicker.DocumentPickerResult | null;
+  images: DocumentPicker.DocumentPickerResult | null;
 };
 
 export const ClaimContext = createContext<ClaimContextType>({
@@ -22,4 +31,8 @@ export const ClaimContext = createContext<ClaimContextType>({
   control: {} as Control<Claim, any, Claim>,
   formState: {} as FormState<Claim>,
   watch: (() => ({} as Claim)) as UseFormWatch<Claim>,
+  setDocuments: () => {},
+  setImages: () => {},
+  documents: null,
+  images: null,
 });

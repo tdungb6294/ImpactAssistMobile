@@ -1,5 +1,5 @@
 import { SkPath } from "@shopify/react-native-skia";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
@@ -18,7 +18,6 @@ interface DeclarationProps {
 }
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
-  const socketRef = useRef<WebSocket | null>(null);
   const [webSocketId, setWebSocketId] = useState<number>(1);
   const [error, setError] = useState<boolean>(false);
   const [visible, setVisibile] = useState(false);
@@ -92,7 +91,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
       "accidentLatLng",
       latLng,
       carCountryPlate,
-      socketRef.current!,
+      socket,
       setValue,
       webSocketId
     );

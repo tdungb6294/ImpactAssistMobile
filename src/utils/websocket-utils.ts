@@ -5,7 +5,7 @@ export function createDebouncedWebSocketSender(
   delay: number = 300
 ) {
   const sendMessage = (message: any) => {
-    if (socket.readyState === WebSocket.OPEN) {
+    if (socket && socket.readyState && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(message));
     }
   };

@@ -1,84 +1,80 @@
-import { useQuery } from "@tanstack/react-query";
-import { RefreshControl, StyleSheet } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { List, useTheme } from "react-native-paper";
-import SkeletonPlaceholder from "../../components/custom/skeleton-placeholder";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
+import { FlatList, RefreshControl, Text, View } from "react-native";
+import { TouchableRipple, useTheme } from "react-native-paper";
+import AppointmentCard from "../../components/appointment/appointment-card";
+import ImpactAssistButton from "../../components/custom/button";
 import { CustomTheme } from "../../theme/theme";
 import { fetchAppointments } from "../../utils/fetch-appointments";
 
 export default function AppointmentsPage() {
   const theme: CustomTheme = useTheme();
-  const range = Array.from({ length: 4 }, (_, index) => index + 1);
-  const query = useQuery({
-    queryKey: ["appointments"],
-    queryFn: async () => fetchAppointments(),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    retry: false,
-    staleTime: Infinity,
-  });
+  const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["appointments"],
+      queryFn: fetchAppointments,
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+      initialPageParam: 1,
+    });
+  const router = useRouter();
+
+  const allAppointments =
+    data?.pages.flatMap((page) => page.appointments) ?? [];
 
   return (
-    <KeyboardAwareScrollView
+    <View
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
         padding: 20,
         gap: 6,
       }}
-      refreshControl={
-        <RefreshControl
-          refreshing={query.isFetching}
-          onRefresh={() => query.refetch()}
-        />
-      }
     >
-      <List.Section>
-        {query.isFetching && (
-          <>
-            {range.map((_, index) => (
-              <SkeletonPlaceholder
-                key={index}
-                style={[styles.box, { borderColor: theme.colors.text }]}
-              />
-            ))}
-          </>
+      <ImpactAssistButton
+        onPress={() => {
+          router.navigate("/appointment");
+        }}
+        label="Make an appointment"
+      />
+      <View>
+        <Text style={{ color: theme.colors.text, marginTop: 8 }}>
+          Items: {allAppointments.length} of {data?.pages[0].total ?? 0}
+        </Text>
+      </View>
+      <FlatList
+        data={allAppointments}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableRipple
+            style={{ flex: 1 }}
+            onPress={() => {
+              router.navigate(`/appointment/${item.id}`);
+            }}
+          >
+            <AppointmentCard appointment={item} />
+          </TouchableRipple>
         )}
-        {query.data?.length === 0 && (
-          <List.Item
-            title="No data"
-            description="No data available for appointments."
-          />
-        )}
-        {query.isSuccess &&
-          !query.isFetching &&
-          query.data.map((appointment) => (
-            <List.Item
-              key={appointment.id}
-              title={appointment.title}
-              description={`Appointment Date: ${appointment.date}`}
-              style={[styles.item, { borderColor: theme.colors.text }]}
-              onPress={() => {}}
-            />
-          ))}
-      </List.Section>
-    </KeyboardAwareScrollView>
+        onEndReached={() => {
+          if (hasNextPage) {
+            fetchNextPage();
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        refreshing={isFetching}
+        onRefresh={() => {
+          refetch();
+        }}
+        style={{
+          marginTop: 8,
+          marginBottom: 80,
+        }}
+        contentContainerStyle={{
+          gap: 16,
+        }}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />
+        }
+      />
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  box: {
-    width: "100%",
-    height: 70,
-    borderRadius: 6,
-    overflow: "hidden",
-    borderWidth: 1,
-    marginVertical: 8,
-  },
-  item: {
-    borderRadius: 6,
-    overflow: "hidden",
-    borderWidth: 1,
-    marginVertical: 8,
-  },
-});

@@ -6,10 +6,11 @@ import { CustomTheme } from "../../theme/theme";
 interface ImpactAssistButtonProps {
   label: string | ReactNode;
   onPress: () => void;
+  style?: object;
 }
 
 const ImpactAssistButton = forwardRef(function ImpactAssistButton(
-  { label, onPress }: ImpactAssistButtonProps,
+  { label, onPress, style }: ImpactAssistButtonProps,
   ref
 ) {
   const theme: CustomTheme = useTheme();
@@ -28,6 +29,7 @@ const ImpactAssistButton = forwardRef(function ImpactAssistButton(
           justifyContent: "center",
           alignItems: "center",
         },
+        style,
       ]}
     >
       {typeof label === "string" ? (

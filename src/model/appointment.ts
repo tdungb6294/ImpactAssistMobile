@@ -8,4 +8,10 @@ export interface Appointment {
   availabilityId: number;
   userId: number;
   appointmentStatus: AppointmentStatus;
+  startTime: string;
+  endTime: string;
+  dayOfWeek: string;
+  longitude: number;
+  latitude: number;
+  fullName: string;
 }

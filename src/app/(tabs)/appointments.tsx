@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import { TouchableRipple, useTheme } from "react-native-paper";
 import AppointmentCard from "../../components/appointment/appointment-card";
@@ -9,6 +10,7 @@ import { fetchAppointments } from "../../utils/fetch-appointments";
 
 export default function AppointmentsPage() {
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
   const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
     useInfiniteQuery({
       queryKey: ["appointments"],
@@ -34,11 +36,12 @@ export default function AppointmentsPage() {
         onPress={() => {
           router.navigate("/appointment");
         }}
-        label="Make an appointment"
+        label={t("Make an appointment")}
       />
       <View>
         <Text style={{ color: theme.colors.text, marginTop: 8 }}>
-          Items: {allAppointments.length} of {data?.pages[0].total ?? 0}
+          {t("Items")}: {allAppointments.length} {t("of")}{" "}
+          {data?.pages[0].total ?? 0}
         </Text>
       </View>
       <FlatList

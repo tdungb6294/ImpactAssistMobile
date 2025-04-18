@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "react-native-paper";
-import { CustomTheme } from "../../../../theme/theme";
+import { CustomTheme } from "../../theme/theme";
 
-export default function ObjectClaimPageLayout() {
+export default function AuthPageLayout() {
   const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
 
@@ -16,7 +16,7 @@ export default function ObjectClaimPageLayout() {
         headerTitleStyle: {
           color: theme.colors.text,
         },
-        headerTitle: t("Object Claim Details"),
+        headerTitle: t("Authorization"),
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: true }} />

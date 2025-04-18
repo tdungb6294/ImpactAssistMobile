@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   RefreshControl,
   ScrollView,
@@ -30,6 +31,7 @@ export default function LocalExpertPage() {
     "HH:mm"
   );
   const formattedEndTime = dayjs("2025-01-01T" + data?.endTime).format("HH:mm");
+  const { t } = useTranslation();
 
   return (
     <View
@@ -71,7 +73,7 @@ export default function LocalExpertPage() {
               fontWeight: "bold",
             }}
           >
-            Details
+            {t("Details")}
           </Text>
         </View>
         <View
@@ -85,13 +87,13 @@ export default function LocalExpertPage() {
               numberOfLines={1}
               style={{ fontWeight: "bold", color: theme.colors.text }}
             >
-              Title
+              {t("Title")}
             </Text>
             <Text style={{ color: theme.colors.text }}>{data?.title}</Text>
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Status
+              {t("Status")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {data?.appointmentStatus}
@@ -99,13 +101,13 @@ export default function LocalExpertPage() {
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Date
+              {t("Date")}
             </Text>
             <Text style={{ color: theme.colors.text }}>{formatted}</Text>
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Time
+              {t("Time")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {formattedStartTime} - {formattedEndTime}
@@ -113,19 +115,21 @@ export default function LocalExpertPage() {
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Day of Week
+              {t("Day of Week")}
             </Text>
-            <Text style={{ color: theme.colors.text }}>{data?.dayOfWeek}</Text>
+            <Text style={{ color: theme.colors.text }}>
+              {t(data?.dayOfWeek || "Not provided")}
+            </Text>
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Repair Shop
+              {t("Repair Shop")}
             </Text>
             <Text style={{ color: theme.colors.text }}>{data?.fullName}</Text>
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Description
+              {t("Description")}
             </Text>
             <Text numberOfLines={1} style={{ color: theme.colors.text }}>
               {data?.description}
@@ -149,7 +153,7 @@ export default function LocalExpertPage() {
               fontWeight: "bold",
             }}
           >
-            Map
+            {t("Map")}
           </Text>
         </View>
       </ScrollView>
@@ -172,7 +176,7 @@ export default function LocalExpertPage() {
               longitude: data?.longitude || 0,
             }}
             title={data?.fullName}
-            description={"Repair shop is right here!"}
+            description={t("Repair shop is right here!")}
           />
         </MapView>
       </View>

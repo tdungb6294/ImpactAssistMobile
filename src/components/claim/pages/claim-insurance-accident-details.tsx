@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Checkbox, Text, useTheme } from "react-native-paper";
@@ -35,6 +36,7 @@ export default function ClaimInsuranceAccidentDetails({
     year: "numeric",
   });
   const { handleTapOnInput } = useContext(ClaimTabContext);
+  const { t } = useTranslation();
 
   async function getCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -56,7 +58,7 @@ export default function ClaimInsuranceAccidentDetails({
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ImpactAssistTextInput
-        label={"Insurance Policy Number"}
+        label={t("Insurance Policy Number")}
         value={watch("insurancePolicyNumber")}
         onChangeText={(text) => {
           setValue("insurancePolicyNumber", text);
@@ -65,7 +67,7 @@ export default function ClaimInsuranceAccidentDetails({
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Insurance Company"}
+        label={t("Insurance Company")}
         value={watch("insuranceCompany")}
         onChangeText={(text) => {
           setValue("insuranceCompany", text);
@@ -75,7 +77,7 @@ export default function ClaimInsuranceAccidentDetails({
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
         onPress={() => setShow(true)}
-        label="Pick Accident Date Time"
+        label={t("Pick Accident Date Time")}
       />
       <DatePickerModal
         locale="lt"
@@ -91,26 +93,26 @@ export default function ClaimInsuranceAccidentDetails({
       />
       <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
-        Accident Datetime:{" "}
+        {t("Accident Datetime")}:{" "}
         {dateFormatter.format(new Date(watch("accidentDatetime")))}
       </Text>
       <View style={{ marginVertical: 8 }} />
-      <ImpactAssistButton label="Set location" onPress={showModal} />
+      <ImpactAssistButton label={t("Set location")} onPress={showModal} />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
-        label="Current location"
+        label={t("Current location")}
         onPress={() => {
           getCurrentLocation();
         }}
       />
       <View style={{ marginVertical: 8 }} />
       <Text variant="titleMedium">
-        Car accident location: {watch("locationLongitude")}{" "}
+        {t("Car accident location")}: {watch("locationLongitude")}{" "}
         {watch("locationLatitude")}
       </Text>
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Address"}
+        label={t("Address")}
         value={watch("address")}
         onChangeText={(text) => {
           setValue("address", text);
@@ -119,7 +121,7 @@ export default function ClaimInsuranceAccidentDetails({
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Description"}
+        label={t("Description")}
         value={watch("description")}
         onChangeText={(text) => {
           setValue("description", text);
@@ -137,7 +139,7 @@ export default function ClaimInsuranceAccidentDetails({
           variant="titleMedium"
           style={{ height: "100%", textAlignVertical: "center" }}
         >
-          Police involved?
+          {t("Police Involved")}
         </Text>
         <Checkbox
           status={watch("policeInvolved") ? "checked" : "unchecked"}
@@ -150,18 +152,18 @@ export default function ClaimInsuranceAccidentDetails({
           visible={showEnumSelector}
           onDismiss={() => setShowEnumSelector(false)}
           setSelectedValue={(value) => {
-            setValue("weatherCondition", value as WeatherCondition);
+            setValue("weatherCondition", t(value) as WeatherCondition);
           }}
         />
       )}
       <ImpactAssistButton
-        label="Pick Weather Condition On Accident"
+        label={t("Pick Weather Condition On Accident")}
         onPress={() => {
           setShowEnumSelector(true);
         }}
       />
       <Text variant="titleMedium">
-        Weather Condition: {watch("weatherCondition")}
+        {t("Weather Condition")}: {watch("weatherCondition")}
       </Text>
       {showEnumSelector2 && (
         <ImpactAssistEnumSelector
@@ -174,17 +176,17 @@ export default function ClaimInsuranceAccidentDetails({
         />
       )}
       <ImpactAssistButton
-        label="Pick Compensation Method"
+        label={t("Pick Compensation Method")}
         onPress={() => {
           setShowEnumSelector2(true);
         }}
       />
       <Text variant="titleMedium">
-        Compensation method: {watch("compensationMethod")}
+        {t("Compensation method")}: {watch("compensationMethod")}
       </Text>
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"International Bank Account Number"}
+        label={t("International Bank Account Number")}
         value={watch("internationalBankAccountNumber")}
         onChangeText={(text) => {
           setValue("internationalBankAccountNumber", text);
@@ -202,7 +204,7 @@ export default function ClaimInsuranceAccidentDetails({
           variant="titleMedium"
           style={{ height: "100%", textAlignVertical: "center" }}
         >
-          Data Management Consent
+          {t("Data Management Consent")}
         </Text>
         <Checkbox
           status={watch("dataManagementConsent") ? "checked" : "unchecked"}

@@ -1,10 +1,13 @@
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, View } from "react-native";
 import Flag from "react-native-country-flag";
 import { Divider, Menu, Switch, Text, useTheme } from "react-native-paper";
+import ImpactAssistButton from "../../components/custom/button";
 import { CustomTheme } from "../../theme/theme";
-import { LanguageContext, ThemeContext } from "../_layout";
+import { LanguageContext, RoleContext, ThemeContext } from "../_layout";
 
 type Language = {
   label: string;
@@ -18,6 +21,7 @@ const languages: Language[] = [
 ];
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { t } = useTranslation();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const { language, changeLanguage } = useContext(LanguageContext);
@@ -36,6 +40,8 @@ export default function SettingsPage() {
     setIsDropdownOpen(false);
   };
 
+  const { role } = useContext(RoleContext);
+
   return (
     <View
       style={{
@@ -44,6 +50,32 @@ export default function SettingsPage() {
         backgroundColor: theme.colors.background,
       }}
     >
+      <View style={styles.container}>
+        <Text style={{ color: theme.colors.text, fontSize: 16 }}>
+          {t("Logout")}
+        </Text>
+        <ImpactAssistButton
+          style={{
+            width: 100,
+          }}
+          label={t("Logout")}
+          onPress={async () => {
+            await SecureStore.deleteItemAsync("accessToken");
+            await SecureStore.deleteItemAsync("refreshToken");
+            router.dismissTo("/auth");
+          }}
+        />
+      </View>
+      <Divider />
+      <View style={styles.container}>
+        <Text style={{ color: theme.colors.text, fontSize: 16 }}>
+          {t("Role")}
+        </Text>
+        <Text style={{ color: theme.colors.text, fontSize: 16 }}>
+          {t(role)}
+        </Text>
+      </View>
+      <Divider />
       <View style={styles.container}>
         <Text style={{ color: theme.colors.text, fontSize: 16 }}>
           {t("Toggle (Dark/Light) theme")}

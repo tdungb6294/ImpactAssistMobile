@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dimensions,
   NativeSyntheticEvent,
@@ -15,14 +16,13 @@ import Animated, {
 } from "react-native-reanimated";
 import { CustomTheme } from "../../theme/theme";
 import { ClaimTabContext } from "./_context/claim-tab-context";
-import { CLAIM_TABS } from "./_data/tabs";
 import { useClaimTabGestures } from "./gesture-handlers/claim-tab-gesture-handler";
-import CarClaimReview from "./pages/claim-vehicle-review";
 import ClaimDocuments from "./pages/claim-documents";
 import ClaimInsuranceAccidentDetails from "./pages/claim-insurance-accident-details";
 import ClaimObjectDetails from "./pages/claim-object-details";
 import ObjectClaimReview from "./pages/claim-object-review";
 import ClaimVehicleDetails from "./pages/claim-vehicle-details";
+import CarClaimReview from "./pages/claim-vehicle-review";
 
 const { width, height } = Dimensions.get("window");
 
@@ -61,6 +61,14 @@ export default function ClaimTab({ showModal, type }: ClaimTabProps) {
   };
 
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
+
+  const CLAIM_TABS = [
+    t("Vehicle Details"),
+    t("Insurance & Accident"),
+    t("Documents"),
+    t("Review"),
+  ];
 
   return (
     <ClaimTabContext.Provider
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: "white",
-    width: width / CLAIM_TABS.length,
+    width: width / 4,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -142,7 +150,7 @@ const styles = StyleSheet.create({
     top: 40,
     position: "absolute",
     flexDirection: "row",
-    width: width * CLAIM_TABS.length,
+    width: width * 4,
     height: "100%",
   },
   childContainer: {
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: "absolute",
     backgroundColor: "blue",
-    width: width / CLAIM_TABS.length,
+    width: width / 4,
     height: 2,
   },
   dividerBar: {

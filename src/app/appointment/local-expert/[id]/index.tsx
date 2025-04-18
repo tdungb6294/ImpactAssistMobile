@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   RefreshControl,
   ScrollView,
@@ -70,6 +71,8 @@ export default function LocalExpertPage() {
     return false;
   };
 
+  const { t } = useTranslation();
+
   return (
     <View
       style={[
@@ -111,7 +114,7 @@ export default function LocalExpertPage() {
               fontWeight: "bold",
             }}
           >
-            Local Expert Details
+            {t("Local Expert Details")}
           </Text>
         </View>
         <View
@@ -125,7 +128,7 @@ export default function LocalExpertPage() {
               numberOfLines={1}
               style={{ fontWeight: "bold", color: theme.colors.text }}
             >
-              Local Expert Name
+              {t("Local Expert Name")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {queryLocalExpert.data?.fullName}
@@ -133,7 +136,7 @@ export default function LocalExpertPage() {
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Email
+              {t("Email")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {queryLocalExpert.data?.email}
@@ -141,7 +144,7 @@ export default function LocalExpertPage() {
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Phone
+              {t("Phone")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {queryLocalExpert.data?.phone}
@@ -149,7 +152,7 @@ export default function LocalExpertPage() {
           </View>
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Description
+              {t("Description")}
             </Text>
             <Text style={{ color: theme.colors.text }}>
               {queryLocalExpert.data?.description}
@@ -173,7 +176,7 @@ export default function LocalExpertPage() {
               fontWeight: "bold",
             }}
           >
-            Map
+            {t("Map")}
           </Text>
         </View>
         <View style={{ borderWidth: 1, borderRadius: 6, padding: 8, gap: 8 }}>
@@ -197,7 +200,7 @@ export default function LocalExpertPage() {
                 longitude: queryLocalExpert.data?.longitude || 0,
               }}
               title={queryLocalExpert.data?.fullName}
-              description={"Repair shop is right here!"}
+              description={t("Repair shop is right here!")}
             />
           </MapView>
         </View>
@@ -225,7 +228,7 @@ export default function LocalExpertPage() {
             }}
           />
           <ImpactAssistButton
-            label="Pick A Date"
+            label={t("Pick A Date")}
             onPress={() => {
               setShow(true);
             }}
@@ -246,7 +249,7 @@ export default function LocalExpertPage() {
                 color: theme.colors.text,
               }}
             >
-              Selected date {formatted}
+              {t("Selected date")} {formatted}
             </Text>
           </View>
           <View
@@ -264,14 +267,16 @@ export default function LocalExpertPage() {
                 fontWeight: "bold",
               }}
             >
-              Available Slots
+              {t("Available Slots")}
             </Text>
           </View>
           {queryLocalAvailability.data?.slots.map((slot) => (
             <>
               {checkSlotAvailability(slot.id, slot.dayOfWeek) && (
                 <ImpactAssistButton
-                  label={`${slot.dayOfWeek}: ${slot.startTime} - ${slot.endTime}`}
+                  label={`${t(slot.dayOfWeek)}: ${slot.startTime} - ${
+                    slot.endTime
+                  }`}
                   onPress={() => {
                     setSelectedSlot(slot);
                     setVisibleRegistrationForm(true);

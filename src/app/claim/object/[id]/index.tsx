@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   RefreshControl,
@@ -19,6 +20,7 @@ import { fetchObjectClaimDetails } from "../../../../utils/fetch-object-claim-de
 export default function CarClaimPage() {
   const theme: CustomTheme = useTheme();
   const { id } = useLocalSearchParams();
+  const { t } = useTranslation();
 
   const { isFetching, data, refetch } = useQuery({
     queryKey: ["claim", id],
@@ -71,7 +73,7 @@ export default function CarClaimPage() {
             fontWeight: "bold",
           }}
         >
-          Details
+          {t("Details")}
         </Text>
       </View>
       <View
@@ -79,25 +81,25 @@ export default function CarClaimPage() {
       >
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Object Type
+            {t("Object Type")}
           </Text>
           <Text style={{ color: theme.colors.text }}>{data?.objectType}</Text>
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Status
+            {t("Status")}
           </Text>
           <Text style={{ color: theme.colors.text }}>{data?.claimStatus}</Text>
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Date
+            {t("Date")}
           </Text>
           <Text style={{ color: theme.colors.text }}>{formatted}</Text>
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Object Material
+            {t("Object Material")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.objectMaterial}
@@ -105,7 +107,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Object Ownership
+            {t("Object Ownership")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.objectOwnership}
@@ -113,7 +115,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Damage To Object Description
+            {t("Damage To Object Description")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.damageToObjectDescription}
@@ -121,7 +123,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Insurance Policy Number
+            {t("Insurance Policy Number")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.insurancePolicyNumber}
@@ -129,7 +131,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Insurance Company
+            {t("Insurance Company")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.insuranceCompany}
@@ -137,13 +139,13 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Accident Address
+            {t("Accident Address")}
           </Text>
           <Text style={{ color: theme.colors.text }}>{data?.address}</Text>
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Description
+            {t("Description")}
           </Text>
           <Text numberOfLines={4} style={{ color: theme.colors.text }}>
             {data?.description}
@@ -151,7 +153,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Police Involved
+            {t("Police Involved")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.policeInvolved ? "Yes" : "No"}
@@ -159,7 +161,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Police Report Number
+            {t("Police Report Number")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.policeReportNumber}
@@ -167,7 +169,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Weather Condition
+            {t("Weather Condition")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.weatherCondition}
@@ -175,7 +177,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Compensation Method
+            {t("Compensation Method")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {data?.compensationMethod}
@@ -183,7 +185,7 @@ export default function CarClaimPage() {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Additional Notes
+            {t("Additional Notes")}
           </Text>
           <Text numberOfLines={4} style={{ color: theme.colors.text }}>
             {data?.additionalNotes}
@@ -215,7 +217,7 @@ export default function CarClaimPage() {
             fontWeight: "bold",
           }}
         >
-          Documents
+          {t("Documents")}
         </Text>
       </View>
       <View
@@ -253,7 +255,7 @@ export default function CarClaimPage() {
                   marginBottom: 4,
                 }}
               >
-                {index + 1} Document
+                {index + 1} {t("Document")}
               </Text>
               <Icon name="download" size={24} color={theme.colors.text} />
             </View>
@@ -277,7 +279,7 @@ export default function CarClaimPage() {
             fontWeight: "bold",
           }}
         >
-          Images
+          {t("Images")}
         </Text>
       </View>
       <View
@@ -293,7 +295,7 @@ export default function CarClaimPage() {
                 marginBottom: 4,
               }}
             >
-              {index + 1} Image
+              {index + 1} {t("Image")}
             </Text>
             <Image
               style={styles.image}

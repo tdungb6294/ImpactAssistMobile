@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { Modal, Portal, TouchableRipple, useTheme } from "react-native-paper";
@@ -14,6 +15,7 @@ export default function ClaimsPage() {
   const theme: CustomTheme = useTheme();
   const [visible, setVisibile] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
     useInfiniteQuery<PartialClaimPage>({
@@ -46,11 +48,11 @@ export default function ClaimsPage() {
         onPress={() => {
           showModal();
         }}
-        label="Create New Claim"
+        label={t("Create New Claim")}
       />
       <View>
         <Text style={{ color: theme.colors.text, marginTop: 8 }}>
-          Items: {allClaims.length} of {data?.pages[0].total ?? 0}
+          {t("Items")}: {allClaims.length} {t("of")} {data?.pages[0].total ?? 0}
         </Text>
       </View>
       <FlatList

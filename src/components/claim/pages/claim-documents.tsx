@@ -1,5 +1,6 @@
 import * as DocumentPicker from "expo-document-picker";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Dimensions,
@@ -20,9 +21,10 @@ interface ClaimDocumentsProps {}
 const { width } = Dimensions.get("window");
 
 export default function ClaimDocuments({}: ClaimDocumentsProps) {
-  const { setValue, watch, setDocuments, setImages, images, documents } =
+  const { setValue, setDocuments, setImages, images, documents } =
     useContext(ClaimContext);
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
   const isPdf = (mime?: string) => mime === "application/pdf";
 
   const openPDF = async (uri: string) => {
@@ -30,7 +32,7 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
     if (supported) {
       await Linking.openURL(uri);
     } else {
-      Alert.alert("Can't open this file.");
+      Alert.alert(t("Can't open this file."));
     }
   };
 
@@ -57,7 +59,7 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
             console.log(e);
           }
         }}
-        label="Pick Documents"
+        label={t("Pick Documents")}
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
@@ -74,7 +76,7 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
             console.log(e);
           }
         }}
-        label="Pick Images"
+        label={t("Pick Images")}
       />
       <View>
         {documents?.assets?.map((item, index) => {
@@ -85,7 +87,7 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
                   <Text
                     style={{ color: "blue", textDecorationLine: "underline" }}
                   >
-                    Open PDF
+                    {t("Open PDF")}
                   </Text>
                 </TouchableOpacity>
               )}

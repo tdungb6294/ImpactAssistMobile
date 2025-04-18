@@ -65,7 +65,18 @@ export const LanguageContext = createContext<LanguageContextType>({
   changeLanguage: () => {},
 });
 
+interface RoleContextType {
+  role: string;
+  changeRole: (language: string) => void;
+}
+
+export const RoleContext = createContext<RoleContextType>({
+  role: "USER",
+  changeRole: () => {},
+});
+
 export default function RootLayout() {
+  const [role, setRole] = useState<string>("USER");
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [language, setLanguage] = useState<string>("en");
   const { i18n } = useTranslation();
@@ -106,116 +117,128 @@ export default function RootLayout() {
     <KeyboardProvider>
       <QueryClientProvider client={queryClient}>
         <GestureHandlerRootView>
-          <LanguageContext.Provider value={{ language, changeLanguage }}>
-            <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-              <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
-                <View
-                  style={{
-                    backgroundColor: isDarkMode
-                      ? darkTheme.colors.background
-                      : lightTheme.colors.background,
-                    flex: 1,
-                  }}
-                >
-                  <JsStack
-                    screenOptions={{
-                      cardOverlayEnabled: true, // Enable card overlay for transitions
-                      gestureEnabled: true, // Enable gesture-based navigation
-                      cardStyleInterpolator: ({ current, next, layouts }) => {
-                        const INITIAL_TRANSLATE_X_MULTIPLIER = 1;
-                        const NEXT_TRANSLATE_X_MULTIPLIER = -0.2;
-
-                        // Calculate translateX for the current screen
-                        const translateX = current.progress.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [
-                            INITIAL_TRANSLATE_X_MULTIPLIER *
-                              layouts.screen.width,
-                            0,
-                          ],
-                          extrapolate: "clamp",
-                        });
-
-                        const INITIAL_SCALE = 1.8;
-                        const FINAL_SCALE = 1;
-
-                        // Calculate scale for zooming effect on the next screen
-                        const scale = next
-                          ? next.progress.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: [1, FINAL_SCALE],
-                              extrapolate: "clamp",
-                            })
-                          : current.progress.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: [INITIAL_SCALE, 1],
-                              extrapolate: "clamp",
-                            });
-
-                        // Calculate translateX for the next screen (if exists)
-                        const nextTranslateX = next
-                          ? next.progress.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: [
-                                0,
-                                NEXT_TRANSLATE_X_MULTIPLIER *
-                                  layouts.screen.width,
-                              ],
-                              extrapolate: "clamp",
-                            })
-                          : 0;
-
-                        const transform = [
-                          { translateX },
-                          { translateX: nextTranslateX },
-                          { perspective: 1000 },
-                          { scale },
-                        ];
-
-                        return {
-                          cardStyle: { transform },
-                        };
-                      },
-                      transitionSpec: {
-                        open: {
-                          animation: "timing",
-                          config: {
-                            duration: 400,
-                            easing: Easing.out(Easing.ease),
-                          },
-                        },
-                        close: {
-                          animation: "timing",
-                          config: {
-                            duration: 400,
-                            easing: Easing.in(Easing.ease),
-                          },
-                        },
-                      },
+          <RoleContext.Provider
+            value={{ role: role, changeRole: (role: string) => setRole(role) }}
+          >
+            <LanguageContext.Provider value={{ language, changeLanguage }}>
+              <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+                <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
+                  <View
+                    style={{
+                      backgroundColor: isDarkMode
+                        ? darkTheme.colors.background
+                        : lightTheme.colors.background,
+                      flex: 1,
                     }}
                   >
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="claim"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="declaration"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="appointment"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </JsStack>
-                </View>
-              </PaperProvider>
-            </ThemeContext.Provider>
-          </LanguageContext.Provider>
+                    <JsStack
+                      screenOptions={{
+                        cardOverlayEnabled: true, // Enable card overlay for transitions
+                        gestureEnabled: true, // Enable gesture-based navigation
+                        cardStyleInterpolator: ({ current, next, layouts }) => {
+                          const INITIAL_TRANSLATE_X_MULTIPLIER = 1;
+                          const NEXT_TRANSLATE_X_MULTIPLIER = -0.2;
+
+                          // Calculate translateX for the current screen
+                          const translateX = current.progress.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [
+                              INITIAL_TRANSLATE_X_MULTIPLIER *
+                                layouts.screen.width,
+                              0,
+                            ],
+                            extrapolate: "clamp",
+                          });
+
+                          const INITIAL_SCALE = 1.8;
+                          const FINAL_SCALE = 1;
+
+                          // Calculate scale for zooming effect on the next screen
+                          const scale = next
+                            ? next.progress.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [1, FINAL_SCALE],
+                                extrapolate: "clamp",
+                              })
+                            : current.progress.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [INITIAL_SCALE, 1],
+                                extrapolate: "clamp",
+                              });
+
+                          // Calculate translateX for the next screen (if exists)
+                          const nextTranslateX = next
+                            ? next.progress.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [
+                                  0,
+                                  NEXT_TRANSLATE_X_MULTIPLIER *
+                                    layouts.screen.width,
+                                ],
+                                extrapolate: "clamp",
+                              })
+                            : 0;
+
+                          const transform = [
+                            { translateX },
+                            { translateX: nextTranslateX },
+                            { perspective: 1000 },
+                            { scale },
+                          ];
+
+                          return {
+                            cardStyle: { transform },
+                          };
+                        },
+                        transitionSpec: {
+                          open: {
+                            animation: "timing",
+                            config: {
+                              duration: 400,
+                              easing: Easing.out(Easing.ease),
+                            },
+                          },
+                          close: {
+                            animation: "timing",
+                            config: {
+                              duration: 400,
+                              easing: Easing.in(Easing.ease),
+                            },
+                          },
+                        },
+                      }}
+                    >
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="claim"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="declaration"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="appointment"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="auth"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="index"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                    </JsStack>
+                  </View>
+                </PaperProvider>
+              </ThemeContext.Provider>
+            </LanguageContext.Provider>
+          </RoleContext.Provider>
         </GestureHandlerRootView>
       </QueryClientProvider>
     </KeyboardProvider>

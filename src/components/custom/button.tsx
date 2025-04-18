@@ -7,16 +7,18 @@ interface ImpactAssistButtonProps {
   label: string | ReactNode;
   onPress: () => void;
   style?: object;
+  disabled?: boolean;
 }
 
 const ImpactAssistButton = forwardRef(function ImpactAssistButton(
-  { label, onPress, style }: ImpactAssistButtonProps,
+  { label, onPress, style, disabled = false }: ImpactAssistButtonProps,
   ref
 ) {
   const theme: CustomTheme = useTheme();
 
   return (
     <TouchableRipple
+      disabled={disabled}
       onPress={onPress}
       style={[
         styles.button,

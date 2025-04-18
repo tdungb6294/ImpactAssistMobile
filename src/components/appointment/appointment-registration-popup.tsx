@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Text, View } from "react-native";
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { Slot } from "../../model/local-expert-availability";
@@ -24,6 +25,7 @@ export default function AppointmentRegistrationPopup({
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   return (
     <View
@@ -42,14 +44,14 @@ export default function AppointmentRegistrationPopup({
       }}
     >
       <ImpactAssistTextInput
-        label="Title"
+        label={t("Title")}
         value={title}
         onChangeText={(text) => {
           setTitle(text);
         }}
       />
       <ImpactAssistTextInput
-        label="Description"
+        label={t("Description")}
         multiline={true}
         numberOfLines={4}
         value={description}
@@ -67,7 +69,7 @@ export default function AppointmentRegistrationPopup({
         }}
       >
         <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-          Appointment Time
+          {t("Appointment Time")}
         </Text>
         <Text style={{ color: theme.colors.text }}>
           {formatted} {slot?.startTime} - {slot?.endTime}
@@ -75,7 +77,7 @@ export default function AppointmentRegistrationPopup({
       </View>
 
       <ImpactAssistButton
-        label={isLoading ? <ActivityIndicator /> : "Register appointment"}
+        label={isLoading ? <ActivityIndicator /> : t("Register appointment")}
         onPress={async () => {
           if (!slot) return;
           setIsLoading(true);
@@ -85,7 +87,7 @@ export default function AppointmentRegistrationPopup({
             title: title,
             expertAvailabilityId: slot?.id,
           });
-          if (response !== -1) Alert.alert("Appointment registered!");
+          if (response !== -1) Alert.alert(t("Appointment registered!"));
           setIsLoading(false);
         }}
       />

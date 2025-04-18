@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Modal, Portal, Text, useTheme } from "react-native-paper";
 import ImpactAssistButton from "../../components/custom/button";
@@ -7,6 +8,7 @@ import DeclarationPopupConnection from "../../components/declaration/declaration
 export default function HomePage() {
   const [visible, setVisibile] = useState(false);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const showModal = () => setVisibile(true);
   const hideModal = () => setVisibile(false);
@@ -33,10 +35,14 @@ export default function HomePage() {
           marginBottom: 20,
         }}
       >
-        Experienced a <Text style={{ fontWeight: "bold" }}>Car Accident?</Text>{" "}
-        Then fill up the declaration form!
+        {t("Experienced a")}{" "}
+        <Text style={{ fontWeight: "bold" }}>{t("Car Accident")}?</Text>{" "}
+        {t("Then fill up the declaration form!")}
       </Text>
-      <ImpactAssistButton onPress={showModal} label="Create New Declaration" />
+      <ImpactAssistButton
+        onPress={showModal}
+        label={t("Create New Declaration")}
+      />
     </View>
   );
 }

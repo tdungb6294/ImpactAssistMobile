@@ -7,6 +7,7 @@ interface ImpactAssistTextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   onPress: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  secureTextEntry?: boolean;
 }
 
 export default function ImpactAssistTextInput({
@@ -14,12 +15,14 @@ export default function ImpactAssistTextInput({
   value,
   onChangeText,
   onPress,
+  secureTextEntry,
 }: ImpactAssistTextInputProps) {
   const theme: CustomTheme = useTheme();
 
   return (
     <TextInput
       style={{ backgroundColor: theme.colors.background }}
+      secureTextEntry={secureTextEntry}
       mode="outlined"
       outlineStyle={{
         borderColor: theme.colors.text,

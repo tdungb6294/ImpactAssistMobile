@@ -94,5 +94,22 @@
   "Pick Compensation Method": "Pick Compensation Method",
   "Compensation method": "Compensation method",
   "International Bank Account Number": "International Bank Account Number",
-  "Data Management Consent": "Data Management Consent"
+  "Data Management Consent": "Data Management Consent",
+  "Select Object Ownership": "Select Object Ownership",
+  "Private": "Private",
+  "City": "City",
+  "Create New Object Claim": "Create New Object Claim",
+  "Bad request": "Bad request",
+  "Register": "Register",
+  "Phone must be at least 5 characters long": "Phone must be at least 5 characters long",
+  "Phone must be at most 100 characters long": "Phone must be at most 100 characters long",
+  "Full Name": "Full Name",
+  "Passwords do not match": "Passwords do not match",
+  "Password must be at least 8 characters long": "Password must be at least 8 characters long",
+  "Password must be at most 100 characters long": "Password must be at most 100 characters long",
+  "Full name must be at least 5 characters long": "Full name must be at least 5 characters long",
+  "Full name must be at most 100 characters long": "Full name must be at most 100 characters long",
+  "Confirm Password": "Confirm Password",
+  "Change to Register": "Change to Register",
+  "Change to Login": "Change to Login"
 }

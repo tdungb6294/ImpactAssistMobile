@@ -1,5 +1,6 @@
 import * as FileSystem from "expo-file-system";
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { ActivityIndicator, useTheme } from "react-native-paper";
@@ -17,6 +18,7 @@ export default function ObjectClaimReview({}: ClaimReviewProps) {
   const { watch, images, documents } = useContext(ClaimContext);
   const [isCreating, setIsCreating] = useState(false);
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
 
   const handleCreateNewClaim = async () => {
     setIsCreating(true);
@@ -68,7 +70,9 @@ export default function ObjectClaimReview({}: ClaimReviewProps) {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ImpactAssistButton
-        label={isCreating ? <ActivityIndicator /> : "Create New Object Claim"}
+        label={
+          isCreating ? <ActivityIndicator /> : t("Create New Object Claim")
+        }
         onPress={handleCreateNewClaim}
       />
     </ScrollView>

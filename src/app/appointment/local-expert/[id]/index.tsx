@@ -274,6 +274,7 @@ export default function LocalExpertPage() {
             <>
               {checkSlotAvailability(slot.id, slot.dayOfWeek) && (
                 <ImpactAssistButton
+                  key={slot.id}
                   label={`${t(slot.dayOfWeek)}: ${slot.startTime} - ${
                     slot.endTime
                   }`}

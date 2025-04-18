@@ -93,5 +93,22 @@
   "Pick Compensation Method": "Pasirinkite kompensacijos būdą",
   "Compensation method": "Kompensacijos būdas",
   "International Bank Account Number": "Tarptautinis banko sąskaitos numeris",
-  "Data Management Consent": "Duomenų valdymo sutikimas"
+  "Data Management Consent": "Duomenų valdymo sutikimas",
+  "Select Object Ownership": "Pasirinkite objekto nuosavybę",
+  "Private": "Privatus",
+  "City": "Miestas",
+  "Create New Object Claim": "Sukurti naują objekto pretenziją",
+  "Bad request": "Neteisinga užklausa",
+  "Register": "Registravimas",
+  "Phone must be at least 5 characters long": "Telefonas turi būti bent 5 simbolių ilgio",
+  "Phone must be at most 100 characters long": "Telefonas turi būti ne ilgesnis kaip 100 simbolių",
+  "Full Name": "Vardas Pavardė",
+  "Passwords do not match": "Slaptažodžiai nesutampa",
+  "Password must be at least 8 characters long": "Slaptažodis turi būti bent 8 simbolių ilgio",
+  "Password must be at most 100 characters long": "Slaptažodis turi būti ne ilgesnis kaip 100 simbolių",
+  "Full name must be at least 5 characters long": "Vardas pavardė turi būti bent 5 simbolių ilgio",
+  "Full name must be at most 100 characters long": "Vardas pavardė turi būti ne ilgesnis kaip 100 simbolių",
+  "Confirm Password": "Patvirtinti slaptažodį",
+  "Change to Register": "Pakeisti į registraciją",
+  "Change to Login": "Pakeisti į prisijungimą"
 }

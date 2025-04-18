@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
@@ -15,6 +16,7 @@ const { width } = Dimensions.get("window");
 
 export default function ClaimObjectDetails({}: ClaimObjectDetailsProps) {
   const { setValue, watch } = useContext(ClaimContext);
+  const { t } = useTranslation();
   const theme: CustomTheme = useTheme();
   const [showEnumSelector, setShowEnumSelector] = useState(false);
 
@@ -24,7 +26,7 @@ export default function ClaimObjectDetails({}: ClaimObjectDetailsProps) {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ImpactAssistTextInput
-        label={"Object Type"}
+        label={t("Object Type")}
         value={watch("objectType")}
         onChangeText={(text) => {
           setValue("objectType", text);
@@ -32,7 +34,7 @@ export default function ClaimObjectDetails({}: ClaimObjectDetailsProps) {
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Object Material"}
+        label={t("Object Material")}
         value={watch("objectMaterial")}
         onChangeText={(text) => {
           setValue("objectMaterial", text);
@@ -40,7 +42,7 @@ export default function ClaimObjectDetails({}: ClaimObjectDetailsProps) {
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistButton
-        label="Select Object Ownership"
+        label={t("Select Object Ownership")}
         onPress={() => {
           setShowEnumSelector(true);
         }}
@@ -61,14 +63,14 @@ export default function ClaimObjectDetails({}: ClaimObjectDetailsProps) {
         style={[styles.secondaryContainer, { borderColor: theme.colors.text }]}
       >
         <Text style={{ color: theme.colors.text }}>
-          Object Ownership: {watch("objectOwnership")}
+          {t("Object Ownership")}: {t(watch("objectOwnership"))}
         </Text>
       </View>
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
         multiline={true}
         numberOfLines={4}
-        label={"Damage To Object Description"}
+        label={t("Damage To Object Description")}
         value={watch("damageToObjectDescription")}
         onChangeText={(text) => {
           setValue("damageToObjectDescription", text);

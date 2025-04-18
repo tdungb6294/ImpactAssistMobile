@@ -6,10 +6,10 @@ export const axios = axiosAPI.create({
   timeout: 10000,
 });
 
-axios.defaults.auth = {
-  username: process.env.EXPO_PUBLIC_API_USERNAME || "",
-  password: process.env.EXPO_PUBLIC_API_PASSWORD || "",
-};
+// axios.defaults.auth = {
+//   username: process.env.EXPO_PUBLIC_API_USERNAME || "",
+//   password: process.env.EXPO_PUBLIC_API_PASSWORD || "",
+// };
 
 axios.interceptors.request.use(
   (config) => {
@@ -24,6 +24,10 @@ axios.interceptors.request.use(
 
 axios.interceptors.request.use(
   async (config) => {
+    const accessToken = await SecureStore.getItem("accessToken");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   async (error) => {
@@ -49,6 +53,7 @@ axios.interceptors.request.use(
         // Save new tokens
         await SecureStore.setItemAsync("accessToken", data.accessToken);
         await SecureStore.setItemAsync("refreshToken", data.refreshToken);
+        console.log("New tokens saved:", data.accessToken, data.refreshToken);
 
         // Retry the original request with the new access token
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;

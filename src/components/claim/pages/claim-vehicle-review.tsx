@@ -5,7 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { btoa } from "react-native-quick-base64";
 import { CustomTheme } from "../../../theme/theme";
-import { createCarClaim } from "../../../utils/create-claim";
+import { createCarClaim } from "../../../utils/create-car-claim";
 import ImpactAssistButton from "../../custom/button";
 import { ClaimContext } from "../_context/claim-context";
 
@@ -13,7 +13,7 @@ interface ClaimReviewProps {}
 
 const { width } = Dimensions.get("window");
 
-export default function ClaimReview({}: ClaimReviewProps) {
+export default function CarClaimReview({}: ClaimReviewProps) {
   const { watch, images, documents } = useContext(ClaimContext);
   const [isCreating, setIsCreating] = useState(false);
   const theme: CustomTheme = useTheme();

@@ -1,15 +1,18 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Text, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
-import { TouchableRipple, useTheme } from "react-native-paper";
+import { Modal, Portal, TouchableRipple, useTheme } from "react-native-paper";
 import ClaimCard from "../../components/claim/claim-card";
+import ClaimPopupConnection from "../../components/claim/claim-popup-connection";
 import ImpactAssistButton from "../../components/custom/button";
 import { CustomTheme } from "../../theme/theme";
 import { fetchCarClaims, PartialClaimPage } from "../../utils/fetch-claims";
 
 export default function ClaimsPage() {
   const theme: CustomTheme = useTheme();
+  const [visible, setVisibile] = useState(false);
   const router = useRouter();
 
   const { data, isFetching, hasNextPage, fetchNextPage, refetch } =
@@ -22,6 +25,9 @@ export default function ClaimsPage() {
 
   const allClaims = data?.pages.flatMap((page) => page.claims) ?? [];
 
+  const showModal = () => setVisibile(true);
+  const hideModal = () => setVisibile(false);
+
   return (
     <View
       style={{
@@ -31,9 +37,17 @@ export default function ClaimsPage() {
         gap: 6,
       }}
     >
-      <Link href={"/claim"} asChild>
-        <ImpactAssistButton onPress={() => {}} label="Create New Claim" />
-      </Link>
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal}>
+          <ClaimPopupConnection hideModal={hideModal} />
+        </Modal>
+      </Portal>
+      <ImpactAssistButton
+        onPress={() => {
+          showModal();
+        }}
+        label="Create New Claim"
+      />
       <View>
         <Text style={{ color: theme.colors.text, marginTop: 8 }}>
           Items: {allClaims.length} of {data?.pages[0].total ?? 0}
@@ -46,7 +60,11 @@ export default function ClaimsPage() {
           <TouchableRipple
             style={{ flex: 1 }}
             onPress={() => {
-              router.navigate(`/claim/${item.id}`);
+              if (item.claimType === "Vehicle") {
+                router.navigate(`/claim/car/${item.id}`);
+              } else {
+                router.navigate(`/claim/object/${item.id}`);
+              }
             }}
           >
             <ClaimCard claim={item} />

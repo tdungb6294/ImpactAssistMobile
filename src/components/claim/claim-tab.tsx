@@ -17,18 +17,21 @@ import { CustomTheme } from "../../theme/theme";
 import { ClaimTabContext } from "./_context/claim-tab-context";
 import { CLAIM_TABS } from "./_data/tabs";
 import { useClaimTabGestures } from "./gesture-handlers/claim-tab-gesture-handler";
+import CarClaimReview from "./pages/claim-vehicle-review";
 import ClaimDocuments from "./pages/claim-documents";
 import ClaimInsuranceAccidentDetails from "./pages/claim-insurance-accident-details";
-import ClaimReview from "./pages/claim-review";
+import ClaimObjectDetails from "./pages/claim-object-details";
+import ObjectClaimReview from "./pages/claim-object-review";
 import ClaimVehicleDetails from "./pages/claim-vehicle-details";
 
 const { width, height } = Dimensions.get("window");
 
 interface ClaimTabProps {
   showModal: () => void;
+  type: "car" | "object";
 }
 
-export default function ClaimTab({ showModal }: ClaimTabProps) {
+export default function ClaimTab({ showModal, type }: ClaimTabProps) {
   const { panGestureX, translateX, translateHighlightX } =
     useClaimTabGestures();
   const [isInputNearBottom, setIsInputNearBottom] = useState(false);
@@ -93,10 +96,18 @@ export default function ClaimTab({ showModal }: ClaimTabProps) {
               { backgroundColor: theme.colors.background },
             ]}
           >
-            <ClaimVehicleDetails key={0} />
+            {type === "car" ? (
+              <ClaimVehicleDetails key={0} />
+            ) : (
+              <ClaimObjectDetails key={0} />
+            )}
             <ClaimInsuranceAccidentDetails key={1} showModal={showModal} />
             <ClaimDocuments key={2} />
-            <ClaimReview key={3} />
+            {type === "car" ? (
+              <CarClaimReview key={3} />
+            ) : (
+              <ObjectClaimReview key={3} />
+            )}
           </Animated.View>
         </GestureDetector>
       </View>

@@ -13,10 +13,10 @@ import {
 } from "react-native";
 import { TouchableRipple, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
-import { CustomTheme } from "../../../theme/theme";
-import { fetchCarClaimDetails } from "../../../utils/fetch-claim-details";
+import { CustomTheme } from "../../../../theme/theme";
+import { fetchCarClaimDetails } from "../../../../utils/fetch-car-claim-details";
 
-export default function ClaimPage() {
+export default function CarClaimPage() {
   const theme: CustomTheme = useTheme();
   const { id } = useLocalSearchParams();
 

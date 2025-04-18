@@ -1,8 +1,8 @@
 import { Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
-import { CustomTheme } from "../../../theme/theme";
+import { CustomTheme } from "../../../../theme/theme";
 
-export default function ClaimPageLayout() {
+export default function ObjectClaimPageLayout() {
   const theme: CustomTheme = useTheme();
 
   return (
@@ -14,7 +14,7 @@ export default function ClaimPageLayout() {
         headerTitleStyle: {
           color: theme.colors.text,
         },
-        headerTitle: "Claim Details",
+        headerTitle: "Object Claim Details",
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: true }} />

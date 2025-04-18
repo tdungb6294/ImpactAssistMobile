@@ -9,7 +9,11 @@ import MapContent from "../declaration/_components/map-content";
 import { ClaimContext } from "./_context/claim-context";
 import ClaimTab from "./claim-tab";
 
-export default function Claim() {
+interface ClaimProps {
+  type: "car" | "object";
+}
+
+export default function Claim({ type }: ClaimProps) {
   const [visible, setVisibile] = useState(false);
   const { control, handleSubmit, setValue, formState, watch } =
     useForm<ClaimModel>({
@@ -66,7 +70,7 @@ export default function Claim() {
           />
         </Modal>
       </Portal>
-      <ClaimTab showModal={showModal} />
+      <ClaimTab type={type} showModal={showModal} />
     </ClaimContext.Provider>
   );
 }

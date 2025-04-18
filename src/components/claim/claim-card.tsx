@@ -9,6 +9,7 @@ interface ClaimCardProps {
 }
 
 export default function ClaimCard({ claim }: ClaimCardProps) {
+  const isVehicle = claim.claimType === "Vehicle";
   const now = dayjs(claim.accidentDatetime);
   const formatted = now.format("YYYY-MM-DD HH:mm");
   const theme: CustomTheme = useTheme();
@@ -22,12 +23,21 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
       ]}
     >
       <View style={[styles.secondaryContainer]}>
-        <View>
-          <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Vehicle Model
-          </Text>
-          <Text style={{ color: theme.colors.text }}>{claim.carModel}</Text>
-        </View>
+        {isVehicle ? (
+          <View>
+            <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
+              Vehicle Model
+            </Text>
+            <Text style={{ color: theme.colors.text }}>{claim.carModel}</Text>
+          </View>
+        ) : (
+          <View>
+            <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
+              Object Type
+            </Text>
+            <Text style={{ color: theme.colors.text }}>{claim.objectType}</Text>
+          </View>
+        )}
         <View style={{ alignItems: "flex-end" }}>
           <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
             {formatted}

@@ -1,5 +1,5 @@
 import Claim from "../../components/claim/claim";
 
 export default function ClaimPage() {
-  return <Claim />;
+  return <Claim type={"car"} />;
 }

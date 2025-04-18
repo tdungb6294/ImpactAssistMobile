@@ -15,6 +15,8 @@ interface ImpactAssistTextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   onPress?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
+  multiline?: boolean;
+  numberOfLines?: number;
 }
 
 export default function ImpactAssistTextInput({
@@ -22,6 +24,8 @@ export default function ImpactAssistTextInput({
   value,
   onChangeText,
   onPress,
+  multiline = false,
+  numberOfLines = 1,
 }: ImpactAssistTextInputProps) {
   const theme: CustomTheme = useTheme();
   const [borderWidth, setBorderWidth] = useState(1);
@@ -50,6 +54,8 @@ export default function ImpactAssistTextInput({
         {label}
       </Animated.Text>
       <TextInput
+        multiline={multiline}
+        numberOfLines={numberOfLines}
         placeholder={placeholder}
         placeholderTextColor={theme.colors.borderSeparatorSecondary}
         style={[styles.textInput, { color: theme.colors.text }]}

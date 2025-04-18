@@ -8,7 +8,7 @@ export interface CarClaimDetail {
   odometerMileage: string;
   insurancePolicyNumber: string;
   insuranceCompany: string;
-  accidentDatetime: string; // Use ISO 8601 string, or `Date` if you're parsing
+  accidentDatetime: string;
   locationLongitude: number;
   locationLatitude: number;
   address: string;

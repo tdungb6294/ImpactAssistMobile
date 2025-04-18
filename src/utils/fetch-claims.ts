@@ -2,10 +2,12 @@ import { axios } from "../lib/axios";
 
 export interface PartialClaim {
   id: number;
+  claimType: string;
   carModel: string;
   accidentDatetime: Date;
   address: string;
   claimStatus: string;
+  objectType: string;
 }
 
 export interface PartialClaimPage {
@@ -22,7 +24,7 @@ export const fetchCarClaims = async ({
 }: {
   pageParam: any;
 }): Promise<PartialClaimPage> => {
-  const response = await axios.get(`/claim/car?page=${pageParam}&size=6`, {
+  const response = await axios.get(`/claim?page=${pageParam}&size=6`, {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

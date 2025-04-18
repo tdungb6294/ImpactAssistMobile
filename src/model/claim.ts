@@ -19,4 +19,8 @@ export interface Claim {
   dataManagementConsent: boolean;
   internationalBankAccountNumber: string;
   documentTypes: string[];
+  objectType: string;
+  objectMaterial: string;
+  objectOwnership: string;
+  damageToObjectDescription: string;
 }

@@ -17,6 +17,7 @@ interface ImpactAssistTextInputProps {
   onPress?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
   multiline?: boolean;
   numberOfLines?: number;
+  defaultValue?: string;
 }
 
 export default function ImpactAssistTextInput({
@@ -26,6 +27,7 @@ export default function ImpactAssistTextInput({
   onPress,
   multiline = false,
   numberOfLines = 1,
+  defaultValue,
 }: ImpactAssistTextInputProps) {
   const theme: CustomTheme = useTheme();
   const [borderWidth, setBorderWidth] = useState(1);
@@ -54,6 +56,7 @@ export default function ImpactAssistTextInput({
         {label}
       </Animated.Text>
       <TextInput
+        defaultValue={defaultValue}
         multiline={multiline}
         numberOfLines={numberOfLines}
         placeholder={placeholder}

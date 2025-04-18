@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { FlatList, RefreshControl, View } from "react-native";
+import { TouchableRipple, useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
 import { fetchLocalExperts } from "../../utils/fetch-local-experts";
+import LocalExpertCard from "../local-expert/local-expert-card";
 
 export default function AppointmentPage() {
-  const range = Array.from({ length: 4 }, (_, index) => index + 1);
-  const query = useQuery({
+  const { isFetching, refetch, data } = useQuery({
     queryKey: ["local_experts"],
     queryFn: async () => fetchLocalExperts(),
     refetchOnWindowFocus: false,
@@ -19,26 +19,41 @@ export default function AppointmentPage() {
 
   const theme: CustomTheme = useTheme();
 
+  const allLocalExperts = data ?? [];
+
   return (
-    <View>
-      <Text> Hello</Text>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        padding: 20,
+        gap: 6,
+      }}
+    >
+      <FlatList
+        data={allLocalExperts}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableRipple
+            style={{ flex: 1 }}
+            onPress={() => {
+              router.navigate(`/appointment/local-expert/${item.id}`);
+            }}
+          >
+            <LocalExpertCard localExpert={item} />
+          </TouchableRipple>
+        )}
+        style={{
+          marginTop: 8,
+          marginBottom: 80,
+        }}
+        contentContainerStyle={{
+          gap: 16,
+        }}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />
+        }
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  box: {
-    width: "100%",
-    height: 70,
-    borderRadius: 6,
-    overflow: "hidden",
-    borderWidth: 1,
-    marginVertical: 8,
-  },
-  item: {
-    borderRadius: 6,
-    overflow: "hidden",
-    borderWidth: 1,
-    marginVertical: 8,
-  },
-});

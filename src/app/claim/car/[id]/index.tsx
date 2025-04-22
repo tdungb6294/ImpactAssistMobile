@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import * as FileSystem from "expo-file-system";
+import { File, Paths } from "expo-file-system/next";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
+import * as Sharing from "expo-sharing";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -12,8 +14,17 @@ import {
   Text,
   View,
 } from "react-native";
-import { TouchableRipple, useTheme } from "react-native-paper";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { ActivityIndicator, Modal, Portal, useTheme } from "react-native-paper";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import Icon from "react-native-vector-icons/AntDesign";
+import { WebView } from "react-native-webview";
+import ImpactAssistButton from "../../../../components/custom/button";
+import LocalExpertFlatList from "../../../../components/local-expert/local-expert-flat-list";
 import { CustomTheme } from "../../../../theme/theme";
 import { fetchCarClaimDetails } from "../../../../utils/fetch-car-claim-details";
 
@@ -21,6 +32,11 @@ export default function CarClaimPage() {
   const theme: CustomTheme = useTheme();
   const { id } = useLocalSearchParams();
   const { t } = useTranslation();
+  const [visible, setVisibile] = useState(false);
+  const showModal = () => setVisibile(true);
+  const hideModal = () => setVisibile(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   const { isFetching, data, refetch } = useQuery({
     queryKey: ["claim", id],
@@ -36,8 +52,28 @@ export default function CarClaimPage() {
   const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-  const imageUrl = data?.claimAccidentImageUrls[0];
-  console.log(imageUrl);
+  const scale = useSharedValue(1);
+  const focalX = useSharedValue(0);
+  const focalY = useSharedValue(0);
+
+  const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      setScrollEnabled(false);
+    })
+    .onUpdate((e) => {
+      scale.value = e.scale;
+      focalX.value = e.focalX;
+      focalY.value = e.focalY;
+    })
+    .onEnd(() => {
+      scale.value = withTiming(1, { duration: 200 });
+      setScrollEnabled(true);
+    })
+    .runOnJS(true);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
     <ScrollView
@@ -56,7 +92,13 @@ export default function CarClaimPage() {
           }}
         />
       }
+      scrollEnabled={scrollEnabled}
     >
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal}>
+          <LocalExpertFlatList claimId={Number(id)} hideModal={hideModal} />
+        </Modal>
+      </Portal>
       <View
         style={{
           padding: 8,
@@ -217,6 +259,119 @@ export default function CarClaimPage() {
             fontWeight: "bold",
           }}
         >
+          {t("Images")}
+        </Text>
+      </View>
+      <View
+        style={[styles.secondaryContainer, { borderColor: theme.colors.text }]}
+      >
+        {data?.claimAccidentImageUrls.map((imageUrl, index) => (
+          <View key={index}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: theme.colors.text,
+                  fontWeight: "bold",
+                  marginBottom: 4,
+                }}
+              >
+                {index + 1} {t("Image")}
+              </Text>
+              {isDownloading ? (
+                <ActivityIndicator />
+              ) : (
+                <Icon
+                  name="sharealt"
+                  size={20}
+                  color={theme.colors.text}
+                  onPress={async () => {
+                    setIsDownloading(true);
+                    const url = imageUrl;
+                    const cleanUrl = url.split("?")[0];
+                    const fileName = cleanUrl.split("/").pop();
+                    const file = new File(Paths.cache, fileName ?? "");
+                    if (file.exists) {
+                      Sharing.shareAsync(file.uri);
+                      setIsDownloading(false);
+                      return;
+                    }
+                    try {
+                      const output = await File.downloadFileAsync(
+                        url,
+                        Paths.cache
+                      );
+                      Sharing.shareAsync(output.uri);
+                      console.log(output.exists);
+                      console.log(output.uri);
+                    } catch (error) {
+                      console.error("Error downloading file:", error);
+                      Alert.alert("Error", "Failed to download document");
+                    }
+                    setIsDownloading(false);
+                  }}
+                />
+              )}
+            </View>
+            <GestureDetector gesture={pinchGesture}>
+              <View
+                style={{
+                  overflow: "hidden",
+                }}
+              >
+                <Animated.View
+                  style={[
+                    {
+                      height: 200,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                    },
+                    animatedStyle,
+                  ]}
+                >
+                  <Image
+                    style={styles.image}
+                    source={imageUrl}
+                    placeholder={{ blurhash }}
+                    contentFit="contain"
+                    transition={1000}
+                    onTouchStart={() => {
+                      setScrollEnabled(false);
+                    }}
+                    onTouchEnd={() => {
+                      setScrollEnabled(true);
+                    }}
+                  />
+                </Animated.View>
+              </View>
+            </GestureDetector>
+          </View>
+        ))}
+      </View>
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
           {t("Documents")}
         </Text>
       </View>
@@ -224,19 +379,9 @@ export default function CarClaimPage() {
         style={[styles.secondaryContainer, { borderColor: theme.colors.text }]}
       >
         {data?.claimAccidentDocuments.map((document, index) => (
-          <TouchableRipple
-            style={{ flex: 1 }}
-            onPress={async () => {
-              const url = document.url;
-              const cleanUrl = url.split("?")[0];
-              const fileName = cleanUrl.split("/").pop();
-              const result = await FileSystem.downloadAsync(
-                url,
-                FileSystem.documentDirectory + "/" + fileName
-              );
-              if (result.status === 200) {
-                Alert.alert("Document downloaded", result.uri);
-              }
+          <View
+            style={{
+              flex: 1,
             }}
             key={index}
           >
@@ -257,56 +402,80 @@ export default function CarClaimPage() {
               >
                 {index + 1} {t("Document")}
               </Text>
-              <Icon name="download" size={24} color={theme.colors.text} />
+              {isDownloading ? (
+                <ActivityIndicator />
+              ) : (
+                <Icon
+                  name="sharealt"
+                  size={20}
+                  color={theme.colors.text}
+                  onPress={async () => {
+                    setIsDownloading(true);
+                    const url = document.url;
+                    const cleanUrl = url.split("?")[0];
+                    const fileName = cleanUrl.split("/").pop();
+                    const file = new File(Paths.cache, fileName ?? "");
+                    if (file.exists) {
+                      Sharing.shareAsync(file.uri);
+                      setIsDownloading(false);
+                      return;
+                    }
+                    try {
+                      const output = await File.downloadFileAsync(
+                        url,
+                        Paths.cache
+                      );
+                      Sharing.shareAsync(output.uri);
+                      console.log(output.exists);
+                      console.log(output.uri);
+                    } catch (error) {
+                      console.error("Error downloading file:", error);
+                      Alert.alert("Error", "Failed to download document");
+                    }
+                    setIsDownloading(false);
+                  }}
+                />
+              )}
             </View>
-          </TouchableRipple>
-        ))}
-      </View>
-      <View
-        style={{
-          padding: 8,
-          marginTop: 8,
-          marginBottom: 8,
-          borderRadius: 6,
-          backgroundColor: theme.colors.text,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            color: theme.colors.background,
-            fontWeight: "bold",
-          }}
-        >
-          {t("Images")}
-        </Text>
-      </View>
-      <View
-        style={[styles.secondaryContainer, { borderColor: theme.colors.text }]}
-      >
-        {data?.claimAccidentImageUrls.map((imageUrl, index) => (
-          <View key={index}>
-            <Text
+            <WebView
               style={{
-                fontSize: 16,
-                color: theme.colors.text,
-                fontWeight: "bold",
-                marginBottom: 4,
+                width: "100%",
+                height: 200,
               }}
-            >
-              {index + 1} {t("Image")}
-            </Text>
-            <Image
-              style={styles.image}
-              source={imageUrl}
-              placeholder={{ blurhash }}
-              contentFit="cover"
-              transition={1000}
+              androidZoomEnabled={true}
+              scalesPageToFit={true}
+              onTouchStart={() => {
+                setScrollEnabled(false);
+              }}
+              onTouchEnd={() => {
+                setScrollEnabled(true);
+              }}
+              source={{ uri: document.url }}
             />
           </View>
         ))}
       </View>
+      <ImpactAssistButton
+        label={t("Share claim with local expert")}
+        style={{ marginTop: 8 }}
+        onPress={() => {
+          showModal();
+        }}
+      />
+      <ImpactAssistButton
+        label={t("Create Report Estimate")}
+        style={{ marginTop: 8 }}
+        onPress={() => {
+          showModal();
+        }}
+      />
+      <ImpactAssistButton
+        label={t("Check Reports")}
+        style={{ marginTop: 8 }}
+        onPress={() => {
+          showModal();
+        }}
+      />
       <View style={{ marginBottom: 40 }} />
     </ScrollView>
   );

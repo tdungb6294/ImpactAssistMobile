@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
@@ -13,6 +14,7 @@ export default function ClaimPopupConnection({
 }: ClaimPopupConnectionProps) {
   const theme: CustomTheme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -31,7 +33,7 @@ export default function ClaimPopupConnection({
       }}
     >
       <ImpactAssistButton
-        label="Vehicle"
+        label={t("Vehicle")}
         onPress={() => {
           hideModal();
           router.navigate("/claim/car/create");
@@ -39,10 +41,11 @@ export default function ClaimPopupConnection({
         style={{
           flex: 1,
           height: "100%",
+          padding: 20,
         }}
       />
       <ImpactAssistButton
-        label="Object"
+        label={t("Object")}
         onPress={() => {
           hideModal();
           router.navigate("/claim/object/create");
@@ -50,6 +53,7 @@ export default function ClaimPopupConnection({
         style={{
           flex: 1,
           height: "100%",
+          padding: 20,
         }}
       />
     </View>

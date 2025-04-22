@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { LocalExpert } from "../../model/local-expert";
@@ -9,6 +10,7 @@ interface LocalExpertCardProps {
 
 export default function LocalExpertCard({ localExpert }: LocalExpertCardProps) {
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -22,7 +24,7 @@ export default function LocalExpertCard({ localExpert }: LocalExpertCardProps) {
       <View style={[styles.secondaryContainer]}>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Local Expert
+            {t("Local Expert")}
           </Text>
           <Text style={{ color: theme.colors.text }}>
             {localExpert.fullName}
@@ -30,7 +32,7 @@ export default function LocalExpertCard({ localExpert }: LocalExpertCardProps) {
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-            Description
+            {t("Description")}
           </Text>
           <Text numberOfLines={1} style={{ color: theme.colors.text }}>
             {localExpert.description}

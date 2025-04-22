@@ -111,5 +111,22 @@
   "Full name must be at most 100 characters long": "Full name must be at most 100 characters long",
   "Confirm Password": "Confirm Password",
   "Change to Register": "Change to Register",
-  "Change to Login": "Change to Login"
+  "Change to Login": "Change to Login",
+  "Share claim with local expert": "Share claim with local expert",
+  "Error sharing claim with local expert": "Error sharing claim with local expert",
+  "Claim shared with local expert": "Claim shared with local expert",
+  "PENDING": "PENDING",
+  "APPROVED": "APPROVED",
+  "REJECTED": "REJECTED",
+  "COMPENSATED": "COMPENSATED",
+  "Create Report Estimate": "Create Report Estimate",
+  "Check Reports": "Check Reports",
+  "Damage Circumstances": "Damage Circumstances",
+  "Insurance Details": "Insurance Details",
+  "Driver Details": "Driver Details",
+  "Insurer Details": "Insurer Details",
+  "RESCHEDULED": "RESCHEDULED",
+  "Vehicle": "Vehicle",
+  "Object": "Object",
+  "Local Expert": "Local Expert"
 }

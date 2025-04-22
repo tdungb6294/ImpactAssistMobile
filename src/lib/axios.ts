@@ -1,70 +1,48 @@
 import axiosAPI from "axios";
 import * as SecureStore from "expo-secure-store";
+import { fetchNewAccessToken } from "../utils/fetch-new-access-token";
 
 export const axios = axiosAPI.create({
   baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
   timeout: 10000,
+  withCredentials: true,
 });
 
-// axios.defaults.auth = {
-//   username: process.env.EXPO_PUBLIC_API_USERNAME || "",
-//   password: process.env.EXPO_PUBLIC_API_PASSWORD || "",
-// };
-
-axios.interceptors.request.use(
-  (config) => {
-    console.log("📤 REQUEST:", config);
-    return config;
-  },
-  (error) => {
-    console.log("❌ REQUEST ERROR:", error);
-    return Promise.reject(error);
+axios.interceptors.request.use(async (config) => {
+  const accessToken = await SecureStore.getItem("accessToken");
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
-);
+  return config;
+});
 
-axios.interceptors.request.use(
-  async (config) => {
-    const accessToken = await SecureStore.getItem("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
+axios.interceptors.response.use(
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // If 401 error and request is not already retried
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
-
       try {
         // Get refresh token
         const refreshToken = await SecureStore.getItem("refreshToken");
         if (!refreshToken) throw new Error("No refresh token available");
 
         // Request new access token
-        const { data } = await axios.post(
-          `${process.env.API_BASE_URL}${process.env.EXPO_PUBLIC_REFRESH_ENDPOINT}`,
-          {
-            refreshToken,
-          }
-        );
+        const data = await fetchNewAccessToken(refreshToken ?? "");
 
         // Save new tokens
-        await SecureStore.setItemAsync("accessToken", data.accessToken);
-        await SecureStore.setItemAsync("refreshToken", data.refreshToken);
-        console.log("New tokens saved:", data.accessToken, data.refreshToken);
-
-        // Retry the original request with the new access token
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        console.log("New token saved!", data);
+        await SecureStore.setItemAsync("accessToken", data);
+        originalRequest.headers.Authorization = `Bearer ${data}`;
         return axios(originalRequest);
       } catch (err) {
         console.error("Token refresh failed:", err);
-        await SecureStore.deleteItemAsync("accessToken");
-        await SecureStore.deleteItemAsync("refreshToken");
       }
     }
-
     return Promise.reject(error);
   }
 );

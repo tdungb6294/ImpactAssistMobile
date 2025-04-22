@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -25,6 +26,7 @@ export default function ImpactAssistEnumSelector<
   visible,
   onDismiss,
 }: ImpactAssistEnumSelectorProps<T>) {
+  const { t } = useTranslation();
   const options = Object.values(enumType).map((value) => ({
     label: value,
     value: camelToTitleCase(value),
@@ -58,7 +60,7 @@ export default function ImpactAssistEnumSelector<
               >
                 <View>
                   <Divider style={{ marginBottom: 8 }} />
-                  <Text variant="titleMedium">{option.value}</Text>
+                  <Text variant="titleMedium">{t(option.value)}</Text>
                   <Divider style={{ marginTop: 8 }} />
                 </View>
               </TouchableRipple>

@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
@@ -13,6 +14,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
   const now = dayjs(claim.accidentDatetime);
   const formatted = now.format("YYYY-MM-DD HH:mm");
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
   return (
     <View
       style={[
@@ -26,14 +28,14 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
         {isVehicle ? (
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Vehicle Model
+              {t("Vehicle Model")}
             </Text>
             <Text style={{ color: theme.colors.text }}>{claim.carModel}</Text>
           </View>
         ) : (
           <View>
             <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-              Object Type
+              {t("Object Type")}
             </Text>
             <Text style={{ color: theme.colors.text }}>{claim.objectType}</Text>
           </View>
@@ -43,13 +45,13 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
             {formatted}
           </Text>
           <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
-            {claim.claimStatus}
+            {t(claim.claimStatus)}
           </Text>
         </View>
       </View>
       <View>
         <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
-          Address
+          {t("Address")}
         </Text>
         <Text numberOfLines={1} style={{ color: theme.colors.text }}>
           {claim.address}

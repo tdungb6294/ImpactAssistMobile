@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -32,6 +33,7 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
     month: "2-digit",
     year: "numeric",
   });
+  const { t } = useTranslation();
 
   return (
     <KeyboardAwareScrollView
@@ -39,7 +41,26 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
       contentContainerStyle={{ gap: 8 }}
       ScrollViewComponent={ScrollView}
     >
-      <ImpactAssistButton label="VEHICLE DETAILS" onPress={() => {}} />
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
+          {t("Vehicle Details")}
+        </Text>
+      </View>
       <DeclarationTextInput
         label="Vehicle country plate"
         declarationPath={"firstCar.car.carCountryPlate"}
@@ -52,7 +73,26 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         label="Vehicle model"
         declarationPath={"firstCar.car.carModel"}
       />
-      <ImpactAssistButton label="DRIVER DETAILS" onPress={() => {}} />
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
+          {t("Driver Details")}
+        </Text>
+      </View>
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="First Name"
@@ -115,7 +155,26 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           new Date(watch("firstCar.driver.drivingLicenceExpirationDate"))
         )}
       </Text>
-      <ImpactAssistButton label="INSURER DETAILS" onPress={() => {}} />
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
+          {t("Insurer Details")}
+        </Text>
+      </View>
       <DeclarationTextInput
         label="Family Name"
         declarationPath={"firstCar.insurer.familyName"}
@@ -140,7 +199,26 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
         label="Contacts"
         declarationPath={"firstCar.insurer.contacts"}
       />
-      <ImpactAssistButton label="INSURANCE DETAILS" onPress={() => {}} />
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
+          {t("Insurance Details")}
+        </Text>
+      </View>
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
         label="Insurance Company Name"
@@ -198,7 +276,26 @@ export default function DeclarationFirstCar({}: DeclarationFirstCarProps) {
           new Date(watch("firstCar.insurance.insuranceValidTo"))
         )}
       </Text>
-      <ImpactAssistButton label="DAMAGE CIRCUMSTANCES" onPress={() => {}} />
+      <View
+        style={{
+          padding: 8,
+          marginTop: 8,
+          marginBottom: 8,
+          borderRadius: 6,
+          backgroundColor: theme.colors.text,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme.colors.background,
+            fontWeight: "bold",
+          }}
+        >
+          {t("Damage Circumstances")}
+        </Text>
+      </View>
       <ImpactAssistButton
         label="Pick Damage Circumstance"
         onPress={() => {

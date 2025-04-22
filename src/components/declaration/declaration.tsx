@@ -5,7 +5,6 @@ import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Portal, Snackbar } from "react-native-paper";
 import { Declaration as DeclarationModel } from "../../model/declaration";
-import ConnectionStatus from "../custom/connection-status";
 import MapContent from "./_components/map-content";
 import { convertJsonDataToPath } from "./_components/skia-signature";
 import { DeclarationContext } from "./_context/declaration-context";
@@ -132,7 +131,6 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         setLocationSelected={setLocationSelected}
         showModal={showModal}
       />
-      <ConnectionStatus status={status} />
       <Snackbar
         visible={error}
         onDismiss={() => setError(false)}

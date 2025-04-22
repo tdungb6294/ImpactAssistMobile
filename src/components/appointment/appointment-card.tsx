@@ -40,7 +40,7 @@ export default function AppointmentCard({ appointment }: AppointmentCardProps) {
             {t("Status")}
           </Text>
           <Text numberOfLines={1} style={{ color: theme.colors.text }}>
-            {appointment.appointmentStatus}
+            {t(appointment.appointmentStatus)}
           </Text>
         </View>
         <View style={{ alignItems: "flex-end" }}>
@@ -51,7 +51,7 @@ export default function AppointmentCard({ appointment }: AppointmentCardProps) {
             {formattedStartTime} - {formattedEndTime}
           </Text>
           <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
-            {appointment.dayOfWeek}
+            {t(appointment.dayOfWeek)}
           </Text>
         </View>
       </View>

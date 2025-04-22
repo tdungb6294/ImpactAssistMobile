@@ -74,11 +74,19 @@ export default function ClaimTab({ showModal, type }: ClaimTabProps) {
     <ClaimTabContext.Provider
       value={{ isInputNearBottom, setIsInputNearBottom, handleTapOnInput }}
     >
-      <View style={styles.container}>
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
         <GestureDetector gesture={tapGesture}>
           <View style={styles.header}>
             {CLAIM_TABS.map((tab, index) => (
-              <TouchableOpacity key={index} style={styles.tab}>
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.tab,
+                  { backgroundColor: theme.colors.background },
+                ]}
+              >
                 <View style={styles.dividerBar} />
                 <Text>{tab}</Text>
                 <View style={styles.dividerBar} />
@@ -89,6 +97,7 @@ export default function ClaimTab({ showModal, type }: ClaimTabProps) {
                 style={[
                   {
                     ...styles.highlight,
+                    backgroundColor: theme.colors.primary,
                     transform: [{ translateX: translateHighlightX }],
                   },
                 ]}
@@ -160,7 +169,6 @@ const styles = StyleSheet.create({
   highlight: {
     bottom: 0,
     position: "absolute",
-    backgroundColor: "blue",
     width: width / 4,
     height: 2,
   },

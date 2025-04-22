@@ -52,11 +52,16 @@ export default function DeclarationTab({
   const theme: CustomTheme = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <GestureDetector gesture={tapGesture}>
         <View style={styles.header}>
           {TABS.map((tab, index) => (
-            <TouchableOpacity key={index} style={styles.tab}>
+            <TouchableOpacity
+              key={index}
+              style={[styles.tab, { backgroundColor: theme.colors.background }]}
+            >
               <View style={styles.dividerBar} />
               <Text>{tab}</Text>
               <View style={styles.dividerBar} />
@@ -67,6 +72,7 @@ export default function DeclarationTab({
               style={[
                 {
                   ...styles.highlight,
+                  backgroundColor: theme.colors.primary,
                   transform: [{ translateX: translateHighlightX }],
                 },
               ]}
@@ -133,7 +139,6 @@ const styles = StyleSheet.create({
   highlight: {
     bottom: 0,
     position: "absolute",
-    backgroundColor: "blue",
     width: width / TABS.length,
     height: 2,
     zIndex: 1,

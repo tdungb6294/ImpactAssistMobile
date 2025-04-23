@@ -270,8 +270,8 @@ export default function LocalExpertPage() {
               {t("Available Slots")}
             </Text>
           </View>
-          {queryLocalAvailability.data?.slots.map((slot) => (
-            <>
+          {queryLocalAvailability.data?.slots.map((slot, index) => (
+            <View key={index}>
               {checkSlotAvailability(slot.id, slot.dayOfWeek) && (
                 <ImpactAssistButton
                   key={slot.id}
@@ -284,7 +284,7 @@ export default function LocalExpertPage() {
                   }}
                 />
               )}
-            </>
+            </View>
           ))}
         </View>
         <Portal>

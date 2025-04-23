@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import Flag from "react-native-country-flag";
 import { Divider, Menu, Switch, Text, useTheme } from "react-native-paper";
 import ImpactAssistButton from "../../components/custom/button";
@@ -90,6 +90,12 @@ export default function SettingsPage() {
         <Menu
           visible={isDropdownOpen}
           onDismiss={toggleDropdown}
+          contentStyle={{
+            backgroundColor: theme.colors.background,
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: theme.colors.borderSeparatorTertiary,
+          }}
           anchor={
             <Pressable
               style={{
@@ -112,28 +118,40 @@ export default function SettingsPage() {
             </Pressable>
           }
         >
-          {languages.map((language) => (
-            <Pressable
-              key={language.value}
-              onPress={() => {
-                handleSelectLanguage(language);
-              }}
+          {languages.map((language, index) => (
+            <View
+              key={index}
               style={{
-                flexDirection: "row",
-                width: 120,
-                justifyContent: "space-between",
-                padding: 4,
-                backgroundColor: theme.colors.background,
                 alignItems: "center",
+                gap: 8,
+                paddingHorizontal: 8,
               }}
             >
-              <Text style={{ color: theme.colors.text }}>{language.label}</Text>
-              <Flag
-                style={{ backgroundColor: "transparent" }}
-                isoCode={language.isoCode}
-                size={32}
-              />
-            </Pressable>
+              {index !== 0 && <Divider />}
+              <TouchableOpacity
+                key={language.value}
+                onPress={() => {
+                  handleSelectLanguage(language);
+                }}
+                style={{
+                  flexDirection: "row",
+                  width: 120,
+                  justifyContent: "space-between",
+                  padding: 4,
+                  backgroundColor: theme.colors.background,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: theme.colors.text }}>
+                  {language.label}
+                </Text>
+                <Flag
+                  style={{ backgroundColor: "transparent" }}
+                  isoCode={language.isoCode}
+                  size={32}
+                />
+              </TouchableOpacity>
+            </View>
           ))}
         </Menu>
       </View>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { File, Paths } from "expo-file-system/next";
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,13 +14,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ActivityIndicator, Modal, Portal, useTheme } from "react-native-paper";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
 import Icon from "react-native-vector-icons/AntDesign";
 import { WebView } from "react-native-webview";
 import ImpactAssistButton from "../../../../components/custom/button";
@@ -36,7 +30,7 @@ export default function CarClaimPage() {
   const showModal = () => setVisibile(true);
   const hideModal = () => setVisibile(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const router = useRouter();
 
   const { isFetching, data, refetch } = useQuery({
     queryKey: ["claim", id],
@@ -51,29 +45,6 @@ export default function CarClaimPage() {
   const formatted = now.format("YYYY-MM-DD HH:mm");
   const blurhash =
     "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
-
-  const scale = useSharedValue(1);
-  const focalX = useSharedValue(0);
-  const focalY = useSharedValue(0);
-
-  const pinchGesture = Gesture.Pinch()
-    .onStart(() => {
-      setScrollEnabled(false);
-    })
-    .onUpdate((e) => {
-      scale.value = e.scale;
-      focalX.value = e.focalX;
-      focalY.value = e.focalY;
-    })
-    .onEnd(() => {
-      scale.value = withTiming(1, { duration: 200 });
-      setScrollEnabled(true);
-    })
-    .runOnJS(true);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
 
   return (
     <ScrollView
@@ -92,7 +63,6 @@ export default function CarClaimPage() {
           }}
         />
       }
-      scrollEnabled={scrollEnabled}
     >
       <Portal>
         <Modal visible={visible} onDismiss={hideModal}>
@@ -131,7 +101,9 @@ export default function CarClaimPage() {
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
             {t("Status")}
           </Text>
-          <Text style={{ color: theme.colors.text }}>{data?.claimStatus}</Text>
+          <Text style={{ color: theme.colors.text }}>
+            {t(data?.claimStatus || "Unknown")}
+          </Text>
         </View>
         <View>
           <Text style={{ fontWeight: "bold", color: theme.colors.text }}>
@@ -319,39 +291,30 @@ export default function CarClaimPage() {
                 />
               )}
             </View>
-            <GestureDetector gesture={pinchGesture}>
+            <View
+              style={{
+                overflow: "hidden",
+              }}
+            >
               <View
-                style={{
-                  overflow: "hidden",
-                }}
+                style={[
+                  {
+                    height: 200,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                  },
+                ]}
               >
-                <Animated.View
-                  style={[
-                    {
-                      height: 200,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                    },
-                    animatedStyle,
-                  ]}
-                >
-                  <Image
-                    style={styles.image}
-                    source={imageUrl}
-                    placeholder={{ blurhash }}
-                    contentFit="contain"
-                    transition={1000}
-                    onTouchStart={() => {
-                      setScrollEnabled(false);
-                    }}
-                    onTouchEnd={() => {
-                      setScrollEnabled(true);
-                    }}
-                  />
-                </Animated.View>
+                <Image
+                  style={styles.image}
+                  source={imageUrl}
+                  placeholder={{ blurhash }}
+                  contentFit="contain"
+                  transition={1000}
+                />
               </View>
-            </GestureDetector>
+            </View>
           </View>
         ))}
       </View>
@@ -444,12 +407,6 @@ export default function CarClaimPage() {
               }}
               androidZoomEnabled={true}
               scalesPageToFit={true}
-              onTouchStart={() => {
-                setScrollEnabled(false);
-              }}
-              onTouchEnd={() => {
-                setScrollEnabled(true);
-              }}
               source={{ uri: document.url }}
             />
           </View>
@@ -466,14 +423,14 @@ export default function CarClaimPage() {
         label={t("Create Report Estimate")}
         style={{ marginTop: 8 }}
         onPress={() => {
-          showModal();
+          router.navigate(`/claim/damage-report/create/${id}`);
         }}
       />
       <ImpactAssistButton
         label={t("Check Reports")}
         style={{ marginTop: 8 }}
         onPress={() => {
-          showModal();
+          router.navigate(`/claim/damage-report/${id}`);
         }}
       />
       <View style={{ marginBottom: 40 }} />
@@ -495,6 +452,5 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 200,
     width: "100%",
-    backgroundColor: "#0553",
   },
 });

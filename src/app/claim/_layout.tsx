@@ -1,9 +1,11 @@
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 
 export default function ClaimLayout() {
   return (
-    <>
-      <Slot />
-    </>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    />
   );
 }

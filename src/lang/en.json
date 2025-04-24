@@ -215,5 +215,12 @@
   "Going Straight Ahead": "Going Straight Ahead",
   "Reversing": "Reversing",
   "Create New Vehicle Claim": "Create New Vehicle Claim",
-  "Generate PDF Report": "Generate PDF Report"
+  "Generate PDF Report": "Generate PDF Report",
+  "Go To Report": "Go To Report",
+  "Report created successfully": "Report created successfully",
+  "Estimate With AI": "Estimate With AI",
+  "Bank account": "Bank account",
+  "Repair at local expert": "Repair at local expert",
+  "Failed to create claim": "Failed to create claim",
+  "Claim created successfully": "Claim created successfully"
 }

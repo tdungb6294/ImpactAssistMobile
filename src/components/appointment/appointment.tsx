@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { TouchableRipple, useTheme } from "react-native-paper";
@@ -25,6 +25,10 @@ export default function AppointmentPage() {
   const scrollToItem = (index: number) => {
     flatListRef.current?.scrollToIndex({ index, animated: true });
   };
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -76,34 +80,36 @@ export default function AppointmentPage() {
           padding: 20,
         }}
       >
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          region={{
-            latitude: data?.at(0)?.latitude || 0,
-            longitude: data?.at(0)?.longitude || 0,
-            latitudeDelta: 0.04,
-            longitudeDelta: 0.04,
-          }}
-          zoomEnabled={true}
-          rotateEnabled={false}
-        >
-          {allLocalExperts.map((localExpert, index) => (
-            <Marker
-              key={localExpert.id}
-              coordinate={{
-                latitude: localExpert.latitude,
-                longitude: localExpert.longitude,
-              }}
-              title={localExpert.fullName}
-              description={localExpert.description}
-              onPress={() => {
-                scrollToItem(index);
-                setIsFocused(index);
-              }}
-            />
-          ))}
-        </MapView>
+        {allLocalExperts.length > 0 && (
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            region={{
+              latitude: allLocalExperts.at(0)?.latitude || 0,
+              longitude: allLocalExperts.at(0)?.longitude || 0,
+              latitudeDelta: 0.04,
+              longitudeDelta: 0.04,
+            }}
+            zoomEnabled={true}
+            rotateEnabled={false}
+          >
+            {allLocalExperts.map((localExpert, index) => (
+              <Marker
+                key={localExpert.id}
+                coordinate={{
+                  latitude: localExpert.latitude,
+                  longitude: localExpert.longitude,
+                }}
+                title={localExpert.fullName}
+                description={localExpert.description}
+                onPress={() => {
+                  scrollToItem(index);
+                  setIsFocused(index);
+                }}
+              />
+            ))}
+          </MapView>
+        )}
       </View>
     </View>
   );

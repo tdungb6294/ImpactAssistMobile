@@ -214,5 +214,12 @@
   "Going Straight Ahead": "Važiuojant tiesiai",
   "Reversing": "Važiuojant atbuline eiga",
   "Create New Vehicle Claim": "Sukurti naują transporto priemonės pretenziją",
-  "Generate PDF Report": "Generuoti PDF ataskaitą"
+  "Generate PDF Report": "Generuoti PDF ataskaitą",
+  "Go To Report": "Užeiti į ataskaitą",
+  "Report created successfully": "Ataskaita sėkmingai sukurta",
+  "Estimate With AI": "Įvertinti su dirbtiniu intelektu",
+  "Bank account": "Banko sąskaita",
+  "Repair at local expert": "Remontas pas vietinį ekspertą",
+  "Failed to create claim": "Nepavyko sukurti pretenzijos",
+  "Claim created successfully": "Pretenzija sėkmingai sukurta"
 }

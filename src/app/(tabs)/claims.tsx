@@ -86,7 +86,8 @@ export default function ClaimsPage() {
         }}
       >
         <Text style={{ color: theme.colors.text }}>
-          {t("Items")}: {allClaims.length} {t("of")} {data?.pages[0].total ?? 0}
+          {t("Items")}: {allClaims.length} {t("of")}{" "}
+          {data?.pages.at(0)?.total ?? 0}
         </Text>
         <ImpactAssistButton
           onPress={() => {
@@ -128,8 +129,9 @@ export default function ClaimsPage() {
       <FlatList
         data={allClaims}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <TouchableRipple
+            key={index}
             style={{ flex: 1 }}
             onPress={() => {
               if (item.claimType === "Vehicle") {

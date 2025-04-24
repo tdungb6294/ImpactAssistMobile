@@ -15,7 +15,7 @@ interface ClaimProps {
 
 export default function Claim({ type }: ClaimProps) {
   const [visible, setVisibile] = useState(false);
-  const { control, handleSubmit, setValue, formState, watch } =
+  const { control, handleSubmit, setValue, formState, watch, reset } =
     useForm<ClaimModel>({
       defaultValues: {
         locationLatitude: 0,

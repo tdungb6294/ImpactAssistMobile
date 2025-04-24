@@ -24,7 +24,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   const [visible, setVisibile] = useState(false);
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
   const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
-  const socket = new WebSocket("ws://10.0.2.2:9000");
+  const socket = new WebSocket("ws://10.0.2.2:9999");
   const { control, handleSubmit, setValue, formState, watch, reset } =
     useForm<DeclarationModel>({ defaultValues: initialDeclaration });
   const [status, setStatus] = useState("connecting");

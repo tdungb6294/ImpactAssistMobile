@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import { ActivityIndicator, Modal, Portal, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
-import WebView from "react-native-webview";
 import ImpactAssistButton from "../../../../components/custom/button";
 import LocalExpertFlatList from "../../../../components/local-expert/local-expert-flat-list";
 import { CustomTheme } from "../../../../theme/theme";
@@ -400,15 +399,6 @@ export default function CarClaimPage() {
                 />
               )}
             </View>
-            <WebView
-              style={{
-                width: "100%",
-                height: 200,
-              }}
-              androidZoomEnabled={true}
-              scalesPageToFit={true}
-              source={{ uri: document.url }}
-            />
           </View>
         ))}
       </View>

@@ -152,7 +152,7 @@ export default function ClaimInsuranceAccidentDetails({
           visible={showEnumSelector}
           onDismiss={() => setShowEnumSelector(false)}
           setSelectedValue={(value) => {
-            setValue("weatherCondition", t(value) as WeatherCondition);
+            setValue("weatherCondition", value as WeatherCondition);
           }}
         />
       )}
@@ -163,7 +163,7 @@ export default function ClaimInsuranceAccidentDetails({
         }}
       />
       <Text variant="titleMedium">
-        {t("Weather Condition")}: {watch("weatherCondition")}
+        {t("Weather Condition")}: {t(watch("weatherCondition"))}
       </Text>
       {showEnumSelector2 && (
         <ImpactAssistEnumSelector
@@ -182,7 +182,7 @@ export default function ClaimInsuranceAccidentDetails({
         }}
       />
       <Text variant="titleMedium">
-        {t("Compensation method")}: {watch("compensationMethod")}
+        {t("Compensation method")}: {t(watch("compensationMethod"))}
       </Text>
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput

@@ -16,10 +16,10 @@ import {
 } from "react-native";
 import { ActivityIndicator, Modal, Portal, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
-import { WebView } from "react-native-webview";
 import ImpactAssistButton from "../../../../components/custom/button";
 import LocalExpertFlatList from "../../../../components/local-expert/local-expert-flat-list";
 import { CustomTheme } from "../../../../theme/theme";
+import { createAiDamageReport } from "../../../../utils/create-ai-damage-report";
 import { fetchCarClaimDetails } from "../../../../utils/fetch-car-claim-details";
 
 export default function CarClaimPage() {
@@ -31,6 +31,7 @@ export default function CarClaimPage() {
   const hideModal = () => setVisibile(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
 
   const { isFetching, data, refetch } = useQuery({
     queryKey: ["claim", id],
@@ -400,15 +401,6 @@ export default function CarClaimPage() {
                 />
               )}
             </View>
-            <WebView
-              style={{
-                width: "100%",
-                height: 200,
-              }}
-              androidZoomEnabled={true}
-              scalesPageToFit={true}
-              source={{ uri: document.url }}
-            />
           </View>
         ))}
       </View>
@@ -431,6 +423,33 @@ export default function CarClaimPage() {
         style={{ marginTop: 8 }}
         onPress={() => {
           router.navigate(`/claim/damage-report/${id}`);
+        }}
+      />
+      <ImpactAssistButton
+        label={isCreating ? <ActivityIndicator /> : t("Estimate With AI")}
+        style={{ marginTop: 8 }}
+        onPress={async () => {
+          setIsCreating(true);
+          const reportId = await createAiDamageReport(parseInt(id as string));
+          if (reportId === -1) {
+            Alert.alert(t("Error"));
+            setIsCreating(false);
+            return;
+          }
+          Alert.alert(t("Success"), t("Report created successfully"), [
+            {
+              text: t("Go To Report"),
+              onPress: () => {
+                router.navigate(
+                  `/claim/damage-report/${id}/report/${reportId}`
+                );
+              },
+            },
+            {
+              text: t("Understood"),
+            },
+          ]);
+          setIsCreating(false);
         }}
       />
       <View style={{ marginBottom: 40 }} />

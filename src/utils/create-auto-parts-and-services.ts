@@ -16,7 +16,7 @@ export const createAutoPartsAndServices = async (
     });
     return response.data as number;
   } catch (e) {
-    console.error("Error creating appointment:", e);
+    console.error("Error creating damage report:", e);
     return -1;
   }
 };

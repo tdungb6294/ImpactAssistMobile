@@ -1,6 +1,8 @@
 import { axios } from "../lib/axios";
 
-export const createCarClaim = async (formData: FormData): Promise<number> => {
+export const createCarClaim = async (
+  formData: FormData
+): Promise<number | string> => {
   try {
     const response = await axios.post("/claim/car", formData, {
       headers: {
@@ -9,8 +11,11 @@ export const createCarClaim = async (formData: FormData): Promise<number> => {
       transformRequest: (data) => data,
     });
     return response.data as number;
-  } catch (error) {
-    console.error("Error fetching claims:", error);
-    return -1;
+  } catch (error: any) {
+    console.error(
+      "Error fetching claims:",
+      JSON.stringify(error?.response?.data)
+    );
+    return JSON.stringify(error.response?.data) || -1;
   }
 };

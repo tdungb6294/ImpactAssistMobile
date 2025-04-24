@@ -1,11 +1,12 @@
 import * as FileSystem from "expo-file-system";
 import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dimensions, StyleSheet } from "react-native";
+import { Alert, Dimensions, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { btoa } from "react-native-quick-base64";
 import { CustomTheme } from "../../../theme/theme";
+import { camelToTitleCase } from "../../../utils/camel-to-title-case";
 import { createCarClaim } from "../../../utils/create-car-claim";
 import ImpactAssistButton from "../../custom/button";
 import { ClaimContext } from "../_context/claim-context";
@@ -58,10 +59,20 @@ export default function CarClaimReview({}: ClaimReviewProps) {
       }
     }
     const newClaimId = await createCarClaim(formData);
-    if (newClaimId) {
+    if (typeof newClaimId === "number") {
       console.log("New claim created with ID:", newClaimId);
+      Alert.alert(
+        t("Success"),
+        `${t("Claim created successfully")}: ${newClaimId}`,
+        [{ text: t("OK") }]
+      );
     } else {
-      console.error("Failed to create new claim.");
+      const result = Object.entries(JSON.parse(newClaimId)).map(
+        ([key, value]) => `${camelToTitleCase(key)}: ${value}`
+      );
+      Alert.alert(t("Error"), `${t("Failed to create claim")}: ${result}`, [
+        { text: t("OK") },
+      ]);
     }
     setIsCreating(false);
   };

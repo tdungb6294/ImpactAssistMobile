@@ -162,11 +162,11 @@ export default function AuthorizationPage() {
                 required: t("This field is required"),
                 minLength: {
                   value: 5,
-                  message: t("Email must be at least 5 characters long"),
+                  message: t("Password must be at least 8 characters long"),
                 },
                 maxLength: {
                   value: 100,
-                  message: t("Email must be at most 100 characters long"),
+                  message: t("Password must be at most 100 characters long"),
                 },
               }}
             />

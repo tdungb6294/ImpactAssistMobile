@@ -50,6 +50,8 @@ export default function ReportDamage() {
     []
   );
 
+  const allLocalExperts = data?.autoParts || [];
+
   return (
     <View
       style={[
@@ -105,7 +107,7 @@ export default function ReportDamage() {
             />
           }
         >
-          {data?.autoParts.map((item) => (
+          {allLocalExperts.map((item) => (
             <TouchableRipple
               key={item.id}
               onPress={() => {

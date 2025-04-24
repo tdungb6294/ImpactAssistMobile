@@ -6,6 +6,7 @@ import {
   useCanvasRef,
 } from "@shopify/react-native-skia";
 import { Dispatch, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import ImpactAssistButton from "../../custom/button";
@@ -23,6 +24,7 @@ export default function SkiaSignature({
 }: SkiaSignatureProps) {
   const [currentPath, setCurrentPath] = useState<SkPath | null>(null);
   const canvasRef = useCanvasRef();
+  const { t } = useTranslation();
 
   const pan = Gesture.Pan()
     .onStart(({ x, y }) => {
@@ -86,10 +88,10 @@ export default function SkiaSignature({
         onPress={() => {
           onOk(paths, saveDrawingAsImage());
         }}
-        label="Submit Signature"
+        label={t("Submit Signature")}
       />
       <ImpactAssistButton
-        label="Clear Signature"
+        label={t("Clear Signature")}
         onPress={() => setPaths([])}
       />
     </View>

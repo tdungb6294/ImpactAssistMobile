@@ -1,21 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
+import * as FileSystem from "expo-file-system";
+import { StorageAccessFramework } from "expo-file-system";
 import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { useTheme } from "react-native-paper";
+import { ActivityIndicator, useTheme } from "react-native-paper";
+import { fromByteArray } from "react-native-quick-base64";
+import ImpactAssistButton from "../../../../../../components/custom/button";
 import { CustomTheme } from "../../../../../../theme/theme";
 import { fetchDamageReport } from "../../../../../../utils/fetch-damage-report";
+import { fetchDamageReportPDF } from "../../../../../../utils/fetch-damage-report-pdf";
 import { LanguageContext } from "../../../../../_layout";
+
 export default function DamageReportByIdPage() {
   const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
+  const [isCreating, setIsCreating] = useState(false);
 
   const { reportId } = useLocalSearchParams();
   const { language } = useContext(LanguageContext);
@@ -36,6 +44,41 @@ export default function DamageReportByIdPage() {
         },
       ]}
     >
+      <ImpactAssistButton
+        style={{
+          marginBottom: 8,
+        }}
+        label={isCreating ? <ActivityIndicator /> : t("Generate PDF Report")}
+        onPress={async () => {
+          setIsCreating(true);
+          const permissions =
+            await StorageAccessFramework.requestDirectoryPermissionsAsync();
+          if (!permissions.granted) {
+            return;
+          }
+          try {
+            const response = await fetchDamageReportPDF(
+              parseInt(reportId as string)
+            );
+            const uri = await StorageAccessFramework.createFileAsync(
+              permissions.directoryUri,
+              "damage_report.pdf",
+              "application/pdf"
+            );
+            await FileSystem.writeAsStringAsync(uri, fromByteArray(response), {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+          } catch (e) {
+            Alert.alert("Error", "Failed to create file", [{ text: "OK" }]);
+            setIsCreating(false);
+            return;
+          }
+          Alert.alert("Success", "Declaration created successfully", [
+            { text: "OK" },
+          ]);
+          setIsCreating(false);
+        }}
+      />
       <View
         style={{
           padding: 8,

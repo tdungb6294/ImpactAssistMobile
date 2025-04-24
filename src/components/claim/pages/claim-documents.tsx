@@ -1,15 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
+import { Image } from "expo-image";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  Dimensions,
-  Image,
-  Linking,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { CustomTheme } from "../../../theme/theme";
@@ -25,16 +18,6 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
     useContext(ClaimContext);
   const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
-  const isPdf = (mime?: string) => mime === "application/pdf";
-
-  const openPDF = async (uri: string) => {
-    const supported = await Linking.canOpenURL(uri);
-    if (supported) {
-      await Linking.openURL(uri);
-    } else {
-      Alert.alert(t("Can't open this file."));
-    }
-  };
 
   return (
     <ScrollView
@@ -78,32 +61,134 @@ export default function ClaimDocuments({}: ClaimDocumentsProps) {
         }}
         label={t("Pick Images")}
       />
+
       <View>
-        {documents?.assets?.map((item, index) => {
-          return (
+        <View
+          style={{
+            padding: 8,
+            marginTop: 8,
+            marginBottom: 8,
+            borderRadius: 6,
+            backgroundColor: theme.colors.text,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              color: theme.colors.background,
+              fontWeight: "bold",
+            }}
+          >
+            {t("Images")}
+          </Text>
+        </View>
+        <View
+          style={[
+            styles.secondaryContainer,
+            { borderColor: theme.colors.text },
+          ]}
+        >
+          {images?.assets?.map((image, index) => (
             <View key={index}>
-              {isPdf(item.mimeType) && (
-                <TouchableOpacity onPress={() => openPDF(item.uri)}>
-                  <Text
-                    style={{ color: "blue", textDecorationLine: "underline" }}
-                  >
-                    {t("Open PDF")}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: theme.colors.text,
+                    fontWeight: "bold",
+                    marginBottom: 4,
+                  }}
+                >
+                  {index + 1} {t("Image")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  overflow: "hidden",
+                }}
+              >
+                <View
+                  style={[
+                    {
+                      height: 200,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                    },
+                  ]}
+                >
+                  <Image
+                    style={styles.image}
+                    source={image.uri}
+                    contentFit="contain"
+                    transition={1000}
+                  />
+                </View>
+              </View>
             </View>
-          );
-        })}
-        {images?.assets?.map((item, index) => {
-          return (
-            <View key={index}>
-              <Image
-                source={{ uri: item.uri }}
-                style={{ width: 200, height: 200 }}
-              />
+          ))}
+        </View>
+        <View
+          style={{
+            padding: 8,
+            marginTop: 8,
+            marginBottom: 8,
+            borderRadius: 6,
+            backgroundColor: theme.colors.text,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              color: theme.colors.background,
+              fontWeight: "bold",
+            }}
+          >
+            {t("Documents")}
+          </Text>
+        </View>
+        <View
+          style={[
+            styles.secondaryContainer,
+            { borderColor: theme.colors.text },
+          ]}
+        >
+          {documents?.assets?.map((document, index) => (
+            <View
+              style={{
+                flex: 1,
+              }}
+              key={index}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: theme.colors.text,
+                    fontWeight: "bold",
+                    marginBottom: 4,
+                  }}
+                >
+                  {index + 1} {t("Document")} {document.name}
+                </Text>
+              </View>
             </View>
-          );
-        })}
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -118,5 +203,16 @@ const styles = StyleSheet.create({
     padding: 8,
     flexDirection: "column",
     gap: 8,
+  },
+  secondaryContainer: {
+    borderWidth: 1,
+    borderRadius: 6,
+    padding: 8,
+    gap: 8,
+  },
+  image: {
+    flex: 1,
+    height: 200,
+    width: "100%",
   },
 });

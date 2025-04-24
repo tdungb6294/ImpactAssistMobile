@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
@@ -13,6 +14,7 @@ const { width } = Dimensions.get("window");
 export default function ClaimVehicleDetails({}: ClaimVehicleDetailsProps) {
   const { setValue, watch } = useContext(ClaimContext);
   const theme: CustomTheme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <ScrollView
@@ -20,7 +22,7 @@ export default function ClaimVehicleDetails({}: ClaimVehicleDetailsProps) {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ImpactAssistTextInput
-        label={"Car Model"}
+        label={t("Vehicle Model")}
         value={watch("carModel")}
         onChangeText={(text) => {
           setValue("carModel", text);
@@ -28,7 +30,7 @@ export default function ClaimVehicleDetails({}: ClaimVehicleDetailsProps) {
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Vehicle Registration Number"}
+        label={t("Vehicle Registration Number")}
         value={watch("vehicleRegistrationNumber")}
         onChangeText={(text) => {
           setValue("vehicleRegistrationNumber", text);
@@ -36,7 +38,7 @@ export default function ClaimVehicleDetails({}: ClaimVehicleDetailsProps) {
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Vehicle Identification Number"}
+        label={t("Vehicle Identification Number")}
         value={watch("vehicleIdentificationNumber")}
         onChangeText={(text) => {
           setValue("vehicleIdentificationNumber", text);
@@ -44,7 +46,7 @@ export default function ClaimVehicleDetails({}: ClaimVehicleDetailsProps) {
       />
       <View style={{ marginVertical: 8 }} />
       <ImpactAssistTextInput
-        label={"Odometer Mileage"}
+        label={t("Odometer Mileage")}
         value={watch("odometerMileage")}
         onChangeText={(text) => {
           setValue("odometerMileage", text);

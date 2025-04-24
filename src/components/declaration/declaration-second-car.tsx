@@ -62,15 +62,15 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
         </Text>
       </View>
       <DeclarationTextInput
-        label="Vehicle country plate"
+        label={t("Vehicle country plate")}
         declarationPath={"secondCar.car.carCountryPlate"}
       />
       <DeclarationTextInput
-        label="Vehicle country registration"
+        label={t("Vehicle country registration")}
         declarationPath={"secondCar.car.carCountryRegistration"}
       />
       <DeclarationTextInput
-        label="Vehicle model"
+        label={t("Vehicle model")}
         declarationPath={"secondCar.car.carModel"}
       />
       <View
@@ -95,40 +95,40 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
       </View>
       <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
-        label="First Name"
+        label={t("First Name")}
         declarationPath={"secondCar.driver.name"}
       />
       <DeclarationTextInput
-        label="Second Name"
+        label={t("Second Name")}
         declarationPath={"secondCar.driver.familyName"}
       />
       <DeclarationTextInput
-        label="Address"
+        label={t("Address")}
         declarationPath={"secondCar.driver.address"}
       />
       <DeclarationTextInput
-        label="Postal code"
+        label={t("Postal code")}
         declarationPath={"secondCar.driver.postalCode"}
       />
       <DeclarationTextInput
-        label="Country"
+        label={t("Country")}
         declarationPath={"secondCar.driver.country"}
       />
       <DeclarationTextInput
-        label="Contacts"
+        label={t("Contacts")}
         declarationPath={"secondCar.driver.contacts"}
       />
       <DeclarationTextInput
-        label="Driving Licence Number"
+        label={t("Driving Licence Number")}
         declarationPath={"secondCar.driver.drivingLicenceNumber"}
       />
       <DeclarationTextInput
-        label="Driving Licence Category"
+        label={t("Driving Licence Category")}
         declarationPath={"secondCar.driver.drivingLicenceCategory"}
       />
       <ImpactAssistButton
         onPress={() => setShow(true)}
-        label="Pick Driver Licence Expiration Date"
+        label={t("Pick Driver Licence Expiration Date")}
       />
       <DatePickerModal
         locale="lt"
@@ -150,7 +150,7 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
         }}
       />
       <Text variant="titleMedium">
-        Driver license expiration date:{" "}
+        {t("Driver licence expiration date")}:{" "}
         {dateFormatter.format(
           new Date(watch("secondCar.driver.drivingLicenceExpirationDate"))
         )}
@@ -176,27 +176,27 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
         </Text>
       </View>
       <DeclarationTextInput
-        label="Family Name"
+        label={t("Family Name")}
         declarationPath={"secondCar.insurer.familyName"}
       />
       <DeclarationTextInput
-        label="Name"
+        label={t("Name")}
         declarationPath={"secondCar.insurer.name"}
       />
       <DeclarationTextInput
-        label="Address"
+        label={t("Address")}
         declarationPath={"secondCar.insurer.address"}
       />
       <DeclarationTextInput
-        label="Postal Code"
+        label={t("Postal code")}
         declarationPath={"secondCar.insurer.postalCode"}
       />
       <DeclarationTextInput
-        label="Country"
+        label={t("Country")}
         declarationPath={"secondCar.insurer.country"}
       />
       <DeclarationTextInput
-        label="Contacts"
+        label={t("Contacts")}
         declarationPath={"secondCar.insurer.contacts"}
       />
       <View
@@ -219,22 +219,24 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
           {t("Insurance Details")}
         </Text>
       </View>
+      <View style={{ marginVertical: 8 }} />
       <DeclarationTextInput
-        label="Insurance Company Name"
+        label={t("Insurance Company Name")}
         declarationPath={"secondCar.insurance.insuranceCompanyName"}
       />
       <DeclarationTextInput
-        label="Insurance Policy Number"
+        label={t("Insurance Policy Number")}
         declarationPath={"secondCar.insurance.insurancePolicyNumber"}
       />
       <DeclarationTextInput
-        label="Insurance Green Card Number"
+        label={t("Insurance Green Card Number")}
         declarationPath={"secondCar.insurance.insuranceGreenCardNumber"}
       />
       <ImpactAssistButton
         onPress={() => setShow2(true)}
-        label="Pick Insurance Validity Dates"
+        label={t("Pick Insurance Validity Dates")}
       />
+      <View style={{ marginVertical: 8 }} />
       <DatePickerModal
         locale="lt"
         mode="range"
@@ -265,7 +267,7 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
         }}
       />
       <Text variant="titleMedium">
-        Insurance valid:{" "}
+        {t("Insurance valid")}:{" "}
         {dateFormatter.format(
           new Date(watch("secondCar.insurance.insuranceValidFrom"))
         )}
@@ -291,18 +293,18 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
             fontWeight: "bold",
           }}
         >
-          {t("Damage Cirumstance")}
+          {t("Damage Circumstances")}
         </Text>
       </View>
       <ImpactAssistButton
-        label="Pick Damage Circumstance"
+        label={t("Pick Damage Circumstance")}
         onPress={() => {
           setShowEnumSelector(true);
         }}
       />
       <Text variant="titleMedium">
-        Damage Circumstance:{" "}
-        {camelToTitleCase(watch("secondCar.circumstance") as Circumstance)}
+        {t("Damage Circumstance")}:{" "}
+        {t(camelToTitleCase(watch("secondCar.circumstance") as Circumstance))}
       </Text>
       {showEnumSelector && (
         <ImpactAssistEnumSelector
@@ -322,7 +324,7 @@ export default function DeclarationSecondCar({}: DeclarationSecondCarProps) {
         />
       )}
       <DeclarationTextInput
-        label="Damage Description"
+        label={t("Damage Description")}
         declarationPath={"secondCar.damageDescription"}
       />
       <View style={{ marginBottom: 20 }} />

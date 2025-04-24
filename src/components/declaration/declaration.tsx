@@ -1,9 +1,11 @@
 import { SkPath } from "@shopify/react-native-skia";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Portal, Snackbar } from "react-native-paper";
+import storage from "../../lib/storage";
 import { Declaration as DeclarationModel } from "../../model/declaration";
 import MapContent from "./_components/map-content";
 import { convertJsonDataToPath } from "./_components/skia-signature";
@@ -23,9 +25,10 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
   const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
   const socket = new WebSocket("ws://10.0.2.2:9000");
-  const { control, handleSubmit, setValue, formState, watch } =
+  const { control, handleSubmit, setValue, formState, watch, reset } =
     useForm<DeclarationModel>({ defaultValues: initialDeclaration });
   const [status, setStatus] = useState("connecting");
+  const { t } = useTranslation();
 
   const showModal = () => {
     setVisibile(true);
@@ -77,6 +80,14 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
 
   useEffect(() => {
     setValue("firstCar.car.carCountryPlate", carCountryPlate);
+    const initialData = async () => {
+      const data: DeclarationModel = await storage.load({ key: "declaration" });
+      if (data) {
+        reset(data);
+      }
+    };
+
+    initialData();
 
     setupWebSocket();
 
@@ -135,13 +146,13 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         visible={error}
         onDismiss={() => setError(false)}
         action={{
-          label: "Understood",
+          label: t("Understood"),
           onPress: () => {
             setError(false);
           },
         }}
       >
-        Error connecting to the Server
+        {t("Error connecting to the Server")}
       </Snackbar>
     </DeclarationContext.Provider>
   );

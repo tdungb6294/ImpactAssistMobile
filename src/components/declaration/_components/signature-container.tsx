@@ -1,5 +1,6 @@
 import { SkPath } from "@shopify/react-native-skia";
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { Switch, Text } from "react-native-paper";
 import { DeclarationContext } from "../_context/declaration-context";
@@ -16,6 +17,7 @@ export default function SignatureContainer() {
     carCountryPlate,
     socket,
   } = useContext(DeclarationContext);
+  const { t } = useTranslation();
 
   const handleOK = (signature: SkPath[]) => {
     isFirst ? setFirstSign(signature) : setSecondSign(signature);
@@ -63,12 +65,12 @@ export default function SignatureContainer() {
           width: "100%",
           flexDirection: "row",
           justifyContent: "space-between",
-          bottom: 140,
+          bottom: 200,
         }}
       >
         <Text variant="titleSmall">
-          Toggle Signature{" [Focused Signature: "}
-          {isFirst ? "First]" : "Second]"}
+          {t("Toggle Signature")}{` [${t("Focused Signature")}: `}
+          {isFirst ? `${t("First")}]` : `${t("Second")}]`}
         </Text>
         <Switch value={isFirst} onValueChange={() => setIsFirst(!isFirst)} />
       </View>

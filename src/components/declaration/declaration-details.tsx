@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, View } from "react-native";
 import { LatLng } from "react-native-maps";
 import { Checkbox, Text, useTheme } from "react-native-paper";
@@ -35,6 +36,7 @@ export default function DeclarationDetails({
     hour: "2-digit",
     minute: "2-digit",
   });
+  const { t } = useTranslation();
 
   async function getCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -58,32 +60,32 @@ export default function DeclarationDetails({
       <View style={styles.mapContainer}>
         <View>
           <DeclarationTextInput
-            label="People injuries"
+            label={t("People injuries")}
             declarationPath={"peopleInjuries"}
           />
           <DeclarationTextInput
-            label="Accident Country Location"
+            label={t("Accident Country Location")}
             declarationPath={"accidentCountryLocation"}
           />
           <DeclarationTextInput
-            label="Witnesses"
+            label={t("Witnesses")}
             declarationPath={"witnesses"}
           />
         </View>
-        <ImpactAssistButton label="Set location" onPress={showModal} />
+        <ImpactAssistButton label={t("Set location")} onPress={showModal} />
         <ImpactAssistButton
-          label="Current location"
+          label={t("Current location")}
           onPress={() => {
             getCurrentLocation();
           }}
         />
         <Text variant="titleMedium">
-          Car accident location: {watch("accidentLatLng.latitude")}{" "}
+          {t("Car accident location")}: {watch("accidentLatLng.latitude")}{" "}
           {watch("accidentLatLng.longitude")}
         </Text>
         <ImpactAssistButton
           onPress={() => setShow(true)}
-          label="Pick Car Accident Date"
+          label={t("Pick Car Accident Date")}
         />
         <DatePickerModal
           locale="lt"
@@ -113,7 +115,7 @@ export default function DeclarationDetails({
         />
         <ImpactAssistButton
           onPress={() => setShowTimepicker(true)}
-          label="Pick Car Accident Time"
+          label={t("Pick Car Accident Time")}
         />
         <TimePickerModal
           locale="lt"
@@ -134,7 +136,7 @@ export default function DeclarationDetails({
           minutes={new Date(watch("datetime")).getMinutes()}
         />
         <Text variant="titleMedium">
-          Car accident date time:{" "}
+          {t("Car accident date time")}:{" "}
           {dateFormatter.format(new Date(watch("datetime")))}
         </Text>
         <View>
@@ -149,7 +151,7 @@ export default function DeclarationDetails({
               variant="titleMedium"
               style={{ height: "100%", textAlignVertical: "center" }}
             >
-              Damage to Cars:
+              {t("Damage to Cars")}
             </Text>
             <Checkbox
               status={watch("damageToCars") ? "checked" : "unchecked"}
@@ -176,7 +178,7 @@ export default function DeclarationDetails({
               variant="titleMedium"
               style={{ height: "100%", textAlignVertical: "center" }}
             >
-              Damage to Objects:
+              {t("Damage to Objects")}
             </Text>
             <Checkbox
               status={watch("damageToObjects") ? "checked" : "unchecked"}

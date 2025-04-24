@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import MapView, {
   LatLng,
@@ -23,6 +24,7 @@ export default function MapContent({
   const [markerCoordinates, setMarkerCoordinates] = useState<LatLng | null>(
     null
   );
+  const { t } = useTranslation();
 
   const handleMapPress = (event: MapPressEvent) => {
     const { coordinate } = event.nativeEvent;
@@ -53,15 +55,15 @@ export default function MapContent({
             longitude:
               markerCoordinates?.longitude || locationSelected.longitude,
           }}
-          title={"Car accident"}
-          description={"car accident happened here"}
+          title={t("Car accident")}
+          description={t("car accident happened here")}
         />
       </MapView>
       <ImpactAssistButton
         onPress={() =>
           markerCoordinates && setLocationSelected(markerCoordinates)
         }
-        label="Set location"
+        label={t("Set location")}
       />
     </View>
   );

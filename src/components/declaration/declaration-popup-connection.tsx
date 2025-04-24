@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Portal, Snackbar, useTheme } from "react-native-paper";
 import { CustomTheme } from "../../theme/theme";
@@ -19,6 +20,7 @@ export default function DeclarationPopupConnection({
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -37,13 +39,13 @@ export default function DeclarationPopupConnection({
       }}
     >
       <ImpactAssistTextInput
-        label="Car country plate"
+        label={t("Car Country Plate")}
         value={carCountryPlate}
         onChangeText={(text) => setCarCountryPlate(text.toUpperCase())}
         onPress={() => {}}
       />
       <ImpactAssistButton
-        label="Join room"
+        label={t("Join room")}
         onPress={() => {
           if (!carCountryPlate) {
             onToggleSnackBar();
@@ -70,7 +72,7 @@ export default function DeclarationPopupConnection({
           }}
           duration={3000}
         >
-          The car country plate is required!
+          {t("The car country plate is required!")}
         </Snackbar>
       </Portal>
     </View>

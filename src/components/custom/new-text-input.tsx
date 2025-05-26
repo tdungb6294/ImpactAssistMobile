@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   NativeSyntheticEvent,
   NativeTouchEvent,
@@ -18,6 +19,7 @@ interface ImpactAssistTextInputProps {
   multiline?: boolean;
   numberOfLines?: number;
   defaultValue?: string;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
 }
 
 export default function ImpactAssistTextInput({
@@ -28,10 +30,12 @@ export default function ImpactAssistTextInput({
   multiline = false,
   numberOfLines = 1,
   defaultValue,
+  keyboardType = "default",
 }: ImpactAssistTextInputProps) {
   const theme: CustomTheme = useTheme();
   const [borderWidth, setBorderWidth] = useState(1);
   const [placeholder, setPlaceholder] = useState<string | undefined>(undefined);
+  const { t } = useTranslation();
 
   return (
     <View
@@ -60,13 +64,14 @@ export default function ImpactAssistTextInput({
         multiline={multiline}
         numberOfLines={numberOfLines}
         placeholder={placeholder}
+        keyboardType={keyboardType}
         placeholderTextColor={theme.colors.borderSeparatorSecondary}
         style={[styles.textInput, { color: theme.colors.text }]}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => {
           setBorderWidth(2);
-          setPlaceholder(`Please enter: ${label}...`);
+          setPlaceholder(`${t(label)}...`);
         }}
         onEndEditing={() => {
           setBorderWidth(1);

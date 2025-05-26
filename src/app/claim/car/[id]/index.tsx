@@ -284,8 +284,7 @@ export default function CarClaimPage() {
                       console.log(output.exists);
                       console.log(output.uri);
                     } catch (error) {
-                      console.error("Error downloading file:", error);
-                      Alert.alert("Error", "Failed to download document");
+                      Sharing.shareAsync(file.uri);
                     }
                     setIsDownloading(false);
                   }}
@@ -393,8 +392,7 @@ export default function CarClaimPage() {
                       console.log(output.exists);
                       console.log(output.uri);
                     } catch (error) {
-                      console.error("Error downloading file:", error);
-                      Alert.alert("Error", "Failed to download document");
+                      Sharing.shareAsync(file.uri);
                     }
                     setIsDownloading(false);
                   }}

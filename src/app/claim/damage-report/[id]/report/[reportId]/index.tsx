@@ -12,10 +12,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { ActivityIndicator, Modal, Portal, useTheme } from "react-native-paper";
 import { fromByteArray } from "react-native-quick-base64";
 import ImpactAssistButton from "../../../../../../components/custom/button";
+import ImpactAssistTextInput from "../../../../../../components/custom/new-text-input";
 import { CustomTheme } from "../../../../../../theme/theme";
+import { createCompensation } from "../../../../../../utils/create-compensation-pdf";
 import { fetchDamageReport } from "../../../../../../utils/fetch-damage-report";
 import { fetchDamageReportPDF } from "../../../../../../utils/fetch-damage-report-pdf";
 import { LanguageContext } from "../../../../../_layout";
@@ -24,6 +26,10 @@ export default function DamageReportByIdPage() {
   const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
+  const [visible, setVisibile] = useState(false);
+  const showModal = () => setVisibile(true);
+  const hideModal = () => setVisibile(false);
+  const [compensationAmount, setCompensationAmount] = useState<string>("");
 
   const { reportId } = useLocalSearchParams();
   const { language } = useContext(LanguageContext);
@@ -44,6 +50,79 @@ export default function DamageReportByIdPage() {
         },
       ]}
     >
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal}>
+          <View
+            style={{
+              borderRadius: 6,
+              margin: 20,
+              padding: 20,
+              gap: 6,
+              height: 160,
+              backgroundColor: theme.colors.background,
+              borderWidth: 2,
+              borderColor: theme.colors.borderSeparatorTertiary,
+              alignContent: "center",
+              justifyContent: "space-between",
+              flexDirection: "column",
+            }}
+          >
+            <ImpactAssistTextInput
+              keyboardType="numeric"
+              label={t("Compensation Amount")}
+              value={compensationAmount}
+              onChangeText={(text) => {
+                const numericRegex = /^\d*(\.\d{0,2})?$/;
+                if (numericRegex.test(text)) {
+                  setCompensationAmount(text.toUpperCase());
+                }
+              }}
+              onPress={() => {}}
+            />
+            <ImpactAssistButton
+              label={
+                isCreating ? <ActivityIndicator /> : t("Create PDF Report")
+              }
+              onPress={async () => {
+                const permissions =
+                  await StorageAccessFramework.requestDirectoryPermissionsAsync();
+                if (!permissions.granted) {
+                  return;
+                }
+                try {
+                  const response = await createCompensation(
+                    parseInt(reportId as string),
+                    parseFloat(compensationAmount)
+                  );
+                  const uri = await StorageAccessFramework.createFileAsync(
+                    permissions.directoryUri,
+                    "compensation.pdf",
+                    "application/pdf"
+                  );
+                  await FileSystem.writeAsStringAsync(
+                    uri,
+                    fromByteArray(response),
+                    {
+                      encoding: FileSystem.EncodingType.Base64,
+                    }
+                  );
+                } catch (e) {
+                  Alert.alert(t("Error"), t("Failed to create file"), [
+                    { text: "OK" },
+                  ]);
+                  setIsCreating(false);
+                  return;
+                }
+                Alert.alert(
+                  t("Success"),
+                  t("PDF report created successfully"),
+                  [{ text: "OK" }]
+                );
+              }}
+            />
+          </View>
+        </Modal>
+      </Portal>
       <ImpactAssistButton
         style={{
           marginBottom: 8,
@@ -69,15 +148,30 @@ export default function DamageReportByIdPage() {
               encoding: FileSystem.EncodingType.Base64,
             });
           } catch (e) {
-            Alert.alert("Error", "Failed to create file", [{ text: "OK" }]);
+            Alert.alert(t("Error"), t("Failed to create file"), [
+              { text: "OK" },
+            ]);
             setIsCreating(false);
             return;
           }
-          Alert.alert("Success", "Declaration created successfully", [
+          Alert.alert(t("Success"), t("PDF report created successfully"), [
             { text: "OK" },
           ]);
           setIsCreating(false);
         }}
+      />
+      <ImpactAssistButton
+        style={{
+          marginBottom: 8,
+        }}
+        label={
+          isCreating ? (
+            <ActivityIndicator />
+          ) : (
+            t("Generate PDF Compensation Report")
+          )
+        }
+        onPress={() => showModal()}
       />
       <View
         style={{

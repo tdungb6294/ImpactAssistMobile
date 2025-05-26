@@ -6,6 +6,8 @@ import { Alert, Dimensions, StyleSheet, View } from "react-native";
 import { ActivityIndicator, Text, useTheme } from "react-native-paper";
 import { fromByteArray } from "react-native-quick-base64";
 import storage from "../../lib/storage";
+import { DeclarationFieldErrors } from "../../model/declaration-field-errors";
+import { ErrorResponse } from "../../model/error-response";
 import { CustomTheme } from "../../theme/theme";
 import { createDeclaration } from "../../utils/create-declaration-pdf";
 import { skiaPathToImage } from "../../utils/skia-path-to-image";
@@ -22,7 +24,7 @@ const { width } = Dimensions.get("window");
 // TODO: Add text inputs here and validations
 
 export default function DeclarationReview({}: DeclarationReviewProps) {
-  const { firstSignature, secondSignature, handleSubmit } =
+  const { firstSignature, secondSignature, handleSubmit, setError } =
     useContext(DeclarationContext);
   const theme: CustomTheme = useTheme();
   const [isCreating, setIsCreating] = useState(false);
@@ -122,28 +124,42 @@ export default function DeclarationReview({}: DeclarationReviewProps) {
               name: "metadata.json",
               type: "application/json",
             } as unknown as Blob);
-            try {
-              const response = await createDeclaration(formData);
-              const uri = await StorageAccessFramework.createFileAsync(
-                permissions.directoryUri,
-                "declaration.pdf",
-                "application/pdf"
-              );
-              await FileSystem.writeAsStringAsync(
-                uri,
-                fromByteArray(response),
-                {
-                  encoding: FileSystem.EncodingType.Base64,
-                }
-              );
-            } catch (e) {
-              Alert.alert("Error", "Failed to create file", [{ text: "OK" }]);
+            const response = await createDeclaration(formData);
+            if ("errors" in response) {
+              const errorFields =
+                response as ErrorResponse<DeclarationFieldErrors>;
+              const errorText = Object.entries(errorFields?.errors || {})
+                .map(([field, message]) => `${field}: ${message}`)
+                .join("\n");
+              Object.keys(errorFields?.errors || {}).forEach((key) => {
+                const typedKey = key as keyof DeclarationFieldErrors;
+                setError(typedKey as any, {
+                  type: "manual",
+                  message: errorFields?.errors?.[typedKey],
+                });
+              });
+              Alert.alert("Error", errorText, [{ text: "OK" }]);
               setIsCreating(false);
               return;
             }
-            Alert.alert("Success", "Declaration created successfully", [
-              { text: "OK" },
-            ]);
+            const uri = await StorageAccessFramework.createFileAsync(
+              permissions.directoryUri,
+              "declaration.pdf",
+              "application/pdf"
+            );
+            await FileSystem.writeAsStringAsync(
+              uri,
+              fromByteArray(response as Uint8Array),
+              {
+                encoding: FileSystem.EncodingType.Base64,
+              }
+            );
+
+            Alert.alert(
+              t("Success"),
+              t("Declaration has been created successfully"),
+              [{ text: "OK" }]
+            );
             setIsCreating(false);
           })}
         />

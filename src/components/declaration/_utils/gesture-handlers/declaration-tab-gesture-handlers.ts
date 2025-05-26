@@ -4,7 +4,6 @@ import {
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
-import { TABS } from "../../_data/tabs";
 
 export const useDeclarationTabGestures = () => {
   const translateX = useSharedValue(0);
@@ -14,7 +13,7 @@ export const useDeclarationTabGestures = () => {
   const handleXMove = (
     _event: GestureUpdateEvent<PanGestureHandlerEventPayload>
   ) => {
-    translateHighlightX.value = translateX.value / -TABS.length;
+    translateHighlightX.value = translateX.value / -4;
   };
 
   panGestureX

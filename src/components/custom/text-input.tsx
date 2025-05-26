@@ -28,7 +28,7 @@ export default function ImpactAssistTextInput({
         borderColor: theme.colors.text,
         borderRadius: 6,
       }}
-      placeholder={`Please enter: ${label}...`}
+      placeholder={`${label}...`}
       placeholderTextColor={theme.colors.borderSeparatorSecondary}
       activeOutlineColor={theme.colors.borderSeparatorTertiary}
       outlineColor={theme.colors.text}

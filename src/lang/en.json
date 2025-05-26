@@ -222,5 +222,18 @@
   "Bank account": "Bank account",
   "Repair at local expert": "Repair at local expert",
   "Failed to create claim": "Failed to create claim",
-  "Claim created successfully": "Claim created successfully"
+  "Claim created successfully": "Claim created successfully",
+  "Generate PDF Compensation Report": "Generate PDF Compensation Report",
+  "Compensation Amount": "Compensation Amount",
+  "Create PDF Report": "Create PDF Report",
+  "Authentication": "Authentication",
+  "First Vehicle": "First Vehicle",
+  "Second Vehicle": "Second Vehicle",
+  "Register Appointment": "Register Appointment",
+  "Appointment Details": "Appointment Details",
+  "Local Experts": "Local Experts",
+  "No available slots": "No available slots: Please select another date",
+  "Declaration has been created successfully": "Declaration has been created successfully",
+  "Failed to create file": "Failed to create file",
+  "PDF report created successfully": "PDF report created successfully"
 }

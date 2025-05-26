@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { LatLng } from "react-native-maps";
@@ -7,7 +8,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { CustomTheme } from "../../theme/theme";
-import { TABS } from "./_data/tabs";
 import { useDeclarationTabGestures } from "./_utils/gesture-handlers/declaration-tab-gesture-handlers";
 import DeclarationDetails from "./declaration-details";
 import DeclarationFirstCar from "./declaration-first-car";
@@ -31,6 +31,15 @@ export default function DeclarationTab({
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
+
+  const { t } = useTranslation();
+
+  const TABS = [
+    t("Details"),
+    t("First Vehicle"),
+    t("Second Vehicle"),
+    t("Review"),
+  ];
 
   const tapGesture = Gesture.Tap()
     .onEnd(({ absoluteX }) => {
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: "white",
-    width: width / TABS.length,
+    width: width / 4,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -129,7 +138,7 @@ const styles = StyleSheet.create({
     top: 40,
     position: "absolute",
     flexDirection: "row",
-    width: width * TABS.length,
+    width: width * 4,
     height: "100%",
   },
   childContainer: {
@@ -139,7 +148,7 @@ const styles = StyleSheet.create({
   highlight: {
     bottom: 0,
     position: "absolute",
-    width: width / TABS.length,
+    width: width / 4,
     height: 2,
     zIndex: 1,
   },

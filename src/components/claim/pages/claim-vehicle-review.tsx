@@ -5,8 +5,9 @@ import { Alert, Dimensions, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { btoa } from "react-native-quick-base64";
+import { CarClaimFieldErrors } from "../../../model/car-claim-field-errors";
+import { ErrorResponse } from "../../../model/error-response";
 import { CustomTheme } from "../../../theme/theme";
-import { camelToTitleCase } from "../../../utils/camel-to-title-case";
 import { createCarClaim } from "../../../utils/create-car-claim";
 import ImpactAssistButton from "../../custom/button";
 import { ClaimContext } from "../_context/claim-context";
@@ -16,7 +17,7 @@ interface ClaimReviewProps {}
 const { width } = Dimensions.get("window");
 
 export default function CarClaimReview({}: ClaimReviewProps) {
-  const { watch, images, documents } = useContext(ClaimContext);
+  const { watch, images, documents, setError } = useContext(ClaimContext);
   const [isCreating, setIsCreating] = useState(false);
   const theme: CustomTheme = useTheme();
   const { t } = useTranslation();
@@ -58,21 +59,27 @@ export default function CarClaimReview({}: ClaimReviewProps) {
         } as unknown as Blob);
       }
     }
-    const newClaimId = await createCarClaim(formData);
-    if (typeof newClaimId === "number") {
-      console.log("New claim created with ID:", newClaimId);
+    const response = await createCarClaim(formData);
+    if (typeof response === "number") {
+      console.log("New claim created with ID:", response);
       Alert.alert(
         t("Success"),
-        `${t("Claim created successfully")}: ${newClaimId}`,
+        `${t("Claim created successfully")}: ${response}`,
         [{ text: t("OK") }]
       );
     } else {
-      const result = Object.entries(JSON.parse(newClaimId)).map(
-        ([key, value]) => `${camelToTitleCase(key)}: ${value}`
-      );
-      Alert.alert(t("Error"), `${t("Failed to create claim")}: ${result}`, [
-        { text: t("OK") },
-      ]);
+      const errorFields = response as ErrorResponse<CarClaimFieldErrors>;
+      const errorText = Object.entries(errorFields?.errors || {})
+        .map(([field, message]) => `${message}`)
+        .join("\n");
+      Object.keys(errorFields?.errors || {}).forEach((key) => {
+        const typedKey = key as keyof CarClaimFieldErrors;
+        setError(typedKey as any, {
+          type: "manual",
+          message: errorFields?.errors?.[typedKey],
+        });
+      });
+      Alert.alert("Error", errorText, [{ text: "OK" }]);
     }
     setIsCreating(false);
   };

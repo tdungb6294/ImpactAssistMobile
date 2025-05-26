@@ -1,0 +1,87 @@
+import { Declaration } from "../../../model/declaration";
+import { Circumstance } from "../../../model/enum/circumstance";
+
+export const initialDeclaration: Declaration = {
+  accidentLatLng: { latitude: -48.33056, longitude: -69.39817 },
+  datetime: new Date(Date.now()),
+  accidentCountryLocation: "Lithuania",
+  peopleInjuries: "No",
+  damageToCars: true,
+  damageToObjects: false,
+  witnesses: "",
+  firstCar: {
+    insurer: {
+      familyName: "",
+      name: "",
+      address: "",
+      postalCode: "",
+      country: "",
+      contacts: "",
+    },
+    car: {
+      carModel: "",
+      carCountryPlate: "",
+      carCountryRegistration: "",
+    },
+    insurance: {
+      insuranceCompanyName: "",
+      insurancePolicyNumber: "",
+      insuranceGreenCardNumber: "",
+      insuranceValidFrom: new Date(Date.now()),
+      insuranceValidTo: new Date(Date.now()),
+    },
+    insurancePolicyCoverage: false,
+    driver: {
+      familyName: "",
+      name: "",
+      address: "",
+      postalCode: "",
+      country: "",
+      contacts: "",
+      drivingLicenceNumber: "",
+      drivingLicenceCategory: "",
+      drivingLicenceExpirationDate: new Date(Date.now()),
+    },
+    damageDescription: "",
+    circumstance: Circumstance.standing,
+  },
+  secondCar: {
+    insurer: {
+      familyName: "",
+      name: "",
+      address: "",
+      postalCode: "",
+      country: "",
+      contacts: "",
+    },
+    car: {
+      carModel: "",
+      carCountryPlate: "",
+      carCountryRegistration: "",
+    },
+    insurance: {
+      insuranceCompanyName: "",
+      insurancePolicyNumber: "",
+      insuranceGreenCardNumber: "",
+      insuranceValidFrom: new Date(Date.now()),
+      insuranceValidTo: new Date(Date.now()),
+    },
+    insurancePolicyCoverage: false,
+    driver: {
+      familyName: "",
+      name: "",
+      address: "",
+      postalCode: "",
+      country: "",
+      contacts: "",
+      drivingLicenceNumber: "",
+      drivingLicenceCategory: "",
+      drivingLicenceExpirationDate: new Date(Date.now()),
+    },
+    damageDescription: "",
+    circumstance: Circumstance.standing,
+  },
+  culprit: {
+    fullName: "",
+  },
+};

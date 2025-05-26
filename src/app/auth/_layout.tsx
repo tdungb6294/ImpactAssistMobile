@@ -16,7 +16,7 @@ export default function AuthPageLayout() {
         headerTitleStyle: {
           color: theme.colors.text,
         },
-        headerTitle: t("Authorization"),
+        headerTitle: t("Authentication"),
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: true }} />

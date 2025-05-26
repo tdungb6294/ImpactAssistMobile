@@ -8,6 +8,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { ActivityIndicator, HelperText, useTheme } from "react-native-paper";
 import ImpactAssistButton from "../../components/custom/button";
 import ImpactAssistTextInput from "../../components/custom/text-input";
+import { DeclarationFieldErrors } from "../../model/declaration-field-errors";
+import { ErrorResponse } from "../../model/error-response";
 import { CustomTheme } from "../../theme/theme";
 import { login } from "../../utils/login";
 import { register } from "../../utils/register";
@@ -410,8 +412,22 @@ export default function AuthorizationPage() {
                 setLoggingIn(true);
                 const response = await register(data);
                 setLoggingIn(false);
-                if (response === -1) Alert.alert(t("Bad request"));
-                else Alert.alert(t("User created successfully"));
+                if (typeof response !== "number") {
+                  const errorFields =
+                    response as ErrorResponse<DeclarationFieldErrors>;
+                  const errorText = Object.entries(errorFields?.errors || {})
+                    .map(([field, message]) => `${field}: ${message}`)
+                    .join("\n");
+                  Object.keys(errorFields?.errors || {}).forEach((key) => {
+                    const typedKey = key as keyof DeclarationFieldErrors;
+                    registerForm.setError(typedKey as any, {
+                      type: "manual",
+                      message: errorFields?.errors?.[typedKey],
+                    });
+                  });
+                  Alert.alert("Error", errorText, [{ text: "OK" }]);
+                  return;
+                } else Alert.alert(t("User created successfully"));
                 return;
               })}
             />

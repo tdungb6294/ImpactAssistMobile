@@ -4,6 +4,7 @@ import {
   Control,
   FormState,
   UseFormHandleSubmit,
+  UseFormSetError,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -23,6 +24,7 @@ type ClaimContextType = {
   >;
   documents: DocumentPicker.DocumentPickerResult | null;
   images: DocumentPicker.DocumentPickerResult | null;
+  setError: UseFormSetError<Claim>;
 };
 
 export const ClaimContext = createContext<ClaimContextType>({
@@ -35,4 +37,5 @@ export const ClaimContext = createContext<ClaimContextType>({
   setImages: () => {},
   documents: null,
   images: null,
+  setError: () => {},
 });

@@ -1,4 +1,6 @@
 import { axios } from "../lib/axios";
+import { ErrorResponse } from "../model/error-response";
+import { RegistrationFieldErrors } from "../model/registration-errors";
 
 interface RegisterForm {
   email: string;
@@ -7,7 +9,9 @@ interface RegisterForm {
   phone: string;
 }
 
-export const register = async (registerForm: RegisterForm): Promise<number> => {
+export const register = async (
+  registerForm: RegisterForm
+): Promise<number | ErrorResponse<RegistrationFieldErrors>> => {
   try {
     const response = await axios.post(
       "/auth/register",
@@ -20,6 +24,9 @@ export const register = async (registerForm: RegisterForm): Promise<number> => {
     );
     return response.data as number;
   } catch (e) {
-    return -1;
+    return {
+      message: (e as any)?.response?.data?.message || "Unknown error",
+      errors: (e as any)?.response?.data?.errors as RegistrationFieldErrors,
+    };
   }
 };

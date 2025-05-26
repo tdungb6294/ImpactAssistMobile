@@ -15,7 +15,7 @@ interface ClaimProps {
 
 export default function Claim({ type }: ClaimProps) {
   const [visible, setVisibile] = useState(false);
-  const { control, handleSubmit, setValue, formState, watch, reset } =
+  const { control, handleSubmit, setValue, formState, watch, setError } =
     useForm<ClaimModel>({
       defaultValues: {
         locationLatitude: 0,
@@ -53,6 +53,7 @@ export default function Claim({ type }: ClaimProps) {
         setImages,
         documents,
         images,
+        setError,
       }}
     >
       <Portal>

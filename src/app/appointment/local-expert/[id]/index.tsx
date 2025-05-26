@@ -73,6 +73,10 @@ export default function LocalExpertPage() {
 
   const { t } = useTranslation();
 
+  const hasAvailableSlots = queryLocalAvailability.data?.slots.some((slot) =>
+    checkSlotAvailability(slot.id, slot.dayOfWeek)
+  );
+
   return (
     <View
       style={[
@@ -286,6 +290,27 @@ export default function LocalExpertPage() {
               )}
             </View>
           ))}
+          {!hasAvailableSlots && (
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 6,
+                alignItems: "center",
+                borderColor: theme.colors.text,
+                padding: 8,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: theme.colors.text,
+                }}
+              >
+                {t("No available slots")}
+              </Text>
+            </View>
+          )}
         </View>
         <Portal>
           <Modal

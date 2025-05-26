@@ -4,6 +4,7 @@ import {
   Control,
   FormState,
   UseFormHandleSubmit,
+  UseFormSetError,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -22,6 +23,7 @@ type DeclarationContextType = {
   control: Control<Declaration, any, Declaration>;
   formState: FormState<Declaration>;
   watch: UseFormWatch<Declaration>;
+  setError: UseFormSetError<Declaration>;
 };
 
 export const DeclarationContext = createContext<DeclarationContextType>({
@@ -37,4 +39,5 @@ export const DeclarationContext = createContext<DeclarationContextType>({
   control: {} as Control<Declaration, any, Declaration>,
   formState: {} as FormState<Declaration>,
   watch: (() => ({} as Declaration)) as UseFormWatch<Declaration>,
+  setError: () => {},
 });

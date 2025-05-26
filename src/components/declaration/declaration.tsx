@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Modal, StyleSheet } from "react-native";
 import { LatLng } from "react-native-maps";
-import { Portal, Snackbar } from "react-native-paper";
+import { Portal } from "react-native-paper";
 import storage from "../../lib/storage";
 import { Declaration as DeclarationModel } from "../../model/declaration";
 import MapContent from "./_components/map-content";
@@ -20,12 +20,12 @@ interface DeclarationProps {
 
 export default function Declaration({ carCountryPlate }: DeclarationProps) {
   const [webSocketId, setWebSocketId] = useState<number>(1);
-  const [error, setError] = useState<boolean>(false);
+  const [error, setSocketError] = useState<boolean>(false);
   const [visible, setVisibile] = useState(false);
   const [firstSignature, setFirstSign] = useState<SkPath[]>([]);
   const [secondSignature, setSecondSign] = useState<SkPath[]>([]);
   const socket = new WebSocket("ws://10.0.2.2:9999");
-  const { control, handleSubmit, setValue, formState, watch, reset } =
+  const { control, handleSubmit, setValue, formState, watch, reset, setError } =
     useForm<DeclarationModel>({ defaultValues: initialDeclaration });
   const [status, setStatus] = useState("connecting");
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
     };
 
     socket.onerror = () => {
-      setError(true);
+      setSocketError(true);
     };
 
     socket.onclose = () => {
@@ -124,6 +124,7 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         control,
         formState,
         watch,
+        setError,
       }}
     >
       <Portal>
@@ -142,18 +143,18 @@ export default function Declaration({ carCountryPlate }: DeclarationProps) {
         setLocationSelected={setLocationSelected}
         showModal={showModal}
       />
-      <Snackbar
+      {/* <Snackbar
         visible={error}
-        onDismiss={() => setError(false)}
+        onDismiss={() => setSocketError(false)}
         action={{
           label: t("Understood"),
           onPress: () => {
-            setError(false);
+            setSocketError(false);
           },
         }}
       >
         {t("Error connecting to the Server")}
-      </Snackbar>
+      </Snackbar> */}
     </DeclarationContext.Provider>
   );
 }

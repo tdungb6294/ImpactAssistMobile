@@ -221,5 +221,18 @@
   "Bank account": "Banko sąskaita",
   "Repair at local expert": "Remontas pas vietinį ekspertą",
   "Failed to create claim": "Nepavyko sukurti pretenzijos",
-  "Claim created successfully": "Pretenzija sėkmingai sukurta"
+  "Claim created successfully": "Pretenzija sėkmingai sukurta",
+  "Generate PDF Compensation Report": "Generuoti PDF kompensacijos ataskaitą",
+  "Compensation Amount": "Kompensacijos suma",
+  "Create PDF Report": "Sukurti PDF ataskaitą",
+  "Authentication": "Autentifikacija",
+  "First Vehicle": "Pirma TP",
+  "Second Vehicle": "Antra TP",
+  "Register Appointment": "Užregistruoti vizitą",
+  "Appointment Details": "Vizito detalės",
+  "Local Experts": "Vietiniai ekspertai",
+  "No available slots": "Nėra laisvų vietų",
+  "Declaration has been created successfully": "Deklaracija sėkmingai sukurta",
+  "Failed to create file": "Nepavyko sukurti failo",
+  "PDF report created successfully": "PDF ataskaita sėkmingai sukurta"
 }

@@ -1,8 +1,10 @@
 import { axios } from "../lib/axios";
+import { DeclarationFieldErrors } from "../model/declaration-field-errors";
+import { ErrorResponse } from "../model/error-response";
 
 export const createDeclaration = async (
   formData: FormData
-): Promise<Uint8Array> => {
+): Promise<Uint8Array | ErrorResponse<DeclarationFieldErrors>> => {
   try {
     const response = await axios.post("/declaration", formData, {
       headers: {
@@ -14,8 +16,10 @@ export const createDeclaration = async (
     const byteArrayBuffer: ArrayBuffer = response.data as ArrayBuffer;
     const byteArray = new Uint8Array(byteArrayBuffer);
     return byteArray;
-  } catch (error) {
-    console.error("Error creating declaration:", error);
-    throw new Error("Doesn't work");
+  } catch (error: any) {
+    return {
+      message: error?.response?.data?.message || "Unknown error",
+      errors: error?.response?.data?.errors as DeclarationFieldErrors,
+    };
   }
 };

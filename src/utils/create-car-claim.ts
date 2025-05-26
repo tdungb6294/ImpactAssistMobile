@@ -1,8 +1,10 @@
 import { axios } from "../lib/axios";
+import { CarClaimFieldErrors } from "../model/car-claim-field-errors";
+import { ErrorResponse } from "../model/error-response";
 
 export const createCarClaim = async (
   formData: FormData
-): Promise<number | string> => {
+): Promise<number | ErrorResponse<CarClaimFieldErrors>> => {
   try {
     const response = await axios.post("/claim/car", formData, {
       headers: {
@@ -12,10 +14,9 @@ export const createCarClaim = async (
     });
     return response.data as number;
   } catch (error: any) {
-    console.error(
-      "Error fetching claims:",
-      JSON.stringify(error?.response?.data)
-    );
-    return JSON.stringify(error.response?.data) || -1;
+    return {
+      message: error?.response?.data?.message || "Unknown error",
+      errors: error?.response?.data?.errors as CarClaimFieldErrors,
+    };
   }
 };
